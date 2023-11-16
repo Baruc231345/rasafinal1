@@ -135,33 +135,30 @@
           <div class="details personal">
             <span class="title">Equipment Needed</span>
             <p class="text">Here is the list of equipment you have selected:</p>
-
-            <% if (datainventory.sound_system===1 || datainventory.microphone===1 || datainventory.lcd===1 ||
-              datainventory.widescreen===1) { %>
+          
+            <% if (datainventory.sound_system === 1 || datainventory.microphone === 1 || datainventory.lcd === 1 ||
+              datainventory.widescreen === 1) { %>
               <!-- MIS/IT Section -->
               <h3 class="equipment-section">MIS/IT</h3>
               <ul class="equipment-list">
-                <% if (datainventory.sound_system === 1) { %>
+                <% if (datainventory.sound_system === 1 && datainventory.sound_system_quantity > 0) { %>
                   <li id="sound_system"><span class="check-symbol">✔</span> <span class="selected-equipment">Sound System</span> - <%= datainventory.sound_system_quantity %></li>
                 <% } %>
+          
+                <% if (datainventory.microphone === 1 && datainventory.microphone_quantity > 0) { %>
+                  <li><span class="check-symbol">✔</span> <span class="selected-equipment">Microphone</span> - <%= datainventory.microphone_quantity %></li>
+                <% } %>
+          
+                <% if (datainventory.lcd === 1 && datainventory.lcd_quantity > 0) { %>
+                  <li><span class="check-symbol">✔</span> <span class="selected-equipment">LCD Projector</span> - <%= datainventory.lcd_quantity %></li>
+                <% } %>
+          
+                <% if (datainventory.widescreen === 1 && datainventory.widescreen_quantity > 0) { %>
+                  <li><span class="check-symbol">✔</span> <span class="selected-equipment">Widescreen</span> - <%= datainventory.widescreen_quantity %></li>
+                <% } %>
               </ul>
-                    <% if (datainventory.microphone===1) { %>
-                      <li><span class="check-symbol">✔</span> <span class="selected-equipment">Microphone</span> - <%=
-                          datainventory.microphone_quantity %>
-                      </li>
-                      <% } %>
-                        <% if (datainventory.lcd===1) { %>
-                          <li><span class="check-symbol">✔</span> <span class="selected-equipment">LCD Projector</span>
-                            - <%= datainventory.lcd_quantity %>
-                          </li>
-                          <% } %>
-                            <% if (datainventory.widescreen===1) { %>
-                              <li><span class="check-symbol">✔</span> <span class="selected-equipment">Widescreen</span>
-                                - <%= datainventory.widescreen_quantity %>
-                              </li>
-                              <% } %>
-              </ul>
-              <% } %>
+            <% } %>
+          </div>
 
                 <% if (datainventory.chair===1 || datainventory.table_input===1 || datainventory.blackpanel===1 ||
                   datainventory.whiteboard===1 || datainventory.aircon===1 || datainventory.other===1) { %>
@@ -264,14 +261,15 @@
         const insertedId = data.id;
         const inventory = {
           inventory_id: insertedId,
-          sound_system: document.getElementById("sound_system") ? 1 : 0,
-          sound_system_quantity: document.getElementById("sound_system") ? document.getElementById("sound-system_input").value : 0,
-          microphone: document.getElementById("myRadioId_2").checked ? 1 : 0,
-          microphone_quantity: document.getElementById("microphone_input").value,
-          lcd: document.getElementById("myRadioId_3").checked ? 1 : 0,
-          lcd_quantity: document.getElementById("lcd-projector_input").value,
-          widescreen: document.getElementById("myRadioId_4").checked ? 1 : 0,
-          widescreen_quantity: document.getElementById("wide-screen_input").value,
+          sound_system: datainventory.sound_system > 0 ? 1 : 0,
+          sound_system_quantity: datainventory.sound_system || 0,
+          microphone: datainventory.microphone > 0 ? 1 : 0,
+          microphone_quantity: datainventory.microphone || 0,
+          lcd: datainventory.lcd > 0 ? 1 : 0,
+          lcd_quantity: datainventory.lcd || 0,
+          widescreen: datainventory.widescreen > 0 ? 1 : 0,
+          widescreen_quantity: datainventory.widescreen || 0,
+
           chair: document.getElementById("myRadioId-1").checked ? 1 : 0,
           chair_quantity: document.getElementById("chair_input").value,
           table_input: document.getElementById("myRadioId-2").checked ? 1 : 0,
@@ -286,6 +284,10 @@
           other: document.getElementById("myRadioId-7").checked ? 1 : 0,
           other_quantity: document.getElementById("otherInput").value,
         };
+        console.log(datainventory.sound_system)
+        console.log(datainventory.microphone)
+        console.log(datainventory.lcd)
+
 
         console.log("Inventory Object:", inventory);
         fetch("/api/rasatesting2_inventory", {
