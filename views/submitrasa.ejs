@@ -264,7 +264,7 @@
       .then(data => {
         const insertedId = data.id;
         const inventory = {
-          inventory_id: id,
+          inventory_id: insertedId,
           sound_system: document.getElementById("myRadioId_1").checked ? 1 : 0,
           sound_system_quantity: document.getElementById("sound-system_input").value,
           microphone: document.getElementById("myRadioId_2").checked ? 1 : 0,
