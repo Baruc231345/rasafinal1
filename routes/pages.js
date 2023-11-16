@@ -183,7 +183,6 @@ router.get("/ejsrasaVanilla/:id", (req, res) => {
   });
 });
 
-
 router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
   const hashedId = req.params.encryptedId; 
   const universalId = req.session.universalId;
