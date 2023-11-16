@@ -173,10 +173,6 @@
 
                   eventElement.innerHTML = `<strong>${event.title}</strong><br>${event.description}`;
                   cellEventsContainer.appendChild(eventElement);
-
-                  eventElement.addEventListener("click", () => {
-                    window.location.href = `/ejsrasa_copy2/${event.id}`;
-                  });
                 }
               }
             }
