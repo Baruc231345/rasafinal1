@@ -601,7 +601,7 @@
           requestor_information: requestor_information.value,
           requestor_type: requestor_type.value,
           required_day: required_day.value,
-          endorsed: endorsed.value,
+          endorsed: endorsed.value ?? "N/A",
           contact_number: contact_number.value,
           participants: participants.value,
           purpose_objectives: purpose_objectives.value,
@@ -682,7 +682,7 @@
 
     var endorsedLabel = document.getElementById('endorsedLabel');
     var endorsedSelect = document.getElementById('endorsed');
-    if (requestorInformation.value === 'Student' || requestorInformation.value === 'Student_Leader') {
+    if (requestorInformation.value === 'Student' || requestorInformation.value === 'Student Leader') {
       endorsedLabel.style.display = 'block'; // Show the label
       endorsedSelect.style.display = 'block'; // Show the select
       endorsedSelect.setAttribute('required', true); // Make the select required
@@ -691,6 +691,7 @@
       endorsedSelect.style.display = 'none'; // Hide the select
       endorsedSelect.removeAttribute('required'); // Remove the required attribute
     }
+  }
 
   function formatDate() {
     const eventDayInput = document.getElementById("event_day");
