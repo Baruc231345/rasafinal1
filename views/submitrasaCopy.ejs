@@ -182,7 +182,8 @@
           <div class="signature-column">
             <div class="signature-container">
               <canvas id="form_sign" width="200" height="150"></canvas>
-              <img id="form_sign_image" src="<%= datainputted.form_sign ? 'data:image/png;base64,' + datainputted.form_sign.toString('base64') : '' %>" alt="Endorsed By">
+              <img id="form_sign_image" 
+              src="<%= datainputted.form_sign ? 'data:image/png;base64,' + datainputted.form_sign.toString('base64') : '' %>" alt="Endorsed By">
             </div>
             <div class="form_sign">
               <div id="form_sign_text">Endorsed By</div>
@@ -190,9 +191,11 @@
 
             <div class="signature-container">
               <canvas id="form_sign2" width="200" height="150"></canvas>
+              <img id="form_sign_image" 
+              src="<%= datainputted.form_sign2 ? 'data:image/png;base64,' + datainputted.form_sign2.toString('base64') : '' %>" alt="Venue Approval">
             </div>
             <div class="form_sign2">
-              <div id="form_sign2">Venue Approval</div>
+              <div id="form_sign2_text">Venue Approval</div>
             </div>
 
             <div class="signature-container">
@@ -334,18 +337,27 @@
 </script>
 
 <script>
-  // Get the canvas and its context
+  // form_sign1
   var canvas = document.getElementById('form_sign');
   var context = canvas.getContext('2d');
 
-  // Create an Image object
   var image = new Image();
   image.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
 
-  // Once the image is loaded, draw it onto the canvas
   image.onload = function() {
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
   };
+
+  // form_sign2
+  var canvas2 = document.getElementById('form_sign2');
+  var context2 = canvas.getContext('2d');
+  var image = new Image();
+  image.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign2.toString("base64") : "" %>';
+  image.onload = function() {
+    context2.drawImage(image, 0, 0, canvas2.width, canvas2.height);
+  };
+
+
 </script>
 </body>
 
