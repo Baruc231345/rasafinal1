@@ -601,7 +601,7 @@
           requestor_information: requestor_information.value,
           requestor_type: requestor_type.value,
           required_day: required_day.value,
-          endorsed: endorsed.value ?? "N/A",
+          endorsed: endorsed.value.trim() || "N/A",
           contact_number: contact_number.value,
           participants: participants.value,
           purpose_objectives: purpose_objectives.value,
