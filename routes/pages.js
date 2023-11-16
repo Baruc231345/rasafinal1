@@ -749,8 +749,6 @@ router.get("/verification/:id", async (req, res) => {
 
   let email = null;
 
-  const defaultEmail = "nekins213@gmail.com"; // Default email if endorsed value is null or "N/A"
-
   const accounts = [
     ["Information & Communications Technology: People 1", "fonzyacera03@gmail.com"],
     ["Information & Communications Technology: People 2", "fonzyacera03@gmail.com"],
@@ -759,17 +757,16 @@ router.get("/verification/:id", async (req, res) => {
     ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
     ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
   ];
-
   const query = `SELECT endorsed FROM inputted_table WHERE id = ${hashedId}`;
   db1.query(query, (error, results) => {
     if (error) {
       console.error(error);
       return res.status(500).json({ error: "Error fetching endorsed value" });
     }
-
+  
     if (results.length > 0) {
       const endorsedValue = results[0].endorsed;
-
+  
       // Find the email corresponding to the endorsedValue
       for (const account of accounts) {
         if (endorsedValue === account[0]) {
@@ -777,21 +774,16 @@ router.get("/verification/:id", async (req, res) => {
           break;
         }
       }
-
-      // If email is still null and endorsed value is null or "N/A", use the default email
-      if (!email && (endorsedValue === null || endorsedValue === "N/A")) {
-        email = defaultEmail;
-      }
-
       console.log(email);
     } else {
       console.log("No matching record found");
     }
   });
-  const pdfFileName = `rasa_${id}.pdf`;
+
+  const pdfFileName = `rasa_${hashedId}.pdf`;
   const html = `
     <h1>Rasa for Approval Email</h1>
-    <a href="http://154.41.254.18:3306/getSignature/${id}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+    <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
   `;
 
   try {
@@ -801,7 +793,7 @@ router.get("/verification/:id", async (req, res) => {
       return new Promise((resolve, reject) => {
         db1.query(
           updateSql,
-          [`Step 1: Waiting for approval of ${email}`, hashedId],
+          [`Step 1: Waiting for approval of ${email}`, id],
           (error, result) => {
             if (error) {
               console.error(error);
@@ -809,7 +801,7 @@ router.get("/verification/:id", async (req, res) => {
                 "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
               db1.query(
                 updateErrorSql,
-                [`Error 500: Sending Rasa to Email is Failed`, hashedId],
+                [`Error 500: Sending Rasa to Email is Failed`, id],
                 (error) => {
                   if (error) {
                     console.error(error);
@@ -822,7 +814,7 @@ router.get("/verification/:id", async (req, res) => {
               );
             } else {
               console.log(
-                `rasa_status updated to waiting for email of ${email} for ID: ${hashedId}`
+                `rasa_status updated to waiting for email of ${email} for ID: ${id}`
               );
               resolve();
             }
@@ -923,7 +915,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
 
   const html = `
     <h1>Rasa for Approval Email</h1>
-    <a href="http://154.41.254.18:3306/getSignature2/${id}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+    <a href="http://154.41.254.18:3306/getSignature2/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
   `;
 
   try {
@@ -1040,7 +1032,7 @@ router.get("/getSignature/:id", async (req, res) => {
     }
 
     const updateQuery =
-      "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = 4) WHERE id = ?";
+      "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = 7) WHERE id = ?";
 
     db1.query(updateQuery, [decryptedrasaID], async (error, result) => {
       if (error) {
