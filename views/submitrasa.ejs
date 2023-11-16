@@ -271,8 +271,8 @@
 
         const chair = <%= datainventory.chair || 0 %>;
         const chair_quantity = <%= datainventory.widescreen || 0 %>;
-        const table = <%= datainventory.table || 0 %>;
-        const table_quantity = <%= datainventory.table || 0 %>;
+        const table = <%= datainventory.table_input || 0 %>;
+        const table_quantity = <%= datainventory.table_input || 0 %>;
 
         
 
@@ -287,10 +287,10 @@
           widescreen: widescreen > 0 ? 1 : 0,
           widescreen_quantity: widescreen_quantity || 0,
 
-          chair: document.getElementById("myRadioId-1").checked ? 1 : 0,
-          chair_quantity: document.getElementById("chair_input").value,
-          table_input: document.getElementById("myRadioId-2").checked ? 1 : 0,
-          table_quantity: document.getElementById("table_input").value,
+          chair: chair > 0 ? 1 : 0,
+          chair_quantity: chair_quantity,
+          table_input: table > 0 ? 1 : 0,
+          table_quantity: table_quantity,
 
         };
         console.log(datainventory.sound_system)
