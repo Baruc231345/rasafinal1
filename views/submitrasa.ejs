@@ -141,11 +141,10 @@
               <!-- MIS/IT Section -->
               <h3 class="equipment-section">MIS/IT</h3>
               <ul class="equipment-list">
-                <% if (datainventory.sound_system===1) { %>
-                  <li><span class="check-symbol">✔</span> <span class="selected-equipment">Sound System</span> - <%=
-                      datainventory.sound_system_quantity %>
-                  </li>
-                  <% } %>
+                <% if (datainventory.sound_system === 1) { %>
+                  <li id="sound_system"><span class="check-symbol">✔</span> <span class="selected-equipment">Sound System</span> - <%= datainventory.sound_system_quantity %></li>
+                <% } %>
+              </ul>
                     <% if (datainventory.microphone===1) { %>
                       <li><span class="check-symbol">✔</span> <span class="selected-equipment">Microphone</span> - <%=
                           datainventory.microphone_quantity %>
@@ -265,8 +264,8 @@
         const insertedId = data.id;
         const inventory = {
           inventory_id: insertedId,
-          sound_system: document.getElementById("myRadioId_1").checked ? 1 : 0,
-          sound_system_quantity: document.getElementById("sound-system_input").value,
+          sound_system: document.getElementById("sound_system") ? 1 : 0,
+          sound_system_quantity: document.getElementById("sound_system") ? document.getElementById("sound-system_input").value : 0,
           microphone: document.getElementById("myRadioId_2").checked ? 1 : 0,
           microphone_quantity: document.getElementById("microphone_input").value,
           lcd: document.getElementById("myRadioId_3").checked ? 1 : 0,
