@@ -70,7 +70,7 @@
                   <div class="select-wrapper">
                     <select id="requestor_information" onchange="updateContactLabel()" required>
                       <option value="" disabled selected>Select Description</option>
-                      <option value="Student_Leader">Student Leader</option>
+                      <option value="Student Leader">Student Leader</option>
                       <option value="Student">Student</option>
                       <option value="Teacher">Teacher</option>
                       <option value="Admin">Staff</option>
@@ -82,10 +82,10 @@
                   <input type="text" id="requestor_type" placeholder="">
                 </div>
 
-                <div class="input-field" required>
-                  <label for="endorsed">Endorsed by</label required>
+                <div class="input-field" id="endorsedLabel" style="display: none;">
+                  <label for="endorsed">Endorsed by</label>
                   <div class="select-wrapper">
-                    <select id="endorsed">
+                    <select id="endorsed" style="display: none;">
                       <option value="" disabled selected><strong>Information & Communications Technology</strong></option>
                       <option value="Information & Communications Technology: People 1">Information & Communications Technology: People 1</option>
                       <option value="Information & Communications Technology: People 2">Information & Communications Technology: People 2</option>
@@ -681,6 +681,22 @@
       requestorTypeLabel.classList.remove("long-input");
     }
     requestorTypeInput.value = "";
+
+    //////////////////////////////////////////////////////
+
+    var endorsedLabel = document.getElementById('endorsedLabel');
+    var endorsedSelect = document.getElementById('endorsed');
+    if (requestorInformation === 'Student' || requestorInformation === 'Student Leader') {
+      endorsedLabel.style.display = 'block'; // Show the label
+      endorsedSelect.style.display = 'block'; // Show the select
+      endorsedSelect.setAttribute('required', true); // Make the select required
+    } else {
+      endorsedLabel.style.display = 'none'; // Hide the label
+      endorsedSelect.style.display = 'none'; // Hide the select
+      endorsedSelect.removeAttribute('required'); // Remove the required attribute
+    }
+
+
   }
 
   function formatDate() {
