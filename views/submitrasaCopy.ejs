@@ -351,10 +351,10 @@
   // form_sign2
   var canvas2 = document.getElementById('form_sign2');
   var context2 = canvas.getContext('2d');
-  var image = new Image();
-  image.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign2.toString("base64") : "" %>';
-  image.onload = function() {
-    context2.drawImage(image, 0, 0, canvas2.width, canvas2.height);
+  var image2 = new Image();
+  image2.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign2.toString("base64") : "" %>';
+  image2.onload = function() {
+    context2.drawImage(image2, 0, 0, canvas2.width, canvas2.height);
   };
 
 
