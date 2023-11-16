@@ -299,10 +299,10 @@
         classroom: <%= datainventory.classroom || 0 %>
       };
 
-      const combinedInventory = [ inventory, inventory2 ];
+      //const combinedInventory = [ inventory, inventory2 ];
         fetch("/api/rasatesting2_inventory", {
           method: "POST",
-          body: JSON.stringify(combinedInventory),
+          body: JSON.stringify(inventory),
           headers: {
             "Content-type": "application/json"
           }
