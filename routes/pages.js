@@ -742,10 +742,15 @@ async function generatePDF(id) {
   }
 }
 
+//verification1
 router.get("/verification/:id", async (req, res) => {
   const id = req.params.id;
   const hashedId = encryptId(id); // Convert id to a cryptographic hash
   const nodemailer = require("nodemailer");
+  console.log("----------------------------------------")
+  console.log("/verification")
+  console.log("id : ", id );
+  console.log("hashedId : ", hashedId );
 
   let email = null;
 
