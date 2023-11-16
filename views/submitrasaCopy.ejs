@@ -341,23 +341,23 @@
   var canvas = document.getElementById('form_sign');
   var context = canvas.getContext('2d');
 
-  var image = new Image();
-  image.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
+  var image1 = new Image();
+  image1.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
 
-  image.onload = function() {
-    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+  image1.onload = function() {
+    context.drawImage(image1, 0, 0, canvas.width, canvas.height);
   };
 
   // form_sign2
   var canvas2 = document.getElementById('form_sign2');
-  var context2 = canvas.getContext('2d');
-  var image2 = new Image();
-  image2.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign2.toString("base64") : "" %>';
-  image2.onload = function() {
-    context2.drawImage(image2, 0, 0, canvas2.width, canvas2.height);
-  };
-
-
+  if (canvas2) {
+    var context2 = canvas2.getContext('2d');
+    var image2 = new Image();
+    image2.src = '<%= datainputted.form_sign2 ? "data:image/png;base64," + datainputted.form_sign2.toString("base64") : "" %>';
+    image2.onload = function() {
+      context2.drawImage(image2, 0, 0, canvas2.width, canvas2.height);
+    };
+  }
 </script>
 </body>
 
