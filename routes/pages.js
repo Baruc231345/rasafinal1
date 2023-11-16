@@ -1154,7 +1154,7 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
       const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedrasaID}`;
 
       try {
-        const browser = await puppeteer.launch({ headless: true });
+        const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
         const page = await browser.newPage();
         await page.goto(url, { waitUntil: "load" });
         const pdfBuffer = await page.pdf();
