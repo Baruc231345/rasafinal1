@@ -45,10 +45,6 @@
   </div>
 
   <div id="calendar-container" class="calendar-container">
-
-  </div>
-
-  <div id="calendar-container" class="calendar-container">
     <div class="mainscreen">
       <div class="container">
         <header>Facility Reservation Request Form</header>
@@ -686,7 +682,7 @@
 
     var endorsedLabel = document.getElementById('endorsedLabel');
     var endorsedSelect = document.getElementById('endorsed');
-    if (requestorInformation === 'Student' || requestorInformation === 'Student Leader') {
+    if (requestorInformation.value === 'Student' || requestorInformation.value === 'Student_Leader') {
       endorsedLabel.style.display = 'block'; // Show the label
       endorsedSelect.style.display = 'block'; // Show the select
       endorsedSelect.setAttribute('required', true); // Make the select required
@@ -695,9 +691,6 @@
       endorsedSelect.style.display = 'none'; // Hide the select
       endorsedSelect.removeAttribute('required'); // Remove the required attribute
     }
-
-
-  }
 
   function formatDate() {
     const eventDayInput = document.getElementById("event_day");
