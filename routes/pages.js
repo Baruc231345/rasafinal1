@@ -165,7 +165,7 @@ router.get("/ejsrasaVanilla/:id", (req, res) => {
               const datainputted = data1[0];
               const datainventory = data2[0];
               res.locals.rasaID = rasaID;
-              res.render("submitrasa", {
+              res.render("submitrasaCopy", {
                 rasaID,
                 datainputted,
                 datainventory,
