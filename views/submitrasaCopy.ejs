@@ -7,14 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="./css/rasa.css">
   <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
-    integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 
 <body>
   <div class="container">
-    <header>Summary of Facility Reservation Request Form</header>
+    <header>Summary Rasa Form</header>
     <form name="myForm" onsubmit="return false;" id="form">
       <div class="form first">
         <div class="details personal">
@@ -81,7 +78,7 @@
             </div>
 
             <div class="input-field" style="width: 380px;">
-              <label>Required Days</label>
+              <label>How many days do you require use of the facility?</label>
               <input type="text" id="required_day" value="<%= datainputted.required_day %>" disabled>
             </div>
 
@@ -95,147 +92,149 @@
               <input type="time" id="end_time" value="<%= datainputted.end_time %>" disabled>
             </div>
           </div>
+        </div>
 
-
-          <div class="mid">
-            <div class="top" style="width: 450px;">
-              <span class="title">Facilities Needed</span>
-              <p class="text">Here is the list of facilities you have selected:</p>
-              <ul class="facility-list">
-                <% if (datainventory.auditorium===1) { %>
-                  <li><span class="check-symbol">✔</span> <span class="selected-facility">Auditorium</span></li>
-                  <% } %>
-                    <% if (datainventory.foodandbeverage===1) { %>
-                      <li><span class="check-symbol">✔</span> <span class="selected-facility">Food and Beverage
-                          Room</span></li>
-                      <% } %>
-                        <% if (datainventory.mainlobby===1) { %>
-                          <li><span class="check-symbol">✔</span> <span class="selected-facility">Main Lobby</span></li>
-                          <% } %>
-                            <% if (datainventory.dancestudio===1) { %>
-                              <li><span class="check-symbol">✔</span> <span class="selected-facility">Dance
-                                  Studio</span></li>
-                              <% } %>
-                                <% if (datainventory.multihall===1) { %>
-                                  <li><span class="check-symbol">✔</span> <span
-                                      class="selected-facility">Multihall</span></li>
-                                  <% } %>
-                                    <% if (datainventory.gym===1) { %>
-                                      <li><span class="check-symbol">✔</span> <span
-                                          class="selected-facility">Gymnasium</span></li>
-                                      <% } %>
-                                        <% if (datainventory.classroom===1) { %>
-                                          <li><span class="check-symbol">✔</span> <span
-                                              class="selected-facility">Classroom</span></li>
-                                          <% } %>
-                                            <% if (datainventory.kitchen===1) { %>
-                                              <li><span class="check-symbol">✔</span> <span
-                                                  class="selected-facility">Kitchen</span></li>
-                                              <% } %>
-              </ul>
-            </div>
-
-            <div class="details personal">
-              <span class="title">Equipment Needed</span>
-              <p class="text">Here is the list of equipment you have selected:</p>
-
-              <!-- MIS/IT Section -->
-            <h3 class="equipment-section">MIS/IT</h3>
-            <ul class="equipment-list">
-              <% if (datainventory.sound_system === 1) { %>
-                <li><span class="check-symbol">✔</span> <span class="selected-equipment">Sound System</span> - <%= datainventory.sound_system_quantity %></li>
+        <div class="mid">
+          <div class="top" style="width: 450px;">
+            <span class="title">Facilities Needed</span>
+            <p class="text">Here is the list of facilities you have selected:</p>
+            <ul class="facility-list">
+              <% if (datainventory.auditorium === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Auditorium</span></li>
               <% } %>
-              <% if (datainventory.microphone === 1) { %>
-                <li><span class="check-symbol">✔</span> <span class="selected-equipment">Microphone</span> - <%= datainventory.microphone_quantity %></li>
+              <% if (datainventory.foodandbeverage === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Food and Beverage Room</span></li>
               <% } %>
-              <% if (datainventory.lcd === 1) { %>
-                <li><span class="check-symbol">✔</span> <span class="selected-equipment">LCD Projector</span> - <%= datainventory.lcd_quantity %></li>
+              <% if (datainventory.mainlobby === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Main Lobby</span></li>
               <% } %>
-              <% if (datainventory.widescreen === 1) { %>
-                <li><span class="check-symbol">✔</span> <span class="selected-equipment">Widescreen</span> - <%= datainventory.widescreen_quantity %></li>
+              <% if (datainventory.dancestudio === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Dance Studio</span></li>
+              <% } %>
+              <% if (datainventory.multihall === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Multihall</span></li>
+              <% } %>
+              <% if (datainventory.gym === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Gymnasium</span></li>
+              <% } %>
+              <% if (datainventory.classroom  === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Classroom</span></li>
+              <% } %>
+              <% if (datainventory.kitchen  === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Kitchen</span></li>
               <% } %>
             </ul>
+          </div>
 
-                <div class="fields5">
-                  <h3 class="equipment-section">Bag</h3>
-                  <ul class="equipment-list">
-                    <% if (datainventory.chair === 1) { %>
-                      <li><span class="check-symbol">✔</span> <span class="selected-equipment">Chair/s</span> - <%= datainventory.chair_quantity %></li>
-                    <% } %>
-                    <% if (datainventory.table_input === 1) { %>
-                      <li><span class="check-symbol">✔</span> <span class="selected-equipment">Table/s</span> - <%= datainventory.table_quantity %></li>
-                    <% } %>
-                    <% if (datainventory.blackpanel === 1) { %>
-                      <li><span class="check-symbol">✔</span> <span class="selected-equipment">Black Panel</span> - <%= datainventory.blackpanel_quantity %></li>
-                    <% } %>
-                    <% if (datainventory.whiteboard === 1) { %>
-                      <li><span class="check-symbol">✔</span> <span class="selected-equipment">Whiteboard</span> - <%= datainventory.whiteboard_quantity %></li>
-                    <% } %>
-                    <% if (datainventory.aircon === 1) { %>
-                      <li><span class="check-symbol">✔</span> <span class="selected-equipment">Aircon Time</span> - <%= datainventory.start_aircon %> To <%= datainventory.end_aircon %></li>
-                    <% } %>
-                    <% if (datainventory.other === 1) { %>
-                      <li><span class="check-symbol">✔</span> <span class="selected-equipment">Other: <%= datainventory.other_quantity %></span></li>
-                    <% } %>
-                  </ul>
-                </div>
+          <div class="details personal">
+            <span class="title">Equipment Needed</span>
+            <p class="text">Here is the list of equipment you have selected:</p>
+          
+            <% if (datainventory.sound_system === 1 || datainventory.microphone === 1 || datainventory.lcd === 1 || datainventory.widescreen === 1) { %>
+              <!-- MIS/IT Section -->
+              <h3 class="equipment-section">MIS/IT</h3>
+              <ul class="equipment-list">
+                <% if (datainventory.sound_system === 1) { %>
+                  <li><span class="check-symbol">✔</span> <span class="selected-equipment">Sound System</span> - <%= datainventory.sound_system_quantity %></li>
+                <% } %>
+                <% if (datainventory.microphone === 1) { %>
+                  <li><span class="check-symbol">✔</span> <span class="selected-equipment">Microphone</span> - <%= datainventory.microphone_quantity %></li>
+                <% } %>
+                <% if (datainventory.lcd === 1) { %>
+                  <li><span class="check-symbol">✔</span> <span class="selected-equipment">LCD Projector</span> - <%= datainventory.lcd_quantity %></li>
+                <% } %>
+                <% if (datainventory.widescreen === 1) { %>
+                  <li><span class="check-symbol">✔</span> <span class="selected-equipment">Widescreen</span> - <%= datainventory.widescreen_quantity %></li>
+                <% } %>
+              </ul>
+            <% } %>
+          
+            <% if (datainventory.chair === 1 || datainventory.table_input === 1 || datainventory.blackpanel === 1 || datainventory.whiteboard === 1 || datainventory.aircon === 1 || datainventory.other === 1) { %>
+              <div class="fields5">
+                <h3 class="equipment-section">Bag</h3>
+                <ul class="equipment-list">
+                  <% if (datainventory.chair === 1) { %>
+                    <li><span class="check-symbol">✔</span> <span class="selected-equipment">Chair/s</span> - <%= datainventory.chair_quantity %></li>
+                  <% } %>
+                  <% if (datainventory.table_input === 1) { %>
+                    <li><span class="check-symbol">✔</span> <span class="selected-equipment">Table/s</span> - <%= datainventory.table_quantity %></li>
+                  <% } %>
+                  <% if (datainventory.blackpanel === 1) { %>
+                    <li><span class="check-symbol">✔</span> <span class="selected-equipment">Black Panel</span> - <%= datainventory.blackpanel_quantity %></li>
+                  <% } %>
+                  <% if (datainventory.whiteboard === 1) { %>
+                    <li><span class="check-symbol">✔</span> <span class="selected-equipment">Whiteboard</span> - <%= datainventory.whiteboard_quantity %></li>
+                  <% } %>
+                  <% if (datainventory.aircon === 1) { %>
+                    <li><span class="check-symbol">✔</span> <span class="selected-equipment">Aircon Time</span> - <%= datainventory.start_aircon %> To <%= datainventory.end_aircon %></li>
+                  <% } %>
+                  <% if (datainventory.other === 1) { %>
+                    <li><span class="check-symbol">✔</span> <span class="selected-equipment">Other: <%= datainventory.other_quantity %></span></li>
+                  <% } %>
+                </ul>
+              </div>
+            <% } %>
+          </div>
+        </div>
+        <div class="signature-form">
+          <div class="signature-column">
+            <div class="signature-container">
+  
+              <canvas id="form_sign" width="200" height="150"></canvas>
+            </div>
+            <div class="form_sign">
+              <div id="form_sign">Venue Approval</div>
+            </div>
+  
+            <div class="signature-container">
+              <canvas id="form_sign2" width="200" height="150"></canvas>
+            </div>
+            <div class="form_sign2">
+              <div id="form_sign2">MIS/IT Approval</div>
+            </div>
+  
+            <div class="signature-container">
+              <canvas id="form_sign3" width="200" height="150"></canvas>
+            </div>
+            <div class="form_sign3">
+              <div id="form_sign3">Endorsed By</div>
             </div>
           </div>
-        </div>
+  
+          <div class="signature-column">
+            <div class="signature-container">
+              <canvas id="form_sign4" width="200" height="150"></canvas>
+            </div>
+            <div class="form_sign4">
+              <div id="form_sign4">OSA Approval</div>
+            </div>
+  
+            <div class="signature-container">
+              <canvas id="form_sign5" width="200" height="150"></canvas>
+            </div>
+            <div class="form_sign5">
+              <div id="form_sign5">Academic Head Approval</div>
+            </div>
+  
+            <div class="signature-container">
+              <canvas id="form_sign6" width="200" height="150"></canvas>
+            </div>
+            <div class="form_sign6">
+              <div id="form_sign6">School Administrator Approval</div>
+            </div>
+          </div>
+
       </div>
-      <div class="signature-form">
-        <div class="signature-column">
-          <div class="signature-container">
-
-            <canvas id="form_sign" width="200" height="150"></canvas>
-          </div>
-          <div class="form_sign">
-            <div id="form_sign">Venue Approval</div>
-          </div>
-
-          <div class="signature-container">
-            <canvas id="form_sign2" width="200" height="150"></canvas>
-          </div>
-          <div class="form_sign2">
-            <div id="form_sign2">MIS/IT Approval</div>
-          </div>
-
-          <div class="signature-container">
-            <canvas id="form_sign3" width="200" height="150"></canvas>
-          </div>
-          <div class="form_sign3">
-            <div id="form_sign3">Endorsed By</div>
-          </div>
-        </div>
-
-        <div class="signature-column">
-          <div class="signature-container">
-            <canvas id="form_sign4" width="200" height="150"></canvas>
-          </div>
-          <div class="form_sign4">
-            <div id="form_sign4">OSA Approval</div>
-          </div>
-
-          <div class="signature-container">
-            <canvas id="form_sign5" width="200" height="150"></canvas>
-          </div>
-          <div class="form_sign5">
-            <div id="form_sign5">Academic Head Approval</div>
-          </div>
-
-          <div class="signature-container">
-            <canvas id="form_sign6" width="200" height="150"></canvas>
-          </div>
-          <div class="form_sign6">
-            <div id="form_sign6">School Administrator Approval</div>
-          </div>
-        </div>
-      </div>
-
+    
 
     </form>
 </body>
 <script>
+ const universalId = <%= universalId %>;
+  document.getElementById('btnBack').addEventListener('click', function () {
+    window.location.href = "/rasa";
+  });
+
   function formatDate() {
     const eventDayInput = document.getElementById("event_day");
     const selectedDate = eventDayInput.value;
@@ -246,6 +245,91 @@
     const formattedDate = `${year}-${month}-${day}`;
     eventDayInput.value = formattedDate;
   }
+
+  document.getElementById('btnSubmit').addEventListener('click', function () {
+                console.log("Button clicked!");
+    const rasatesting2 = {
+      user_id: universalId,
+      full_name: document.getElementById('full_name').value,
+      event_name: document.getElementById('event_name').value,
+      event_description: document.getElementById('event_description').value,
+      event_day: document.getElementById('event_day').value,
+      start_time: document.getElementById('start_time').value,
+      end_time: document.getElementById('end_time').value,
+      contact_number: document.getElementById('contact_number').value,
+      requestor_information: document.getElementById('requestor_information').value,
+      requestor_type: document.getElementById('requestor_type').value,
+      participants: document.getElementById('participants').value,
+      required_day: document.getElementById('required_day').value,
+      purpose_objectives: document.getElementById('purpose_objectives').value,
+      endorsed: document.getElementById('endorsed').value,
+      authenticated: 0,
+    };
+    console.log(rasatesting2 + "this is rasatesting2 json");
+
+    fetch("/api/rasatesting2", {
+      method: "POST",
+      body: JSON.stringify(rasatesting2),
+      headers: {
+        "Content-type": "application/json"
+      }
+    })
+      .then(response => response.json())
+      .then(data => {
+        const insertedId = data.id;
+        const inventory = {
+          inventory_id: insertedId,
+          auditorium: document.getElementById('myRadioId')?.checked ? 1 : 0,
+          foodandbeverage: document.getElementById('myRadioId4')?.checked ? 1 : 0,
+          multihall: document.getElementById('myRadioId1')?.checked ? 1 : 0,
+          dancestudio: document.getElementById('myRadioId5')?.checked ? 1 : 0,
+          gym: document.getElementById('myRadioId2')?.checked ? 1 : 0,
+          classroom: document.getElementById('myRadioId3')?.checked ? 1 : 0,
+          kitchen: document.getElementById('myRadioId6')?.checked ? 1 : 0,
+          mainlobby: document.getElementById('myRadioId7')?.checked ? 1 : 0,
+          sound_system: document.getElementById("myRadioId_1")?.checked ? 1 : 0,
+          sound_system_quantity: document.getElementById("sound-system_input")?.value,
+          microphone: document.getElementById("myRadioId_2")?.checked ? 1 : 0,
+          microphone_quantity: document.getElementById("microphone_input")?.value,
+          lcd: document.getElementById("myRadioId_3")?.checked ? 1 : 0,
+          lcd_quantity: document.getElementById("lcd-projector_input")?.value,
+          widescreen: document.getElementById("myRadioId_4")?.checked ? 1 : 0,
+          widescreen_quantity: document.getElementById("wide-screen_input")?.value,
+          chair: document.getElementById("myRadioId-1")?.checked ? 1 : 0,
+          chair_quantity: document.getElementById("chair_input")?.value,
+          table_input: document.getElementById("myRadioId-2")?.checked ? 1 : 0,
+          table_quantity: document.getElementById("table_input")?.value,
+          blackpanel: document.getElementById("myRadioId-3")?.checked ? 1 : 0,
+          blackpanel_quantity: document.getElementById("black-panel_input")?.value,
+          whiteboard: document.getElementById("myRadioId-4")?.checked ? 1 : 0,
+          whiteboard_quantity: document.getElementById("whiteboard_input")?.value,
+          aircon: document.getElementById("myRadioId-6")?.checked ? 1 : 0,
+          start_aircon: document.getElementById("start_time")?.value,
+          end_aircon: document.getElementById("end_time")?.value,
+          other: document.getElementById("myRadioId-7")?.checked ? 1 : 0,
+          other_quantity: document.getElementById("otherInput")?.value,
+        };
+        
+        console.log(inventory + "this is rasatesting2_inventory json");
+        fetch("/api/rasatesting2_inventory", {
+          method: "POST",
+          body: JSON.stringify(inventory),
+          headers: {
+            "Content-type": "application/json"
+          }
+        })
+          .then(response => response.json())
+          .then(data => {
+            alert("Your Rasa Submission is successfully submitted!");
+            setTimeout(function () {
+              window.location.href = `/rasaview/${universalId}`;
+            },3000 );
+          })
+
+      })
+
+  });
 </script>
+</body>
 
 </html>
