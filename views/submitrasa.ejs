@@ -267,9 +267,16 @@
 
         const chair_quantity = <%= datainventory.chair_quantity || 0 %>;
         const table_quantity = <%= datainventory.table_quantity || 0 %>;
+        const blackpanel_quantity = <%= datainventory.blackpanel_quantity || 0 %>;
+        const whiteboard_quantity = <%= datainventory.whiteboard_quantity || 0 %>;
+        const aircon = <%= datainventory.aircon || 0 %>;
+        /*
+        const start_aircon = <%= datainventory.start_aircon || 0 %>;
+        const end_aircon = <%= datainventory.end_aircon || 0 %>;
+        */
+        const other_quantity = <%= datainventory.other_quantity || 0 %>;
 
         const inventory = {
-          inventory_id: insertedId,
           sound_system: sound_system_quantity > 0 ? 1 : 0,
           sound_system_quantity: sound_system_quantity,
           microphone: microphone_quantity > 0 ? 1 : 0,
@@ -283,6 +290,17 @@
           chair_quantity: chair_quantity,
           table_input: table_quantity > 0 ? 1 : 0,
           table_quantity: table_quantity,
+          blackpanel: blackpanel_quantity > 0 ? 1 : 0,
+          blackpanel_quantity: blackpanel_quantity,
+          whiteboard: whiteboard_quantity > 0 ? 1 : 0,
+          whiteboard_quantity: whiteboard_quantity,
+          aircon: aircon,
+          /*
+          start_aircon: start_aircon,
+          end_aircon: end_aircon,
+          */
+          other: other_quantity > 0 ? 1 : 0,
+          other_quantity: other_quantity,
         };
         console.log("Inventory:", inventory);
         console.log("sound_system after conditional check:", inventory.sound_system);
@@ -299,10 +317,25 @@
         classroom: <%= datainventory.classroom || 0 %>
       };
 
+
       //const combinedInventory = [ inventory, inventory2 ];
+      const rasatesting2_inventory = {
+            inventory_id: insertedId,
+              ...inventory,
+              ...inventory2
+            };
+
+      
+            // Iterate through rasatesting_inventory properties
+            for (const key in rasatesting2_inventory) {
+              if (rasatesting2_inventory.hasOwnProperty(key)) {
+                // Check if the value is falsy (empty or null) and set it to a default value (e.g., 0)
+                rasatesting2_inventory[key] = rasatesting2_inventory[key] || 0;
+              }
+            }      
         fetch("/api/rasatesting2_inventory", {
           method: "POST",
-          body: JSON.stringify(inventory),
+          body: JSON.stringify(rasatesting2_inventory),
           headers: {
             "Content-type": "application/json"
           }
