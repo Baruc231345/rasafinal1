@@ -274,7 +274,7 @@
         const start_aircon = <%= datainventory.start_aircon || 0 %>;
         const end_aircon = <%= datainventory.end_aircon || 0 %>;
         */
-        const other_quantity = <%= datainventory.other_quantity || 0 %>;
+        const other_quantity = <%= datainventory.other_quantity || "0" %>;
 
         const inventory = {
           sound_system: sound_system_quantity > 0 ? 1 : 0,
