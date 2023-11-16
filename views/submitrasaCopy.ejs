@@ -184,7 +184,6 @@
               <canvas id="form_sign" width="200" height="150"></canvas>
             </div>
             <div class="form_sign">
-              <img src="data:image/png;base64, <%= datainputted.form_sign %>" alt="Endorsed By">
               <div id="form_sign_text">Endorsed By</div>
             </div>
 
@@ -331,6 +330,20 @@
       })
 
   });
+</script>
+
+<script>
+  var canvas = document.getElementById('form_sign');
+  var context = canvas.getContext('2d');
+
+  // Create an Image object
+  var image = new Image();
+  image.src = '<%= "data:image/png;base64, " + datainputted.form_sign %>';
+
+  // Once the image is loaded, draw it onto the canvas
+  image.onload = function() {
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+  };
 </script>
 </body>
 
