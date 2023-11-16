@@ -1011,6 +1011,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
   }
 });
 
+//getSignature1
 router.get("/getSignature/:id", async (req, res) => {
   const rasaID = req.params.id;
   const decryptedrasaID = decryptId(rasaID);
@@ -1034,7 +1035,7 @@ router.get("/getSignature/:id", async (req, res) => {
     }
 
     const updateQuery =
-      "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = 4) WHERE id = ?";
+      "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = 7) WHERE id = ?";
 
     db1.query(updateQuery, [decryptedrasaID], async (error, result) => {
       if (error) {
@@ -1128,7 +1129,7 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
     }
 
     const updateQuery =
-      "UPDATE inputted_table SET form_sign2 = (SELECT form_sign FROM signature_table2 WHERE id = 5) WHERE id = ?";
+      "UPDATE inputted_table SET form_sign2 = (SELECT form_sign FROM signature_table2 WHERE id = 8) WHERE id = ?";
 
     db1.query(updateQuery, [decryptedrasaID], async (error, result) => {
       if (error) {
