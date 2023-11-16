@@ -259,16 +259,27 @@
       .then(response => response.json())
       .then(data => {
         const insertedId = data.id;
+
+        const sound_system = <%= datainventory.sound_system || 0 %>;
+        const sound_system_quantity = <%= datainventory.sound_system_quantity || 0 %>;
+        const microphone = <%= datainventory.microphone || 0 %>;
+        const microphone_quantity = <%= datainventory.microphone || 0 %>;
+        const lcd = <%= datainventory.lcd || 0 %>;
+        const lcd_quantity = <%= datainventory.lcd || 0 %>;
+        const widescreen = <%= datainventory.widescreen || 0 %>;
+        const widescreen_quantity = <%= datainventory.widescreen || 0 %>;
+        
+
         const inventory = {
           inventory_id: insertedId,
-          sound_system: datainventory.sound_system > 0 ? 1 : 0,
-          sound_system_quantity: datainventory.sound_system || 0,
-          microphone: datainventory.microphone > 0 ? 1 : 0,
-          microphone_quantity: datainventory.microphone || 0,
-          lcd: datainventory.lcd > 0 ? 1 : 0,
-          lcd_quantity: datainventory.lcd || 0,
-          widescreen: datainventory.widescreen > 0 ? 1 : 0,
-          widescreen_quantity: datainventory.widescreen || 0,
+          sound_system: sound_system > 0 ? 1 : 0,
+          sound_system_quantity: sound_system_quantity,
+          microphone: microphone > 0 ? 1 : 0,
+          microphone_quantity: microphone_quantity || 0,
+          lcd: lcd > 0 ? 1 : 0,
+          lcd_quantity: lcd_quantity || 0,
+          widescreen: widescreen > 0 ? 1 : 0,
+          widescreen_quantity: widescreen_quantity || 0,
 
           chair: document.getElementById("myRadioId-1").checked ? 1 : 0,
           chair_quantity: document.getElementById("chair_input").value,
