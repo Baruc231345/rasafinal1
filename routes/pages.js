@@ -1019,6 +1019,13 @@ router.get("/getSignature/:id", async (req, res) => {
   const hashedId = encryptId(decryptedrasaID);
   let redirectToVerification2 = false;
 
+  console.log("----------------------------------------")
+  console.log("/getSignature")
+  console.log("rasaID : ", rasaID );
+  console.log("decryptedrasaID : ", decryptedrasaID );
+  console.log("universalId : ", universalId );
+  console.log("hashedId : ", hashedId );
+
   const checkFormSignQuery = "SELECT form_sign FROM inputted_table WHERE id = ?";
 
   db1.query(checkFormSignQuery, [decryptedrasaID], async (error, result) => {
