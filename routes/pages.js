@@ -746,9 +746,49 @@ router.get("/verification/:id", async (req, res) => {
   const id = req.params.id;
   const hashedId = encryptId(id); // Convert id to a cryptographic hash
   const nodemailer = require("nodemailer");
-  const email = "nekins213@gmail.com";
-  const pdfFileName = `rasa_${id}.pdf`;
 
+  let email = null;
+
+  const defaultEmail = "chicken213@gmail.com"; // Default email if endorsed value is null or "N/A"
+
+  const accounts = [
+    ["Information & Communications Technology: People 1", "fonzyacera03@gmail.com"],
+    ["Information & Communications Technology: People 2", "fonzyacera03@gmail.com"],
+    ["Business & Management: People 1", "nekins213@gmail.com"],
+    ["Business & Management: People 2", "nekins213@gmail.com"],
+    ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
+    ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
+  ];
+
+  const query = `SELECT endorsed FROM inputted_table WHERE id = ${hashedId}`;
+  db1.query(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Error fetching endorsed value" });
+    }
+
+    if (results.length > 0) {
+      const endorsedValue = results[0].endorsed;
+
+      // Find the email corresponding to the endorsedValue
+      for (const account of accounts) {
+        if (endorsedValue === account[0]) {
+          email = account[1];
+          break;
+        }
+      }
+
+      // If email is still null and endorsed value is null or "N/A", use the default email
+      if (!email && (endorsedValue === null || endorsedValue === "N/A")) {
+        email = defaultEmail;
+      }
+
+      console.log(email);
+    } else {
+      console.log("No matching record found");
+    }
+  });
+  const pdfFileName = `rasa_${hashedId}.pdf`;
   const html = `
     <h1>Rasa for Approval Email</h1>
     <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
