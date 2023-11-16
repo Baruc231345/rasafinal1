@@ -156,13 +156,13 @@ router.get("/ejsrasaVanilla/:id", (req, res) => {
       if (data1.length > 0) {
         db1.query(query2, [rasaID], (error, data2) => {
           if (error) {
-            console.error("Error fetching data from inventory_table:", error); // Log the error
+            console.error("Error fetching data from inventory_table:", error);
             // Handle the error as needed, e.g., send an error response to the client
             res.status(500).send("Internal Server Error");
           } else {
             const datainputted = data1[0];
             const datainventory = data2.length > 0 ? data2[0] : null;
-
+  
             res.locals.rasaID = rasaID;
             res.render("submitrasaCopy", {
               rasaID,
@@ -177,7 +177,6 @@ router.get("/ejsrasaVanilla/:id", (req, res) => {
       }
     }
   });
-});
 
 router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
   const hashedId = req.params.encryptedId; 
