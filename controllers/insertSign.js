@@ -16,7 +16,7 @@ router.post('/insertSign', upload, (req, res) => {
 
     // Use Sharp to resize the image
     sharp(form_signBuffer)
-        .resize(200, 300)
+        .resize(200, 130)
         .toBuffer()
         .then((scaledBuffer) => {
             // Save the scaled image buffers to the database
