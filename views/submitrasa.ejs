@@ -270,8 +270,8 @@
         const blackpanel_quantity = <%= datainventory.blackpanel_quantity || 0 %>;
         const whiteboard_quantity = <%= datainventory.whiteboard_quantity || 0 %>;
         const aircon = <%= datainventory.aircon || 0 %>;
-        const start_aircon = new Date(<%= datainventory.start_aircon %>).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        const end_aircon = new Date(<%= datainventory.end_aircon %>).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const start_aircon = new Date('<%= datainventory.start_aircon %>').toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        const end_aircon = new Date('<%= datainventory.end_aircon %>').toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })
         const other_quantity = <%= datainventory.other_quantity || 0 %>;
 
         const inventory2 = {
