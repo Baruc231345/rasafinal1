@@ -749,7 +749,7 @@ router.get("/verification/:id", async (req, res) => {
 
   let email = null;
 
-  const defaultEmail = "chicken213@gmail.com"; // Default email if endorsed value is null or "N/A"
+  const defaultEmail = "nekins213@gmail.com"; // Default email if endorsed value is null or "N/A"
 
   const accounts = [
     ["Information & Communications Technology: People 1", "fonzyacera03@gmail.com"],
@@ -788,10 +788,10 @@ router.get("/verification/:id", async (req, res) => {
       console.log("No matching record found");
     }
   });
-  const pdfFileName = `rasa_${hashedId}.pdf`;
+  const pdfFileName = `rasa_${id}.pdf`;
   const html = `
     <h1>Rasa for Approval Email</h1>
-    <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+    <a href="http://154.41.254.18:3306/getSignature/${id}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
   `;
 
   try {
@@ -801,7 +801,7 @@ router.get("/verification/:id", async (req, res) => {
       return new Promise((resolve, reject) => {
         db1.query(
           updateSql,
-          [`Step 1: Waiting for approval of ${email}`, id],
+          [`Step 1: Waiting for approval of ${email}`, hashedId],
           (error, result) => {
             if (error) {
               console.error(error);
@@ -809,7 +809,7 @@ router.get("/verification/:id", async (req, res) => {
                 "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
               db1.query(
                 updateErrorSql,
-                [`Error 500: Sending Rasa to Email is Failed`, id],
+                [`Error 500: Sending Rasa to Email is Failed`, hashedId],
                 (error) => {
                   if (error) {
                     console.error(error);
@@ -822,7 +822,7 @@ router.get("/verification/:id", async (req, res) => {
               );
             } else {
               console.log(
-                `rasa_status updated to waiting for email of ${email} for ID: ${id}`
+                `rasa_status updated to waiting for email of ${email} for ID: ${hashedId}`
               );
               resolve();
             }
@@ -923,7 +923,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
 
   const html = `
     <h1>Rasa for Approval Email</h1>
-    <a href="http://154.41.254.18:3306/getSignature2/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+    <a href="http://154.41.254.18:3306/getSignature2/${id}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
   `;
 
   try {
