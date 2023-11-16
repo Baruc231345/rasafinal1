@@ -270,8 +270,7 @@
         const blackpanel_quantity = <%= datainventory.blackpanel_quantity || 0 %>;
         const whiteboard_quantity = <%= datainventory.whiteboard_quantity || 0 %>;
         const aircon = <%= datainventory.aircon || 0 %>;
-        const start_aircon = <%= datainventory.start_aircon || 0 %>;
-        const end_aircon = <%= datainventory.end_aircon || 0 %>;
+
         const other_quantity = <%= datainventory.other_quantity || 0 %>;
 
         
@@ -296,8 +295,7 @@
           whiteboard: whiteboard_quantity > 0 ? 1 : 0,
           whiteboard_quantity: whiteboard_quantity,
           aircon: aircon,
-          start_aircon: start_aircon,
-          end_aircon: end_aircon,
+
           other: other_quantity > 0 ? 1 : 0,
           other_quantity: other_quantity,
         };
