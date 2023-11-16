@@ -268,6 +268,12 @@
         const lcd_quantity = <%= datainventory.lcd || 0 %>;
         const widescreen = <%= datainventory.widescreen || 0 %>;
         const widescreen_quantity = <%= datainventory.widescreen || 0 %>;
+
+        const chair = <%= datainventory.chair || 0 %>;
+        const chair_quantity = <%= datainventory.widescreen || 0 %>;
+        const table = <%= datainventory.table || 0 %>;
+        const table_quantity = <%= datainventory.table || 0 %>;
+
         
 
         const inventory = {
@@ -285,15 +291,7 @@
           chair_quantity: document.getElementById("chair_input").value,
           table_input: document.getElementById("myRadioId-2").checked ? 1 : 0,
           table_quantity: document.getElementById("table_input").value,
-          blackpanel: document.getElementById("myRadioId-3").checked ? 1 : 0,
-          blackpanel_quantity: document.getElementById("black-panel_input").value,
-          whiteboard: document.getElementById("myRadioId-4").checked ? 1 : 0,
-          whiteboard_quantity: document.getElementById("whiteboard_input").value,
-          aircon: document.getElementById("myRadioId-6").checked ? 1 : 0,
-          start_aircon: document.getElementById("start_time").value,
-          end_aircon: document.getElementById("end_time").value,
-          other: document.getElementById("myRadioId-7").checked ? 1 : 0,
-          other_quantity: document.getElementById("otherInput").value,
+
         };
         console.log(datainventory.sound_system)
         console.log(datainventory.microphone)
