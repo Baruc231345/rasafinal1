@@ -564,6 +564,7 @@ router.get("/pdf1/:id", async (req, res) => {
   try {
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
+    await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
     await page.goto(url, { waitUntil: "load" });
     const pdfBuffer = await page.pdf();
     await browser.close();
@@ -612,6 +613,7 @@ router.get("/pdf2/:encryptedId", async (req, res) => {
   try {
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
+    await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
     await page.goto(url, { waitUntil: "load" });
     const pdfBuffer = await page.pdf();
     await browser.close();
@@ -723,8 +725,8 @@ async function generatePDF(id) {
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
 
-    // Set a larger viewport size to capture the entire page
-    await page.setViewport({ width: 3000, height: 1080 }); // Adjust the width and height as needed
+    // Set a custom viewport size
+    await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
 
     await page.goto(url, { waitUntil: "load" });
 
@@ -881,7 +883,11 @@ router.get("/verification2/:hashedId", async (req, res) => {
   const originalId = decryptId(hashedId1);
   const hashedId = encryptId(originalId);
   const universalId = req.session.universalId;
-  console.log("verification2 route" + originalId + "    " + hashedId + "    " + hashedId1)
+  console.log("----------------------------------------")
+  console.log("/verification2")
+  console.log("originalId : ", originalId );
+  console.log("hashedId : ", hashedId );
+  console.log("universalId : ", universalId);
 
   const query1 = "SELECT * FROM inputted_table WHERE id = ?";
   const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
@@ -962,7 +968,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
           );
 
           // Generate PDF using the provided function
-          generatePDF(originalId)
+          generatePDF(originalId) //
             .then((pdfBuffer) => {
               const transporter = nodemailer.createTransport({
                 service: "hotmail",
@@ -1062,6 +1068,7 @@ router.get("/getSignature/:id", async (req, res) => {
       try {
         const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
         const page = await browser.newPage();
+        await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
         await page.goto(url, { waitUntil: "load" });
         const pdfBuffer = await page.pdf();
         await browser.close();
@@ -1160,6 +1167,7 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
       try {
         const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
         const page = await browser.newPage();
+        await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
         await page.goto(url, { waitUntil: "load" });
         const pdfBuffer = await page.pdf();
         await browser.close();
