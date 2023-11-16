@@ -267,15 +267,8 @@
 
         const chair_quantity = <%= datainventory.chair_quantity || 0 %>;
         const table_quantity = <%= datainventory.table_quantity || 0 %>;
-        const blackpanel_quantity = <%= datainventory.blackpanel_quantity || 0 %>;
-        const whiteboard_quantity = <%= datainventory.whiteboard_quantity || 0 %>;
-        const aircon = <%= datainventory.aircon || 0 %>;
 
-        const other_quantity = <%= datainventory.other_quantity || 0 %>;
-
-        
-
-        const inventory2 = {
+        const inventory = {
           inventory_id: insertedId,
           sound_system: sound_system_quantity > 0 ? 1 : 0,
           sound_system_quantity: sound_system_quantity,
@@ -290,19 +283,12 @@
           chair_quantity: chair_quantity,
           table_input: table_quantity > 0 ? 1 : 0,
           table_quantity: table_quantity,
-          blackpanel: blackpanel_quantity > 0 ? 1 : 0,
-          blackpanel_quantity: blackpanel_quantity,
-          whiteboard: whiteboard_quantity > 0 ? 1 : 0,
-          whiteboard_quantity: whiteboard_quantity,
-          aircon: aircon,
-
-          other: other_quantity > 0 ? 1 : 0,
-          other_quantity: other_quantity,
         };
-        console.log("Inventory:", inventory2);
-        console.log("sound_system after conditional check:", inventory2.sound_system);
+        console.log("Inventory:", inventory);
+        console.log("sound_system after conditional check:", inventory.sound_system);
+        console.log("Inventory Object:", inventory);
 
-        const inventory = {
+        const inventory2 = {
         auditorium: <%= datainventory.auditorium || 0 %>,
         foodandbeverage: <%= datainventory.foodandbeverage || 0 %>,
         mainlobby: <%= datainventory.mainlobby || 0 %>,
@@ -313,10 +299,9 @@
         classroom: <%= datainventory.classroom || 0 %>
       };
 
-        const combinedInventory = { inventory, inventory2 };
         fetch("/api/rasatesting2_inventory", {
           method: "POST",
-          body: JSON.stringify(combinedInventory),
+          body: JSON.stringify(inventory),
           headers: {
             "Content-type": "application/json"
           }
