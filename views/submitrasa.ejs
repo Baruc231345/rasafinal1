@@ -261,16 +261,20 @@
         const insertedId = data.id;
 
         const sound_system_quantity = <%= datainventory.sound_system_quantity || 0 %>;
-        const microphone_quantity = <%= datainventory.microphone || 0 %>;
-        const lcd_quantity = <%= datainventory.lcd || 0 %>;
-        const widescreen_quantity = <%= datainventory.widescreen || 0 %>;
+        const microphone_quantity = <%= datainventory.microphone_quantity || 0 %>;
+        const lcd_quantity = <%= datainventory.lcd_quantity || 0 %>;
+        const widescreen_quantity = <%= datainventory.widescreen_quantity || 0 %>;
 
-        const chair_quantity = <%= datainventory.widescreen || 0 %>;
-        const table_quantity = <%= datainventory.table_input || 0 %>;
+        const chair_quantity = <%= datainventory.chair_quantity || 0 %>;
+        const table_quantity = <%= datainventory.table_quantity || 0 %>;
+        const blackpanel_quantity = <%= datainventory.blackpanel_quantity || 0 %>;
+        const whiteboard_quantity = <%= datainventory.whiteboard_quantity || 0 %>;
+        const aircon = <%= datainventory.aircon || 0 %>;
+        const start_aircon = <%= datainventory.start_aircon || 0 %>;
+        const end_aircon = <%= datainventory.end_aircon || 0 %>;
+        const other_quantity = <%= datainventory.other_quantity || 0 %>;
 
-        
-
-        const inventory = {
+        const inventory2 = {
           inventory_id: insertedId,
           sound_system: sound_system_quantity > 0 ? 1 : 0,
           sound_system_quantity: sound_system_quantity,
@@ -285,15 +289,34 @@
           chair_quantity: chair_quantity,
           table_input: table_quantity > 0 ? 1 : 0,
           table_quantity: table_quantity,
+          blackpanel: blackpanel_quantity > 0 ? 1 : 0,
+          blackpanel_quantity: blackpanel_quantity,
+          whiteboard: whiteboard_quantity > 0 ? 1 : 0,
+          whiteboard_quantity: whiteboard_quantity,
+          aircon: aircon,
+          start_aircon: start_aircon,
+          end_aircon: end_aircon,
+          other: other_quantity > 0 ? 1 : 0,
+          other_quantity: other_quantity,
         };
-        console.log("Inventory:", inventory);
-        console.log("sound_system after conditional check:", inventory.sound_system);
+        console.log("Inventory:", inventory2);
+        console.log("sound_system after conditional check:", inventory2.sound_system);
 
+        const inventory = {
+        auditorium: <%= datainventory.auditorium || 0 %>,
+        foodandbeverage: <%= datainventory.foodandbeverage || 0 %>,
+        mainlobby: <%= datainventory.mainlobby || 0 %>,
+        dancestudio: <%= datainventory.dancestudio || 0 %>,
+        multihall: <%= datainventory.multihall || 0 %>,
+        gym: <%= datainventory.gym || 0 %>,
+        kitchen: <%= datainventory.kitchen || 0 %>,
+        classroom: <%= datainventory.classroom || 0 %>
+      };
 
-        console.log("Inventory Object:", inventory);
+        const combinedInventory = { inventory, inventory2 };
         fetch("/api/rasatesting2_inventory", {
           method: "POST",
-          body: JSON.stringify(inventory),
+          body: JSON.stringify(combinedInventory),
           headers: {
             "Content-type": "application/json"
           }
