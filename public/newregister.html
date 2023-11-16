@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FMS - Login</title>
+  <link rel="stylesheet" type="text/css" href="css/style1.css">
+</head>
+<body class="parent">    
+  <div id="globalcontainer">
+
+    <div class="first-block-color"></div>
+    <div class="second-block-color"></div>
+    <div class="third-block-color"></div>
+
+    <header class="fixed-top">
+      <nav>
+        <h1 class="heading">Faculty Management <br>System</h1>
+      </nav>
+    </header>
+    
+    <!-- body --> 
+    <div class="dynamic-body">
+      <form onsubmit="return false;" id="form">
+        <div class="logincontainer">
+          <h2 class="logintext">Register</h2> 
+          <label for="reg_name">Register_Username:</label>
+          <input type="text" id="reg_name" name="email"><br><br>
+          <label for="reg_pass">Register Password:</label>
+          <input type="text" id="reg_pass" name="password"><br><br>
+          <div class="message">
+            <div class="success" id="success">Successfully Register!</div>
+            <div class="danger" id="danger">Successfully Login!</div>
+          </div>
+          <button type="submit" id="regBtn_submit"><strong>Register Submit</strong></button>
+          <button type="button" id="regBtn_register"><strong>Back to Login</strong></button> 
+        </div> 
+      </form> 
+    </div>
+  </div>
+  <script src="js/newRegister.js"></script>
+
+</body>
+</html>
