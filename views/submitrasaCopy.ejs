@@ -182,6 +182,7 @@
           <div class="signature-column">
             <div class="signature-container">
               <canvas id="form_sign" width="200" height="150"></canvas>
+              <img id="form_sign_image" src="<%= datainputted.form_sign ? 'data:image/png;base64,' + datainputted.form_sign.toString('base64') : '' %>" alt="Endorsed By">
             </div>
             <div class="form_sign">
               <div id="form_sign_text">Endorsed By</div>
@@ -333,12 +334,13 @@
 </script>
 
 <script>
+  // Get the canvas and its context
   var canvas = document.getElementById('form_sign');
   var context = canvas.getContext('2d');
 
   // Create an Image object
   var image = new Image();
-  image.src = '<%= "data:image/png;base64, " + datainputted.form_sign %>';
+  image.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
 
   // Once the image is loaded, draw it onto the canvas
   image.onload = function() {
