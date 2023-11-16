@@ -1120,12 +1120,16 @@ router.get("/getSignature/:id", async (req, res) => {
 
 
 router.get("/getSignature2/:hashedId", async (req, res) => {
-  const rasaID = req.params.id;
   const hashedId = req.params.hashedId;
   const decryptedrasaID = decryptId(hashedId);
   const universalId = req.session.universalId;
   //const hashedId = encryptId(decryptedrasaID);
   let redirectToVerification2 = false;
+  console.log("----------------------------------------")
+  console.log("/getSignature2")
+  console.log("hashedId : ", hashedId );
+  console.log("decryptedrasaID : ", decryptedrasaID );
+  console.log("universalId : ", universalId);
 
   // Checking the form_sign2 column if it has values
   const checkFormSignQuery = "SELECT form_sign2 FROM inputted_table WHERE id = ?";
