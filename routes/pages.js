@@ -796,7 +796,7 @@ router.get("/verification/:id", async (req, res) => {
 
         const html = `
           <h1>Rasa for Approval Email</h1>
-          <a href="http://154.41.254.18:3306/getSignature/${id}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+          <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
         `;
 
         // Update rasa_status
