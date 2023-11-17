@@ -1020,8 +1020,8 @@ router.get("/verification2/:hashedId", async (req, res) => {
 router.get("/getSignature/:id", async (req, res) => {
   const originalId = '466';
   const frian = req.params.id
-  const frian2 = encryptId(decryptedId);
   const decryptedId = decryptId(frian);
+  const frian2 = encryptId(decryptedId);
   console.log('Original ID:', originalId);
   console.log('Frian: ', frian);
   console.log('Encrypted ID:', frian2);
