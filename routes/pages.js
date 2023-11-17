@@ -750,6 +750,9 @@ router.get("/verification/:id", async (req, res) => {
   const hashedId = encryptId(id); // Convert id to a cryptographic hash
   const nodemailer = require("nodemailer");
   const defaultEmail = "rodillas.francis12@gmail.com"; // Default email
+  console.log("verification 2", id)
+  console.log("verification 2 hashedid :", hashedId)
+
 
   const accounts = [
     ["Information & Communications Technology: People 1", "wowo16221@gmail.com"],
@@ -776,6 +779,7 @@ router.get("/verification/:id", async (req, res) => {
       for (const account of accounts) {
         if (endorsedValue === account[0]) {
           email = account[1];
+          console.log(email);
           break;
         }
       }
@@ -783,8 +787,8 @@ router.get("/verification/:id", async (req, res) => {
       // If email is still null and endorsed value is null or "N/A", use the default email
       if (!email && (endorsedValue === null || endorsedValue === "N/A" || endorsedValue === "")) {
         email = defaultEmail;
+        console.log("Default: ", email)
       }
-
       console.log(email);
     } else {
       console.log("No matching record found");
