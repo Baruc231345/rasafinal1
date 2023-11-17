@@ -876,25 +876,25 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
 
 router.get("/verification2/:hashedId", async (req, res) => {
 
-  const hashedId1 = req.params.hashedId; 
-  const originalId = decryptId(hashedId1);
-  const hashedId = encryptId(originalId);
-  const universalId = req.session.universalId;
+  const hashedId = req.params.hashedId; 
+  const originalId = decryptId(hashedId);
+  const encryptedId = encryptId(originalId);
+
   console.log("----------------------------------------")
   console.log("/verification2")
-  console.log("originalId : ", originalId );
-  console.log("hashedId : ", hashedId );
-  console.log("universalId : ", universalId);
+  console.log("originalId : ", originalId ); // 2139879asdg21831
+  console.log("hashedId : ", hashedId ); // 466?
+  console.log("encryptedId : ", encryptedId ); // back to 123gyuguasd1231
 
   const query1 = "SELECT * FROM inputted_table WHERE id = ?";
   const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
 
-  db1.query(query1, [originalId], (error, data1) => {
+  db1.query(query1, [hashedId], (error, data1) => {
     if (error) {
       throw error;
     } else {
       if (data1.length > 0) {
-        db1.query(query2, [originalId], (error, data2) => {
+        db1.query(query2, [hashedId], (error, data2) => {
           if (error) {
             console.error("Error fetching data from inventory_table:", error);
             throw error;
@@ -903,7 +903,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
               const datainputted = data1[0];
               const datainventory = data2[0];
               res.render("submitrasaCopy", {
-                rasaID: originalId,
+                rasaID: hashedId,
                 datainputted,
                 datainventory,
                 universalId,
@@ -925,14 +925,14 @@ router.get("/verification2/:hashedId", async (req, res) => {
 
   const html = `
     <h1>Rasa for Approval Email</h1>
-    <a href="http://154.41.254.18:3306/getSignature2/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+    <a href="http://154.41.254.18:3306/getSignature2/${encryptedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
   `;
 
   try {
     const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
     db1.query(
       updateSql,
-      [`Step 4: Sending email to ${email}`, originalId],
+      [`Step 4: Sending email to ${email}`, hashedId],
       (error, result) => {
         if (error) {
           console.error(error);
@@ -940,7 +940,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
             "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
           db1.query(
             updateErrorSql,
-            [`Step 4.5 / Signature 2 - Error 500: Sending Rasa to Email is Failed`, originalId],
+            [`Step 4.5 / Signature 2 - Error 500: Sending Rasa to Email is Failed`, hashedId],
             (error) => {
               if (error) {
                 console.error(error);
@@ -961,11 +961,11 @@ router.get("/verification2/:hashedId", async (req, res) => {
               "waiting for an email from " +
               email +
               " for ID: " +
-              originalId
+              hashedId
           );
 
           // Generate PDF using the provided function
-          generatePDF(originalId) //
+          generatePDF(hashedId) //
             .then((pdfBuffer) => {
               const transporter = nodemailer.createTransport({
                 service: "hotmail",
@@ -985,7 +985,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
                   html: html,
                   attachments: [
                     {
-                      filename: `Rasa_File_${originalId}.pdf`,
+                      filename: `Rasa_File_${hashedId}.pdf`,
                       content: pdfBuffer,
                     },
                   ],
@@ -1027,6 +1027,12 @@ router.get("/getSignature/:id", async (req, res) => {
 
   const defaultSignatureid = 8;
   let signature_id;
+
+  console.log("/getSignature")
+  console.log("id: ", id)
+  console.log("hashedId: ", hashedId)
+  console.log("encryptedId: ", encryptedId)
+
 
 const accounts = [
     ["Information & Communications Technology: People 1", 10],
