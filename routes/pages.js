@@ -1116,10 +1116,6 @@ const accounts = [
 
           else {
             console.log("rasa_status updated to First Signature Approved: waiting for approval of miguelbaruc12@gmail.com");
-            if (!redirectToVerification2) {
-              redirectToVerification2 = true;
-              res.redirect(`/verification2/${encryptedId}`);
-            }
           }
 
           const selectInventoryQuery = "SELECT * FROM inventory_table WHERE id = ?";
