@@ -1019,12 +1019,15 @@ router.get("/verification2/:hashedId", async (req, res) => {
 //getSignature1
 router.get("/getSignature/:id", async (req, res) => {
   const rasaID = req.params.id;
-
+  const decryptedrasaID = decryptId(rasaID);
+  const universalId = req.session.universalId;
 
   let redirectToVerification2 = false;
   console.log("----------------------------------------")
   console.log("/getSignature")
   console.log("rasaID : ", rasaID );
+  console.log("decryptedrasaID : ", decryptedrasaID );
+  console.log("universalId : ", universalId );
 
 });
 
