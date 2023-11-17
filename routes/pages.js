@@ -744,6 +744,7 @@ async function generatePDF(id) {
   }
 }
 
+const nodemailer = require("nodemailer");
 //verification1
 router.get("/verification/:id", async (req, res) => {
   try {
