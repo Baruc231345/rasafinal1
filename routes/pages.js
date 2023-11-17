@@ -749,32 +749,27 @@ router.get("/verification/:id", async (req, res) => {
   const id = req.params.id;
   const hashedId = encryptId(id); // Convert id to a cryptographic hash
   const nodemailer = require("nodemailer");
-  console.log("----------------------------------------")
-  console.log("/verification")
-  console.log("id : ", id );
-  console.log("hashedId : ", hashedId );
-
-  let email = null;
+  const defaultEmail = "rodillas.francis12@gmail.com"; // Default email
 
   const accounts = [
-    ["Information & Communications Technology: People 1", "fonzyacera03@gmail.com"],
-    ["Information & Communications Technology: People 2", "fonzyacera03@gmail.com"],
+    ["Information & Communications Technology: People 1", "wowo16221@gmail.com"],
+    ["Information & Communications Technology: People 2", "wowo16221@gmail.com"],
     ["Business & Management: People 1", "nekins213@gmail.com"],
     ["Business & Management: People 2", "nekins213@gmail.com"],
     ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
     ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
   ];
-  const query = `SELECT endorsed FROM inputted_table WHERE id = ${id}`;
-  
+
+  const query = `SELECT endorsed FROM inputted_table WHERE id = ${hashedId}`;
   db1.query(query, (error, results) => {
     if (error) {
       console.error(error);
       return res.status(500).json({ error: "Error fetching endorsed value" });
     }
-  
+
     if (results.length > 0) {
       const endorsedValue = results[0].endorsed;
-  
+
       // Find the email corresponding to the endorsedValue
       for (const account of accounts) {
         if (endorsedValue === account[0]) {
@@ -782,6 +777,12 @@ router.get("/verification/:id", async (req, res) => {
           break;
         }
       }
+
+      // If email is still null and endorsed value is null or "N/A", use the default email
+      if (!email && (endorsedValue === null || endorsedValue === "N/A")) {
+        email = defaultEmail;
+      }
+
       console.log(email);
     } else {
       console.log("No matching record found");
@@ -1029,13 +1030,51 @@ router.get("/getSignature/:id", async (req, res) => {
   const universalId = req.session.universalId;
   const hashedId = encryptId(decryptedrasaID);
   let redirectToVerification2 = false;
-
   console.log("----------------------------------------")
   console.log("/getSignature")
   console.log("rasaID : ", rasaID );
   console.log("decryptedrasaID : ", decryptedrasaID );
   console.log("universalId : ", universalId );
   console.log("hashedId : ", hashedId );
+
+  const defaultSignatureid = 8;
+  let signature_id;
+
+const accounts = [
+    ["Information & Communications Technology: People 1", 10],
+    ["Information & Communications Technology: People 2", 10],
+    ["Business & Management: People 1", 9],
+    ["Business & Management: People 2", 9],
+    ["Hospitality Management: People 1", 11],
+    ["Hospitality Management: People 2", 11],
+  ];
+
+  const query = `SELECT endorsed FROM inputted_table WHERE id = ${decryptedrasaID}`;
+  db1.query(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Error fetching endorsed value" });
+    }
+
+    if (results.length > 0) {
+      const endorsedValue = results[0].endorsed;
+
+      // Find the email corresponding to the endorsedValue
+      for (const account of accounts) {
+        if (endorsedValue === account[0]) {
+          signature_id = account[1];
+          break;
+        }
+      }
+      if (!signature_id && (endorsedValue === null || endorsedValue === "N/A")) {
+        signature_id = defaultSignatureid;
+      }
+      console.log(signature_id);
+    } else {
+      console.log("No matching record found");
+    }
+  });
+  
 
   const checkFormSignQuery = "SELECT form_sign FROM inputted_table WHERE id = ?";
 
@@ -1053,9 +1092,10 @@ router.get("/getSignature/:id", async (req, res) => {
     }
 
     const updateQuery =
-      "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = 7) WHERE id = ?";
-
-    db1.query(updateQuery, [decryptedrasaID], async (error, result) => {
+    "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = ?) WHERE id = ?";
+  const updateValues = [signature_id, decryptedrasaID];
+  
+  db1.query(updateQuery, updateValues, async (error, result) => {
       if (error) {
         console.error("Error updating form_sign:", error);
         return res.status(500).json({ error: "Error updating form_sign" });
