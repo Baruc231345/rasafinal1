@@ -760,7 +760,9 @@ router.get("/verification/:id", async (req, res) => {
     ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
   ];
 
-  const query = `SELECT endorsed FROM inputted_table WHERE id = ${hashedId}`;
+  let email;
+
+  const query = `SELECT endorsed FROM inputted_table WHERE id = '${hashedId}'`;;
   db1.query(query, (error, results) => {
     if (error) {
       console.error(error);
