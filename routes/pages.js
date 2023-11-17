@@ -1029,7 +1029,9 @@ router.get("/getSignature/:id", async (req, res) => {
   console.log("decryptedrasaID : ", decryptedrasaID );
   console.log("universalId : ", universalId );
   console.log("hashedId : ", hashedId );
+});
 
+/*  
   const defaultSignatureid = 8;
   let signature_id;
 
@@ -1157,6 +1159,7 @@ const accounts = [
     });
   });
 });
+*/
 
 
 router.get("/getSignature2/:hashedId", async (req, res) => {
