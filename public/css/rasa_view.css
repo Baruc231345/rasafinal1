@@ -20,6 +20,7 @@
 
   .wrapper{
     z-index: 2;
+    position: fixed;
   }
 
   .mainscreen{

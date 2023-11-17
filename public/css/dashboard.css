@@ -117,6 +117,7 @@ button[type="button"]:hover {
 
 .wrapper{
   z-index: 2;
+  position: fixed;
 }
 
 .mainscreen{
