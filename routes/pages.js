@@ -746,109 +746,98 @@ async function generatePDF(id) {
 
 //verification1
 router.get("/verification/:id", async (req, res) => {
-  const id = req.params.id;
-  const hashedId = encryptId(id); // Convert id to a cryptographic hash
-  const nodemailer = require("nodemailer");
-  const defaultEmail = "rodillas.francis12@gmail.com"; // Default email
-  console.log("verification 2", id)
-  console.log("verification 2 hashedid :", hashedId)
-
-
-  const accounts = [
-    ["Information & Communications Technology: People 1", "wowo16221@gmail.com"],
-    ["Information & Communications Technology: People 2", "wowo16221@gmail.com"],
-    ["Business & Management: People 1", "nekins213@gmail.com"],
-    ["Business & Management: People 2", "nekins213@gmail.com"],
-    ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
-    ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
-  ];
-
-  let email;
-
-  const query = `SELECT endorsed FROM inputted_table WHERE id = '${id}'`;;
-  db1.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Error fetching endorsed value" });
-    }
-
-    if (results.length > 0) {
-      const endorsedValue = results[0].endorsed;
-
-      // Find the email corresponding to the endorsedValue
-      for (const account of accounts) {
-        if (endorsedValue === account[0]) {
-          email = account[1];
-          console.log(email);
-          break;
-        }
-      }
-
-      // If email is still null and endorsed value is null or "N/A", use the default email
-      if (!email && (endorsedValue === null || endorsedValue === "N/A" || endorsedValue === "")) {
-        email = defaultEmail;
-        console.log("Default: ", email)
-      }
-      console.log(email);
-    } else {
-      console.log("No matching record found");
-    }
-  });
-  
-  const pdfFileName = `rasa_${id}.pdf`;
-
-  const html = `
-    <h1>Rasa for Approval Email</h1>
-    <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
-  `;
-
   try {
-    // Update rasa_status
-    const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-    const sendEmail = async () => {
-      return new Promise((resolve, reject) => {
-        db1.query(
-          updateSql,
-          [`Step 1: Waiting for approval of ${email}`, id],
-          (error, result) => {
-            if (error) {
-              console.error(error);
-              const updateErrorSql =
-                "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-              db1.query(
-                updateErrorSql,
-                [`Error 500: Sending Rasa to Email is Failed`, id],
-                (error) => {
-                  if (error) {
-                    console.error(error);
-                    reject("Error updating rasa_status");
-                  }
-                  reject(
-                    "Error sending email. rasa_status updated to Error 500: Sending Rasa to Email is Failed"
-                  );
-                }
-              );
-            } else {
-              console.log(
-                `rasa_status updated to waiting for email of ${email} for ID: ${id}`
-              );
-              resolve();
-            }
-          }
-        );
-      });
-    };
+    const id = req.params.id;
+    const hashedId = encryptId(id);
+    const nodemailer = require("nodemailer");
+    const defaultEmail = "rodillas.francis12@gmail.com";
 
-    await sendEmail();
+    const accounts = [
+      ["Information & Communications Technology: People 1", "wowo16221@gmail.com"],
+      ["Information & Communications Technology: People 2", "wowo16221@gmail.com"],
+      ["Business & Management: People 1", "nekins213@gmail.com"],
+      ["Business & Management: People 2", "nekins213@gmail.com"],
+      ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
+      ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
+    ];
+
+    let email;
+
+    const query = `SELECT endorsed FROM inputted_table WHERE id = '${id}'`;
+    db1.query(query, (error, results) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Error fetching endorsed value" });
+      }
+
+      if (results.length > 0) {
+        const endorsedValue = results[0].endorsed;
+
+        for (const account of accounts) {
+          if (endorsedValue === account[0]) {
+            console.log(endorsedValue, "endorsedValue");
+            email = account[1];
+            console.log(email);
+            break;
+          }
+        }
+
+        if (!email && (endorsedValue === null || endorsedValue === "N/A" || endorsedValue === "")) {
+          email = defaultEmail;
+          console.log("Default: ", email);
+        }
+        console.log(email);
+
+        const pdfFileName = `rasa_${id}.pdf`;
+
+        const html = `
+          <h1>Rasa for Approval Email</h1>
+          <a href="http://154.41.254.18:3306/getSignature/${id}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+        `;
+
+        // Update rasa_status
+        const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+        db1.query(updateSql, [`Step 1: Waiting for approval of ${email}`, id], (error, result) => {
+          if (error) {
+            console.error(error);
+            const updateErrorSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+            db1.query(
+              updateErrorSql,
+              [`Error 500: Sending Rasa to Email is Failed`, id],
+              (error) => {
+                if (error) {
+                  console.error(error);
+                  return res.status(500).send("Error updating rasa_status");
+                }
+                return res.status(500).send("Error sending email. rasa_status updated to Error 500: Sending Rasa to Email is Failed");
+              }
+            );
+          } else {
+            console.log(`rasa_status updated to waiting for email of ${email} for ID: ${id}`);
+            sendEmail(id, email, hashedId, pdfFileName, html, res);
+          }
+        });
+
+      } else {
+        console.log("No matching record found");
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while processing the request");
+  }
+});
+
+async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
+  try {
     const pdfBuffer = await generatePDF(id);
 
     const transporter = nodemailer.createTransport({
       service: "hotmail",
       auth: {
         user: "processtest2@outlook.ph",
-        //pass: "VTMUS-AD5RG-KUSCA-JMF5K-TRDNB",
         pass: "cwbomrdgiphyvvnz",
-        //pass: "Capstone2!",
       },
     });
 
@@ -861,28 +850,25 @@ router.get("/verification/:id", async (req, res) => {
         attachments: [
           {
             filename: `Rasa_File_${id}.pdf`,
-            content: pdfBuffer, // Attach the PDF buffer
+            content: pdfBuffer,
           },
         ],
       },
       (error, info) => {
         if (error) {
           console.error(error);
-          return res
-            .status(500)
-            .send("An error occurred while sending the email");
+          return res.status(500).send("An error occurred while sending the email");
         }
         console.log("Message Sent: " + info.messageId);
         return res.redirect("/rasaview");
       }
     );
+
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .send("An error occurred while updating rasa_status and sending email");
+    res.status(500).send("An error occurred while sending the email");
   }
-});
+}
 
 router.get("/verification2/:hashedId", async (req, res) => {
 
