@@ -752,6 +752,9 @@ router.get("/verification/:id", async (req, res) => {
     const hashedId = encryptId(id);
     const nodemailer = require("nodemailer");
     const defaultEmail = "rodillas.francis12@gmail.com";
+    console.log("/verification")
+    console.log("id: ", id)
+    console.log("hashedId: ", hashedId)
 
     const accounts = [
       ["Information & Communications Technology: People 1", "wowo16221@gmail.com"],
