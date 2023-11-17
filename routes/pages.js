@@ -1019,10 +1019,12 @@ router.get("/verification2/:hashedId", async (req, res) => {
 //getSignature1
 router.get("/getSignature/:id", async (req, res) => {
   const originalId = '466';
-  const encryptedId = encryptId(originalId);
-  const decryptedId = decryptId(encryptedId);
+  const frian = req.params.id
+  const frian2 = encryptId(decryptedId);
+  const decryptedId = decryptId(frian);
   console.log('Original ID:', originalId);
-  console.log('Encrypted ID:', encryptedId);
+  console.log('Frian: ', frian);
+  console.log('Encrypted ID:', frian2);
   console.log('Decrypted ID:', decryptedId);
 });
 
