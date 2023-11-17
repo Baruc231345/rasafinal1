@@ -781,7 +781,7 @@ router.get("/verification/:id", async (req, res) => {
       }
 
       // If email is still null and endorsed value is null or "N/A", use the default email
-      if (!email && (endorsedValue === null || endorsedValue === "N/A")) {
+      if (!email && (endorsedValue === null || endorsedValue === "N/A" || endorsedValue === "")) {
         email = defaultEmail;
       }
 
