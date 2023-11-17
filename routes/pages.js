@@ -1022,15 +1022,15 @@ router.get("/verification2/:hashedId", async (req, res) => {
 //getSignature1
 router.get("/getSignature/:id", async (req, res) => {
   const originalId = '466';
-  const frian = req.params.id
+  const frian = req.params.id;
   const decryptedId = decryptId(frian);
   const frian2 = encryptId(decryptedId);
   console.log('Original ID:', originalId);
-  console.log('Frian: ', frian);
-  console.log('Encrypted ID:', frian2);
+  console.log('Encrypted ID (frian):', frian);
   console.log('Decrypted ID:', decryptedId);
-});
+  console.log('Re-encrypted ID (frian2):', frian2);
 
+});
 /*  
   const defaultSignatureid = 8;
   let signature_id;
