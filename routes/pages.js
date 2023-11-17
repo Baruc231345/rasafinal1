@@ -1021,17 +1021,10 @@ router.get("/verification2/:hashedId", async (req, res) => {
 
 //getSignature1
 router.get("/getSignature/:id", async (req, res) => {
-  const originalId = '466';
-  const frian = req.params.id;
-  const decryptedId = decryptId(frian);
-  const frian2 = encryptId(decryptedId);
-  console.log('Original ID:', originalId);
-  console.log('Encrypted ID (frian):', frian);
-  console.log('Decrypted ID:', decryptedId);
-  console.log('Re-encrypted ID (frian2):', frian2);
+  const id = req.params.id;
+  const hashedId = decryptId(id); // Convert id to a cryptographic hash
+  const encryptedId = encryptId(hashedId);
 
-});
-/*  
   const defaultSignatureid = 8;
   let signature_id;
 
@@ -1044,7 +1037,7 @@ const accounts = [
     ["Hospitality Management: People 2", 11],
   ];
 
-  const query = `SELECT endorsed FROM inputted_table WHERE id = ${decryptedrasaID}`;
+  const query = `SELECT endorsed FROM inputted_table WHERE id = ${hashedId}`;
   db1.query(query, (error, results) => {
     if (error) {
       console.error(error);
@@ -1073,7 +1066,7 @@ const accounts = [
 
   const checkFormSignQuery = "SELECT form_sign FROM inputted_table WHERE id = ?";
 
-  db1.query(checkFormSignQuery, [decryptedrasaID], async (error, result) => {
+  db1.query(checkFormSignQuery, [hashedId], async (error, result) => {
     if (error) {
       console.error("Error checking form_sign:", error);
       res.status(500).json({ error: "Error checking form_sign" });
@@ -1088,7 +1081,7 @@ const accounts = [
 
     const updateQuery =
     "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = ?) WHERE id = ?";
-  const updateValues = [signature_id, decryptedrasaID];
+  const updateValues = [signature_id, hashedId];
   
   db1.query(updateQuery, updateValues, async (error, result) => {
       if (error) {
@@ -1098,7 +1091,7 @@ const accounts = [
 
       console.log("form_sign updated successfully");
       const puppeteer = require("puppeteer");
-      const url = `http://154.41.254.18:3306/ejsrasaVanilla/${rasaID}`;
+      const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
 
       try {
         const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
@@ -1109,7 +1102,7 @@ const accounts = [
         await browser.close();
 
         const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-        db1.query(updateSql, ["Step 3: First Signature Approved: sending email to miguelbaruc12@gmail.com", decryptedrasaID], (error, result) => {
+        db1.query(updateSql, ["Step 3: First Signature Approved: sending email to miguelbaruc12@gmail.com", hashedId], (error, result) => {
           if (error) {
             console.error("An error occurred while updating rasa_status:", error);
             return res.status(500).json({ error: "An error occurred while updating rasa_status" });
@@ -1119,19 +1112,19 @@ const accounts = [
             console.log("rasa_status updated to First Signature Approved: waiting for approval of miguelbaruc12@gmail.com");
             if (!redirectToVerification2) {
               redirectToVerification2 = true;
-              res.redirect(`/verification2/${hashedId}`);
+              res.redirect(`/verification2/${encryptedId}`);
             }
           }
 
           const selectInventoryQuery = "SELECT * FROM inventory_table WHERE id = ?";
-          db1.query(selectInventoryQuery, [decryptedrasaID], function (error, dataInventory) {
+          db1.query(selectInventoryQuery, [hashedId], function (error, dataInventory) {
             if (error) {
               console.error("Error querying inventory_table:", error);
               return res.status(500).json({ error: "Error querying inventory_table" });
             }
 
             const selectInputtedQuery = "SELECT * FROM inputted_table WHERE id = ?";
-            db1.query(selectInputtedQuery, [decryptedrasaID], function (error, dataInputted) {
+            db1.query(selectInputtedQuery, [hashedId], function (error, dataInputted) {
               if (error) {
                 console.error("Error querying inputted_table:", error);
                 return res.status(500).json({ error: "Error querying inputted_table" });
@@ -1147,7 +1140,7 @@ const accounts = [
                   universalId,
                 });
               } else {
-                console.log("res.redirect(`/ejsrasaVanilla2/${hashedId}`)");
+                console.log("res.redirect(`/verification2/${hashedId}`)");
               }
             });
           });
@@ -1159,7 +1152,7 @@ const accounts = [
     });
   });
 });
-*/
+
 
 
 router.get("/getSignature2/:hashedId", async (req, res) => {
