@@ -1024,16 +1024,13 @@ router.get("/getSignature/:id", async (req, res) => {
   const id = req.params.id;
   const hashedId = decryptId(id); // Convert id to a cryptographic hash
   const encryptedId = encryptId(hashedId);
-
   const defaultSignatureid = 8;
   let signature_id;
-
+  let redirectToVerification2 = false;
   console.log("/getSignature")
   console.log("id: ", id)
   console.log("hashedId: ", hashedId)
   console.log("encryptedId: ", encryptedId)
-
-
 const accounts = [
     ["Information & Communications Technology: People 1", 10],
     ["Information & Communications Technology: People 2", 10],
@@ -1042,18 +1039,14 @@ const accounts = [
     ["Hospitality Management: People 1", 11],
     ["Hospitality Management: People 2", 11],
   ];
-
   const query = `SELECT endorsed FROM inputted_table WHERE id = ${hashedId}`;
   db1.query(query, (error, results) => {
     if (error) {
       console.error(error);
       return res.status(500).json({ error: "Error fetching endorsed value" });
     }
-
     if (results.length > 0) {
       const endorsedValue = results[0].endorsed;
-
-      // Find the email corresponding to the endorsedValue
       for (const account of accounts) {
         if (endorsedValue === account[0]) {
           signature_id = account[1];
@@ -1068,10 +1061,7 @@ const accounts = [
       console.log("No matching record found");
     }
   });
-  
-
   const checkFormSignQuery = "SELECT form_sign FROM inputted_table WHERE id = ?";
-
   db1.query(checkFormSignQuery, [hashedId], async (error, result) => {
     if (error) {
       console.error("Error checking form_sign:", error);
@@ -1116,6 +1106,11 @@ const accounts = [
 
           else {
             console.log("rasa_status updated to First Signature Approved: waiting for approval of miguelbaruc12@gmail.com");
+            if (!redirectToVerification2) {
+              redirectToVerification2 = true;
+              res.redirect(`/verification2/${encryptedId}`);
+            }
+          }
           }
 
           const selectInventoryQuery = "SELECT * FROM inventory_table WHERE id = ?";
