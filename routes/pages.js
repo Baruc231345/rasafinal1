@@ -781,7 +781,7 @@ router.get("/verification/:id", async (req, res) => {
           if (endorsedValue === account[0]) {
             console.log(endorsedValue, "endorsedValue");
             email = account[1];
-            console.log(email);
+            console.log(email);//
             break;
           }
         }
