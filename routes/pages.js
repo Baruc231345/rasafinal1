@@ -831,6 +831,47 @@ router.get("/verification/:id", async (req, res) => {
   }
 });
 
+async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
+  try {
+    const pdfBuffer = await generatePDF(id);
+
+    const transporter = nodemailer.createTransport({
+      service: "hotmail",
+      auth: {
+        user: "processtest2@outlook.ph",
+        pass: "cwbomrdgiphyvvnz",
+      },
+    });
+
+    transporter.sendMail(
+      {
+        from: "STI-Building Administration <processtest2@outlook.ph>",
+        to: email,
+        subject: "First Signature:",
+        html: html,
+        attachments: [
+          {
+            filename: `Rasa_File_${id}.pdf`,
+            content: pdfBuffer,
+          },
+        ],
+      },
+      (error, info) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send("An error occurred while sending the email");
+        }
+        console.log("Message Sent: " + info.messageId);
+        return res.redirect("/rasaview");
+      }
+    );
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while sending the email");
+  }
+}
+
 router.get("/verification2/:hashedId", async (req, res) => {
 
   const originalId = req.params.hashedId; 
