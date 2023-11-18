@@ -753,129 +753,83 @@ async function generatePDF(id) {
 const nodemailer = require("nodemailer");
 //verification1
 router.get("/verification/:id", async (req, res) => {
-  const id = req.params.id;
-  const hashedId = encryptId(id); // Convert id to a cryptographic hash
-  const nodemailer = require("nodemailer");
-  console.log("----------------------------------------")
-  console.log("/verification")
-  console.log("id : ", id );
-  console.log("hashedId : ", hashedId );
+  try {
+    const id = req.params.id;
+    const hashedId = encryptId(id); // Convert id to a cryptographic hash
+    const nodemailer = require("nodemailer");
+    console.log("----------------------------------------");
+    console.log("/verification");
+    console.log("id : ", id);
+    console.log("hashedId : ", hashedId);
 
-  let email = null;
+    let email = null;
 
-  const accounts = [
-    ["Information & Communications Technology: People 1", "fonzyacera03@gmail.com"],
-    ["Information & Communications Technology: People 2", "fonzyacera03@gmail.com"],
-    ["Business & Management: People 1", "nekins213@gmail.com"],
-    ["Business & Management: People 2", "nekins213@gmail.com"],
-    ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
-    ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
-  ];
-  const query = `SELECT endorsed FROM inputted_table WHERE id = ${id}`;
-  
-  db1.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Error fetching endorsed value" });
-    }
-  
-    if (results.length > 0) {
-      const endorsedValue = results[0].endorsed;
-  
-      // Find the email corresponding to the endorsedValue
-      for (const account of accounts) {
-        if (endorsedValue === account[0]) {
-          email = account[1];
-          break;
-        }
+    const accounts = [
+      ["Information & Communications Technology: People 1", "fonzyacera03@gmail.com"],
+      ["Information & Communications Technology: People 2", "fonzyacera03@gmail.com"],
+      ["Business & Management: People 1", "nekins213@gmail.com"],
+      ["Business & Management: People 2", "nekins213@gmail.com"],
+      ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
+      ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
+    ];
+    const query = `SELECT endorsed FROM inputted_table WHERE id = ${id}`;
+
+    db1.query(query, (error, results) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Error fetching endorsed value" });
       }
-      console.log(email);
-    } else {
-      console.log("No matching record found");
-    }
-  });
-  
-  const pdfFileName = `rasa_${id}.pdf`;
 
-        const html = `
-          <h1>Rasa for Approval Email</h1>
-          <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
-        `;
+      if (results.length > 0) {
+        const endorsedValue = results[0].endorsed;
 
-        // Update rasa_status
-        const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-        db1.query(updateSql, [`Step 1: Waiting for approval of ${email}`, id], (error, result) => {
-          if (error) {
-            console.error(error);
-            const updateErrorSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-            db1.query(
-              updateErrorSql,
-              [`Error 500: Sending Rasa to Email is Failed`, id],
-              (error) => {
-                if (error) {
-                  console.error(error);
-                  return res.status(500).send("Error updating rasa_status");
-                }
-                return res.status(500).send("Error sending email. rasa_status updated to Error 500: Sending Rasa to Email is Failed");
-              }
-            );
-          } else {
-            console.log(`rasa_status updated to waiting for email of ${email} for ID: ${id}`);
-            sendEmail(id, email, hashedId, pdfFileName, html, res);
+        // Find the email corresponding to the endorsedValue
+        for (const account of accounts) {
+          if (endorsedValue === account[0]) {
+            email = account[1];
+            break;
           }
-        });
-
+        }
+        console.log(email);
       } else {
         console.log("No matching record found");
       }
     });
 
+    const pdfFileName = `rasa_${id}.pdf`;
+
+    const html = `
+      <h1>Rasa for Approval Email</h1>
+      <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+    `;
+
+    // Update rasa_status
+    const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+    db1.query(updateSql, [`Step 1: Waiting for approval of ${email}`, id], (error, result) => {
+      if (error) {
+        console.error(error);
+        const updateErrorSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+        db1.query(
+          updateErrorSql,
+          [`Error 500: Sending Rasa to Email is Failed`, id],
+          (error) => {
+            if (error) {
+              console.error(error);
+              return res.status(500).send("Error updating rasa_status");
+            }
+            return res.status(500).send("Error sending email. rasa_status updated to Error 500: Sending Rasa to Email is Failed");
+          }
+        );
+      } else {
+        console.log(`rasa_status updated to waiting for email of ${email} for ID: ${id}`);
+        sendEmail(id, email, hashedId, pdfFileName, html, res);
+      }
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while processing the request");
   }
 });
-
-async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
-  try {
-    const pdfBuffer = await generatePDF(id);
-
-    const transporter = nodemailer.createTransport({
-      service: "hotmail",
-      auth: {
-        user: "processtest2@outlook.ph",
-        pass: "cwbomrdgiphyvvnz",
-      },
-    });
-
-    transporter.sendMail(
-      {
-        from: "STI-Building Administration <processtest2@outlook.ph>",
-        to: email,
-        subject: "First Signature:",
-        html: html,
-        attachments: [
-          {
-            filename: `Rasa_File_${id}.pdf`,
-            content: pdfBuffer,
-          },
-        ],
-      },
-      (error, info) => {
-        if (error) {
-          console.error(error);
-          return res.status(500).send("An error occurred while sending the email");
-        }
-        console.log("Message Sent: " + info.messageId);
-        return res.redirect("/rasaview");
-      }
-    );
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("An error occurred while sending the email");
-  }
-}
 
 router.get("/verification2/:hashedId", async (req, res) => {
 
