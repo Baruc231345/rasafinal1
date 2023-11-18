@@ -1069,15 +1069,18 @@ const accounts = [
     }
 
     const formSignValue = result[0] && result[0].form_sign;
-
+ 
     if (formSignValue) {
       console.log("Already Signed");
       return res.status(200).send("Already Signed");
     }
+  });
+
 
     const updateQuery =
     "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = ?) WHERE id = ?";
   const updateValues = [signature_id, hashedId];
+  
   
   db1.query(updateQuery, updateValues, async (error, result) => {
       if (error) {
