@@ -1074,8 +1074,6 @@ const accounts = [
       console.log("Already Signed");
       return res.status(200).send("Already Signed");
     }
-  });
-
 
     const updateQuery =
     "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = ?) WHERE id = ?";
@@ -1114,8 +1112,7 @@ const accounts = [
               res.redirect(`/verification2/${encryptedId}`);
             }
           }
-          }
-
+          
           const selectInventoryQuery = "SELECT * FROM inventory_table WHERE id = ?";
           db1.query(selectInventoryQuery, [hashedId], function (error, dataInventory) {
             if (error) {
