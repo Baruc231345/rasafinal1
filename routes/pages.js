@@ -876,9 +876,9 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
 
 router.get("/verification2/:hashedId", async (req, res) => {
 
-  const hashedId = req.params.hashedId; 
-  const originalId = decryptId(hashedId);
-  const encryptedId = encryptId(originalId);
+  const originalId = req.params.hashedId; 
+  const hashedId = decryptId(originalId);
+  const encryptedId = encryptId(hashedId);
 
   console.log("----------------------------------------")
   console.log("/verification2")
