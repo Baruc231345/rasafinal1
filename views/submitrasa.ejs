@@ -38,7 +38,7 @@
               <input type="text" id="requestor_type" value="<%= datainputted.requestor_type %>" disabled>
             </div>
 
-            <% if (datainputted.requestor_type==="Student" || datainputted.requestor_type==="Student Leader" ) { %>
+            <% if (datainputted.requestor_information==="Student" || datainputted.requestor_information==="Student Leader" ) { %>
               <div class="input-field">
                 <label>Endorsed by</label>
                 <input type="text" id="endorsed" value="<%= datainputted.endorsed %>" disabled>
@@ -257,7 +257,7 @@
       participants: document.getElementById('participants').value,
       required_day: document.getElementById('required_day').value,
       purpose_objectives: document.getElementById('purpose_objectives').value,
-      endorsed: document.getElementById('endorsed').value,
+      endorsed: '<%= datainputted.endorsed ? datainputted.endorsed : "N/A" %>',
       authenticated: 0,
     };
     console.log(rasatesting2 + "this is rasatesting2 json");

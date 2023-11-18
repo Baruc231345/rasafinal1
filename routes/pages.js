@@ -753,53 +753,49 @@ async function generatePDF(id) {
 const nodemailer = require("nodemailer");
 //verification1
 router.get("/verification/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const hashedId = encryptId(id);
-    const nodemailer = require("nodemailer");
-    const defaultEmail = "fonzyacera03@gmail.com";
-    console.log("/verification")
-    console.log("id: ", id)
-    console.log("hashedId: ", hashedId)
-    
+  const id = req.params.id;
+  const hashedId = encryptId(id); // Convert id to a cryptographic hash
+  const nodemailer = require("nodemailer");
+  console.log("----------------------------------------")
+  console.log("/verification")
+  console.log("id : ", id );
+  console.log("hashedId : ", hashedId );
 
-    const accounts = [
-      ["Information & Communications Technology: People 1", "fonzyacera03@gmail.com"],
-      ["Information & Communications Technology: People 2", "fonzyacera03@gmail.com"],
-      ["Business & Management: People 1", "nekins213@gmail.com"],
-      ["Business & Management: People 2", "nekins213@gmail.com"],
-      ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
-      ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
-    ];
+  let email = null;
 
-    let email;
-
-    const query = `SELECT endorsed FROM inputted_table WHERE id = '${id}'`;
-    db1.query(query, (error, results) => {
-      if (error) {
-        console.error(error);
-        return res.status(500).json({ error: "Error fetching endorsed value" });
+  const accounts = [
+    ["Information & Communications Technology: People 1", "fonzyacera03@gmail.com"],
+    ["Information & Communications Technology: People 2", "fonzyacera03@gmail.com"],
+    ["Business & Management: People 1", "nekins213@gmail.com"],
+    ["Business & Management: People 2", "nekins213@gmail.com"],
+    ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
+    ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
+  ];
+  const query = `SELECT endorsed FROM inputted_table WHERE id = ${id}`;
+  
+  db1.query(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Error fetching endorsed value" });
+    }
+  
+    if (results.length > 0) {
+      const endorsedValue = results[0].endorsed;
+  
+      // Find the email corresponding to the endorsedValue
+      for (const account of accounts) {
+        if (endorsedValue === account[0]) {
+          email = account[1];
+          break;
+        }
       }
-
-      if (results.length > 0) {
-        const endorsedValue = results[0].endorsed;
-
-        for (const account of accounts) {
-          if (endorsedValue === account[0]) {
-            console.log(endorsedValue, "endorsedValue");
-            email = account[1];
-            console.log(email);//
-            break;
-          }
-        }
-
-        if (!email && (endorsedValue === null || endorsedValue === "N/A" || endorsedValue === "")) {
-          email = defaultEmail;
-          console.log("Default: ", email);
-        }
-        console.log(email);
-
-        const pdfFileName = `rasa_${id}.pdf`;
+      console.log(email);
+    } else {
+      console.log("No matching record found");
+    }
+  });
+  
+  const pdfFileName = `rasa_${id}.pdf`;
 
         const html = `
           <h1>Rasa for Approval Email</h1>
