@@ -757,10 +757,10 @@ router.get("/verification/:id", async (req, res) => {
     console.log("hashedId: ", hashedId)
 
     const accounts = [
-      ["Information & Communications Technology: People 1", "wowo16221@gmail.com"],
-      ["Information & Communications Technology: People 2", "wowo16221@gmail.com"],
-      ["Business & Management: People 1", "nekins213@gmail.com"],
-      ["Business & Management: People 2", "nekins213@gmail.com"],
+      ["Information &amp; Communications Technology: People 1", "wowo16221@gmail.com"],
+      ["Information &amp; Communications Technology: People 2", "wowo16221@gmail.com"],
+      ["Business &amp; Management: People 1", "nekins213@gmail.com"],
+      ["Business &amp; Management: People 2", "nekins213@gmail.com"],
       ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
       ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
     ];
