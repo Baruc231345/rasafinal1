@@ -446,23 +446,27 @@ router.post("/api/updateAuthenticated/:id", (req, res) => {
   });
 });
 
-router.get("/rasaview/:id", checkUniversalCodeMiddleware,(req, res) => {
-  const hashedId = req.params.id; 
+router.get("/rasaview/:id", checkUniversalCodeMiddleware, (req, res) => {
+  const hashedId = req.params.id;
   const universalId = req.session.universalId;
   const encryptedId = encryptId(hashedId); // Encrypt the hashedId
   const originalId = decryptId(encryptedId);
 
+  const itemsPerPage = 15;
+  const currentPage = parseInt(req.query.page) || 1;
+  const offset = (currentPage - 1) * itemsPerPage;
+
   try {
     console.log("hashedId:", hashedId);
     console.log("encryptedId", encryptedId);
-    
+
     if (isNaN(hashedId) || hashedId !== universalId) {
       res.status(403).send("Access denied: You do not have permission to view this page.");
       return;
     }
-    
-    const query = "SELECT * FROM inputted_table WHERE user_id = ?";
-    db1.query(query, [hashedId], (error, data) => {
+
+    const query = "SELECT * FROM inputted_table WHERE user_id = ? ORDER BY id DESC LIMIT ?, ?";
+    db1.query(query, [hashedId, offset, itemsPerPage], (error, data) => {
       if (error) {
         console.error("Error fetching data:", error);
         res.status(500).send("Error fetching data.");
@@ -475,13 +479,15 @@ router.get("/rasaview/:id", checkUniversalCodeMiddleware,(req, res) => {
             encryptedId: encryptId(item.id),
           };
         });
-        
+
         res.render("rasa_view", {
           title: "Node.js MySQL CRUD Application",
           action: "list",
           sampleData: sampleData,
           id: hashedId,
           encryptedId: encryptedId,
+          currentPage: currentPage,
+          totalPages: Math.ceil(data.length / itemsPerPage),
         });
       }
     });
@@ -491,7 +497,7 @@ router.get("/rasaview/:id", checkUniversalCodeMiddleware,(req, res) => {
     console.log("error");
     console.log("hashedId:", hashedId);
     console.log("originalId after decryption:", originalId);
-    console.log("userid: ", userId)
+    console.log("userid: ", userId);
     res.status(500).send("Error decrypting the ID.");
   }
 });
@@ -744,104 +750,105 @@ async function generatePDF(id) {
   }
 }
 
+const nodemailer = require("nodemailer");
 //verification1
 router.get("/verification/:id", async (req, res) => {
-  const id = req.params.id;
-  const hashedId = encryptId(id); // Convert id to a cryptographic hash
-  const nodemailer = require("nodemailer");
-  console.log("----------------------------------------")
-  console.log("/verification")
-  console.log("id : ", id );
-  console.log("hashedId : ", hashedId );
-
-  let email = null;
-
-  const accounts = [
-    ["Information & Communications Technology: People 1", "fonzyacera03@gmail.com"],
-    ["Information & Communications Technology: People 2", "fonzyacera03@gmail.com"],
-    ["Business & Management: People 1", "nekins213@gmail.com"],
-    ["Business & Management: People 2", "nekins213@gmail.com"],
-    ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
-    ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
-  ];
-  const query = `SELECT endorsed FROM inputted_table WHERE id = ${id}`;
-  
-  db1.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Error fetching endorsed value" });
-    }
-  
-    if (results.length > 0) {
-      const endorsedValue = results[0].endorsed;
-  
-      // Find the email corresponding to the endorsedValue
-      for (const account of accounts) {
-        if (endorsedValue === account[0]) {
-          email = account[1];
-          break;
-        }
-      }
-      console.log(email);
-    } else {
-      console.log("No matching record found");
-    }
-  });
-  
-  const pdfFileName = `rasa_${id}.pdf`;
-
-  const html = `
-    <h1>Rasa for Approval Email</h1>
-    <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
-  `;
-
   try {
-    // Update rasa_status
-    const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-    const sendEmail = async () => {
-      return new Promise((resolve, reject) => {
-        db1.query(
-          updateSql,
-          [`Step 1: Waiting for approval of ${email}`, id],
-          (error, result) => {
-            if (error) {
-              console.error(error);
-              const updateErrorSql =
-                "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-              db1.query(
-                updateErrorSql,
-                [`Error 500: Sending Rasa to Email is Failed`, id],
-                (error) => {
-                  if (error) {
-                    console.error(error);
-                    reject("Error updating rasa_status");
-                  }
-                  reject(
-                    "Error sending email. rasa_status updated to Error 500: Sending Rasa to Email is Failed"
-                  );
-                }
-              );
-            } else {
-              console.log(
-                `rasa_status updated to waiting for email of ${email} for ID: ${id}`
-              );
-              resolve();
-            }
-          }
-        );
-      });
-    };
+    const id = req.params.id;
+    const hashedId = encryptId(id);
+    const nodemailer = require("nodemailer");
+    const defaultEmail = "fonzyacera03@gmail.com";
+    console.log("/verification")
+    console.log("id: ", id)
+    console.log("hashedId: ", hashedId)
+    
 
-    await sendEmail();
+    const accounts = [
+      ["Information & Communications Technology: People 1", "fonzyacera03@gmail.com"],
+      ["Information & Communications Technology: People 2", "fonzyacera03@gmail.com"],
+      ["Business & Management: People 1", "nekins213@gmail.com"],
+      ["Business & Management: People 2", "nekins213@gmail.com"],
+      ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
+      ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
+    ];
+
+    let email;
+
+    const query = `SELECT endorsed FROM inputted_table WHERE id = '${id}'`;
+    db1.query(query, (error, results) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).json({ error: "Error fetching endorsed value" });
+      }
+
+      if (results.length > 0) {
+        const endorsedValue = results[0].endorsed;
+
+        for (const account of accounts) {
+          if (endorsedValue === account[0]) {
+            console.log(endorsedValue, "endorsedValue");
+            email = account[1];
+            console.log(email);//
+            break;
+          }
+        }
+
+        if (!email && (endorsedValue === null || endorsedValue === "N/A" || endorsedValue === "")) {
+          email = defaultEmail;
+          console.log("Default: ", email);
+        }
+        console.log(email);
+
+        const pdfFileName = `rasa_${id}.pdf`;
+
+        const html = `
+          <h1>Rasa for Approval Email</h1>
+          <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+        `;
+
+        // Update rasa_status
+        const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+        db1.query(updateSql, [`Step 1: Waiting for approval of ${email}`, id], (error, result) => {
+          if (error) {
+            console.error(error);
+            const updateErrorSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+            db1.query(
+              updateErrorSql,
+              [`Error 500: Sending Rasa to Email is Failed`, id],
+              (error) => {
+                if (error) {
+                  console.error(error);
+                  return res.status(500).send("Error updating rasa_status");
+                }
+                return res.status(500).send("Error sending email. rasa_status updated to Error 500: Sending Rasa to Email is Failed");
+              }
+            );
+          } else {
+            console.log(`rasa_status updated to waiting for email of ${email} for ID: ${id}`);
+            sendEmail(id, email, hashedId, pdfFileName, html, res);
+          }
+        });
+
+      } else {
+        console.log("No matching record found");
+      }
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while processing the request");
+  }
+});
+
+async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
+  try {
     const pdfBuffer = await generatePDF(id);
 
     const transporter = nodemailer.createTransport({
       service: "hotmail",
       auth: {
         user: "processtest2@outlook.ph",
-        //pass: "VTMUS-AD5RG-KUSCA-JMF5K-TRDNB",
         pass: "cwbomrdgiphyvvnz",
-        //pass: "Capstone2!",
       },
     });
 
@@ -854,50 +861,47 @@ router.get("/verification/:id", async (req, res) => {
         attachments: [
           {
             filename: `Rasa_File_${id}.pdf`,
-            content: pdfBuffer, // Attach the PDF buffer
+            content: pdfBuffer,
           },
         ],
       },
       (error, info) => {
         if (error) {
           console.error(error);
-          return res
-            .status(500)
-            .send("An error occurred while sending the email");
+          return res.status(500).send("An error occurred while sending the email");
         }
         console.log("Message Sent: " + info.messageId);
         return res.redirect("/rasaview");
       }
     );
+
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .send("An error occurred while updating rasa_status and sending email");
+    res.status(500).send("An error occurred while sending the email");
   }
-});
+}
 
 router.get("/verification2/:hashedId", async (req, res) => {
 
-  const hashedId1 = req.params.hashedId; 
-  const originalId = decryptId(hashedId1);
-  const hashedId = encryptId(originalId);
-  const universalId = req.session.universalId;
+  const originalId = req.params.hashedId; 
+  const hashedId = decryptId(originalId);
+  const encryptedId = encryptId(hashedId);
+
   console.log("----------------------------------------")
   console.log("/verification2")
-  console.log("originalId : ", originalId );
-  console.log("hashedId : ", hashedId );
-  console.log("universalId : ", universalId);
+  console.log("originalId : ", originalId ); // 2139879asdg21831
+  console.log("hashedId : ", hashedId ); // 466?
+  console.log("encryptedId : ", encryptedId ); // back to 123gyuguasd1231
 
   const query1 = "SELECT * FROM inputted_table WHERE id = ?";
   const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
 
-  db1.query(query1, [originalId], (error, data1) => {
+  db1.query(query1, [hashedId], (error, data1) => {
     if (error) {
       throw error;
     } else {
       if (data1.length > 0) {
-        db1.query(query2, [originalId], (error, data2) => {
+        db1.query(query2, [hashedId], (error, data2) => {
           if (error) {
             console.error("Error fetching data from inventory_table:", error);
             throw error;
@@ -906,7 +910,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
               const datainputted = data1[0];
               const datainventory = data2[0];
               res.render("submitrasaCopy", {
-                rasaID: originalId,
+                rasaID: hashedId,
                 datainputted,
                 datainventory,
                 universalId,
@@ -919,6 +923,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
       } else {
         res.status(404).send("Data from the first table not found");
       }
+
     }
   });
 
@@ -928,14 +933,14 @@ router.get("/verification2/:hashedId", async (req, res) => {
 
   const html = `
     <h1>Rasa for Approval Email</h1>
-    <a href="http://154.41.254.18:3306/getSignature2/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+    <a href="http://154.41.254.18:3306/getSignature2/${encryptedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
   `;
 
   try {
     const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
     db1.query(
       updateSql,
-      [`Step 4: Sending email to ${email}`, originalId],
+      [`Step 4: Sending email to ${email}`, hashedId],
       (error, result) => {
         if (error) {
           console.error(error);
@@ -943,7 +948,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
             "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
           db1.query(
             updateErrorSql,
-            [`Step 4.5 / Signature 2 - Error 500: Sending Rasa to Email is Failed`, originalId],
+            [`Step 4.5 / Signature 2 - Error 500: Sending Rasa to Email is Failed`, hashedId],
             (error) => {
               if (error) {
                 console.error(error);
@@ -964,11 +969,11 @@ router.get("/verification2/:hashedId", async (req, res) => {
               "waiting for an email from " +
               email +
               " for ID: " +
-              originalId
+              hashedId
           );
 
           // Generate PDF using the provided function
-          generatePDF(originalId) //
+          generatePDF(hashedId) //
             .then((pdfBuffer) => {
               const transporter = nodemailer.createTransport({
                 service: "hotmail",
@@ -988,7 +993,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
                   html: html,
                   attachments: [
                     {
-                      filename: `Rasa_File_${originalId}.pdf`,
+                      filename: `Rasa_File_${hashedId}.pdf`,
                       content: pdfBuffer,
                     },
                   ],
@@ -1024,38 +1029,66 @@ router.get("/verification2/:hashedId", async (req, res) => {
 
 //getSignature1
 router.get("/getSignature/:id", async (req, res) => {
-  const rasaID = req.params.id;
-  const decryptedrasaID = decryptId(rasaID);
-  const universalId = req.session.universalId;
-  const hashedId = encryptId(decryptedrasaID);
+  const id = req.params.id;
+  const hashedId = decryptId(id); // Convert id to a cryptographic hash
+  const encryptedId = encryptId(hashedId);
+  const defaultSignatureid = 8;
+  let signature_id;
   let redirectToVerification2 = false;
-
-  console.log("----------------------------------------")
   console.log("/getSignature")
-  console.log("rasaID : ", rasaID );
-  console.log("decryptedrasaID : ", decryptedrasaID );
-  console.log("universalId : ", universalId );
-  console.log("hashedId : ", hashedId );
-
+  console.log("id: ", id)
+  console.log("hashedId: ", hashedId)
+  console.log("encryptedId: ", encryptedId)
+const accounts = [
+    ["Information &amp; Communications Technology: People 1", 10],
+    ["Information &amp; Communications Technology: People 2", 10],
+    ["Business &amp; Management: People 1", 9],
+    ["Business &amp; Management: People 2", 9],
+    ["Hospitality Management: People 1", 11],
+    ["Hospitality Management: People 2", 11],
+  ];
+  const query = `SELECT endorsed FROM inputted_table WHERE id = ${hashedId}`;
+  db1.query(query, (error, results) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).json({ error: "Error fetching endorsed value" });
+    }
+    if (results.length > 0) {
+      const endorsedValue = results[0].endorsed;
+      for (const account of accounts) {
+        if (endorsedValue === account[0]) {
+          signature_id = account[1];
+          break;
+        }
+      }
+      if (!signature_id && (endorsedValue === null || endorsedValue === "N/A")) {
+        signature_id = defaultSignatureid;
+      }
+      console.log(signature_id);
+    } else {
+      console.log("No matching record found");
+    }
+  });
   const checkFormSignQuery = "SELECT form_sign FROM inputted_table WHERE id = ?";
-
-  db1.query(checkFormSignQuery, [decryptedrasaID], async (error, result) => {
+  db1.query(checkFormSignQuery, [hashedId], async (error, result) => {
     if (error) {
       console.error("Error checking form_sign:", error);
       res.status(500).json({ error: "Error checking form_sign" });
     }
 
     const formSignValue = result[0] && result[0].form_sign;
-
+ 
     if (formSignValue) {
       console.log("Already Signed");
       return res.status(200).send("Already Signed");
     }
 
     const updateQuery =
-      "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = 7) WHERE id = ?";
-
-    db1.query(updateQuery, [decryptedrasaID], async (error, result) => {
+    "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = ?) WHERE id = ?";
+  const updateValues = [signature_id, hashedId];
+  
+  
+  db1.query(updateQuery, updateValues, async (error, result) => {
       if (error) {
         console.error("Error updating form_sign:", error);
         return res.status(500).json({ error: "Error updating form_sign" });
@@ -1063,7 +1096,7 @@ router.get("/getSignature/:id", async (req, res) => {
 
       console.log("form_sign updated successfully");
       const puppeteer = require("puppeteer");
-      const url = `http://154.41.254.18:3306/ejsrasaVanilla/${rasaID}`;
+      const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
 
       try {
         const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
@@ -1074,7 +1107,7 @@ router.get("/getSignature/:id", async (req, res) => {
         await browser.close();
 
         const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-        db1.query(updateSql, ["Step 3: First Signature Approved: sending email to miguelbaruc12@gmail.com", decryptedrasaID], (error, result) => {
+        db1.query(updateSql, ["Step 3: First Signature Approved: sending email to miguelbaruc12@gmail.com", hashedId], (error, result) => {
           if (error) {
             console.error("An error occurred while updating rasa_status:", error);
             return res.status(500).json({ error: "An error occurred while updating rasa_status" });
@@ -1084,19 +1117,19 @@ router.get("/getSignature/:id", async (req, res) => {
             console.log("rasa_status updated to First Signature Approved: waiting for approval of miguelbaruc12@gmail.com");
             if (!redirectToVerification2) {
               redirectToVerification2 = true;
-              res.redirect(`/verification2/${hashedId}`);
+              res.redirect(`/verification2/${encryptedId}`);
             }
           }
-
+          
           const selectInventoryQuery = "SELECT * FROM inventory_table WHERE id = ?";
-          db1.query(selectInventoryQuery, [decryptedrasaID], function (error, dataInventory) {
+          db1.query(selectInventoryQuery, [hashedId], function (error, dataInventory) {
             if (error) {
               console.error("Error querying inventory_table:", error);
               return res.status(500).json({ error: "Error querying inventory_table" });
             }
 
             const selectInputtedQuery = "SELECT * FROM inputted_table WHERE id = ?";
-            db1.query(selectInputtedQuery, [decryptedrasaID], function (error, dataInputted) {
+            db1.query(selectInputtedQuery, [hashedId], function (error, dataInputted) {
               if (error) {
                 console.error("Error querying inputted_table:", error);
                 return res.status(500).json({ error: "Error querying inputted_table" });
@@ -1112,7 +1145,7 @@ router.get("/getSignature/:id", async (req, res) => {
                   universalId,
                 });
               } else {
-                console.log("res.redirect(`/ejsrasaVanilla2/${hashedId}`)");
+                console.log("res.redirect(`/verification2/${hashedId}`)");
               }
             });
           });
@@ -1124,6 +1157,7 @@ router.get("/getSignature/:id", async (req, res) => {
     });
   });
 });
+
 
 
 router.get("/getSignature2/:hashedId", async (req, res) => {
@@ -1152,7 +1186,7 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
     }
 
     const updateQuery =
-      "UPDATE inputted_table SET form_sign2 = (SELECT form_sign FROM signature_table2 WHERE id = 8) WHERE id = ?";
+      "UPDATE inputted_table SET form_sign2 = (SELECT form_sign FROM signature_table2 WHERE id = 11) WHERE id = ?";
 
     db1.query(updateQuery, [decryptedrasaID], async (error, result) => {
       if (error) {

@@ -10,7 +10,7 @@ app.use(session({
   secret: "capstone", 
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false }, // Set secure to true if using HTTPS
+  cookie: { secure: false },
 }));
 
 
