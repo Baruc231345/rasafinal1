@@ -1178,7 +1178,7 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
     }
 
     const updateQuery =
-      "UPDATE inputted_table SET form_sign2 = (SELECT form_sign FROM signature_table2 WHERE id = 8) WHERE id = ?";
+      "UPDATE inputted_table SET form_sign2 = (SELECT form_sign FROM signature_table2 WHERE id = 11) WHERE id = ?";
 
     db1.query(updateQuery, [decryptedrasaID], async (error, result) => {
       if (error) {
