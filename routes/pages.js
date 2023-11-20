@@ -740,7 +740,7 @@ const nodemailer = require("nodemailer");
 
 //verification1
 router.get("/verification/:id", async (req, res) => {
-
+  try {
     const id = req.params.id;
     const hashedId = encryptId(id); // Convert id to a cryptographic hash
 
@@ -777,34 +777,45 @@ router.get("/verification/:id", async (req, res) => {
       const endorsedValue = results[0].endorsed;
 
       // Find the email corresponding to the endorsedValue
+      let emailFound = false;
       for (const account of accounts) {
         if (endorsedValue === account[0]) {
           email = account[1];
           console.log(email);
-
-          const pdfFileName = `rasa_${id}.pdf`;
-
-          const html = `
-            <h1>Rasa for Approval Email</h1>
-            <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
-          `;
-
-          // Update rasa_status
-          const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-          db1.query(updateSql, [`Step 1: Waiting for approval of ${email}`, id], (error, result) => {
-            if (error) {
-              console.error(error);
-              return res.status(500).send("Error updating rasa_status");
-            }
-            console.log(`rasa_status updated to waiting for email of ${email} for ID: ${id}`);
-            sendEmail(id, email, hashedId, pdfFileName, html, res);
-          });
+          emailFound = true;
           break; // Break the loop once email is found
         }
       }
+
+      if (!emailFound && (endorsedValue === "N/A" || endorsedValue === "")) {
+        // If email is not found and endorsedValue is "N/A" or empty, use default email
+        email = "miguelbaruc12@gmail.com";
+      }
+
+      const pdfFileName = `rasa_${id}.pdf`;
+
+      const html = `
+        <h1>Rasa for Approval Email</h1>
+        <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+      `;
+
+      // Update rasa_status
+      const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+      db1.query(updateSql, [`Step 1: Waiting for approval of ${email}`, id], (error, result) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send("Error updating rasa_status");
+        }
+        console.log(`rasa_status updated to waiting for email of ${email} for ID: ${id}`);
+        sendEmail(id, email, hashedId, pdfFileName, html, res);
+      });
     } else {
       console.log("No matching record found");
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while processing the request");
+  }
 });
 
 async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
