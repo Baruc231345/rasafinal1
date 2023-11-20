@@ -276,27 +276,6 @@ router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
   });
 });
 
-router.get("/ejsrasa_copy2/:id", (req, res) => {
-  const rasaID = req.params.id;
-  const universalId = req.session.universalId;
-  console.log(rasaID);
-  const query = "SELECT * FROM inputted_table WHERE id = ?";
-  db1.query(query, [rasaID], function (error, data) {
-    if (error) {
-      throw error;
-    } else {
-      if (data.length > 0) {
-        const inputted_table = data[0];
-        res.locals.rasaID = rasaID;
-        res.render("submitrasaCopy", { rasaID, inputted_table, universalId });
-      } else {
-        res.status(404).send("Rasa not found");
-      }
-    }
-  });
-  
-});
-
 router.get("/editUserView", adminMiddleware, (req, res) => {
   res.sendFile("editUserView.html", { root: "./public" });
 });
