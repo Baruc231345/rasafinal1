@@ -1154,7 +1154,7 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
   //const hashedId = encryptId(decryptedrasaID);
   let redirectToVerification2 = false;
   console.log("----------------------------------------")
-  console.log("/getSignature2")
+  console.log("/3 ")
   console.log("hashedId : ", hashedId );
   console.log("decryptedrasaID : ", decryptedrasaID );
   console.log("universalId : ", universalId);
