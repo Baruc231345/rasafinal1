@@ -740,7 +740,7 @@ const nodemailer = require("nodemailer");
 
 //verification1
 router.get("/verification/:id", async (req, res) => {
-  try {
+
     const id = req.params.id;
     const hashedId = encryptId(id); // Convert id to a cryptographic hash
 
@@ -805,10 +805,6 @@ router.get("/verification/:id", async (req, res) => {
     } else {
       console.log("No matching record found");
     }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("An error occurred while processing the request");
-  }
 });
 
 async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
