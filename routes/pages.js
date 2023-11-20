@@ -998,133 +998,143 @@ router.get("/verification2/:hashedId", async (req, res) => {
 
 //getSignature1
 router.get("/getSignature/:id", async (req, res) => {
-  const id = req.params.id;
-  const hashedId = decryptId(id); // Convert id to a cryptographic hash
-  const encryptedId = encryptId(hashedId);
-  const defaultSignatureid = 8;
-  let signature_id;
-  let redirectToVerification2 = false;
-  console.log("/getSignature")
-  console.log("id: ", id)
-  console.log("hashedId: ", hashedId)
-  console.log("encryptedId: ", encryptedId)
-const accounts = [
-    ["Information &amp; Communications Technology: People 1", 10],
-    ["Information &amp; Communications Technology: People 2", 10],
-    ["Business &amp; Management: People 1", 9],
-    ["Business &amp; Management: People 2", 9],
-    ["Hospitality Management: People 1", 11],
-    ["Hospitality Management: People 2", 11],
-  ];
-  const query = `SELECT endorsed FROM inputted_table WHERE id = ${hashedId}`;
-  db1.query(query, (error, results) => {
-    if (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Error fetching endorsed value" });
-    }
-    if (results.length > 0) {
-      const endorsedValue = results[0].endorsed;
-      for (const account of accounts) {
-        if (endorsedValue === account[0]) {
-          signature_id = account[1];
-          break;
+  try {
+    const id = req.params.id; // s21edcsasd5721321313
+    const hashedId = decryptId(id); // 484
+    const encryptedId = encryptId(hashedId); //s21edcsasd5721321313
+    const defaultSignatureid = 8;
+    let signature_id;
+    let redirectToVerification2 = false;
+    console.log("/getSignature");
+    console.log("id: ", id);
+    console.log("hashedId: ", hashedId);
+    console.log("encryptedId: ", encryptedId);
+    
+    const accounts = [
+      ["Information &amp; Communications Technology: People 1", 10],
+      ["Information &amp; Communications Technology: People 2", 10],
+      ["Business &amp; Management: People 1", 9],
+      ["Business &amp; Management: People 2", 9],
+      ["Hospitality Management: People 1", 11],
+      ["Hospitality Management: People 2", 11],
+    ];
+
+    try {
+      const query = `SELECT endorsed FROM inputted_table WHERE id = ${hashedId}`;
+      db1.query(query, (error, results) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).json({ error: "Error fetching endorsed value" });
         }
-      }
-      if (!signature_id && (endorsedValue === null || endorsedValue === "N/A")) {
-        signature_id = defaultSignatureid;
-      }
-      console.log(signature_id);
-    } else {
-      console.log("No matching record found");
-    }
-  });
-  const checkFormSignQuery = "SELECT form_sign FROM inputted_table WHERE id = ?";
-  db1.query(checkFormSignQuery, [hashedId], async (error, result) => {
-    if (error) {
-      console.error("Error checking form_sign:", error);
-      res.status(500).json({ error: "Error checking form_sign" });
-    }
+        if (results.length > 0) {
+          const endorsedValue = results[0].endorsed;
+          for (const account of accounts) {
+            if (endorsedValue === account[0]) {
+              signature_id = account[1];
+              break;
+            }
+          }
+          if (!signature_id && (endorsedValue === null || endorsedValue === "N/A")) {
+            signature_id = defaultSignatureid;
+          }
+          console.log(signature_id);
+        } else {
+          console.log("No matching record found");
+        }
+      });
 
-    const formSignValue = result[0] && result[0].form_sign;
- 
-    if (formSignValue) {
-      console.log("Already Signed");
-      return res.status(200).send("Already Signed");
-    }
+      const checkFormSignQuery = "SELECT form_sign FROM inputted_table WHERE id = ?";
+      db1.query(checkFormSignQuery, [hashedId], async (error, result) => {
+        if (error) {
+          console.error("Error checking form_sign:", error);
+          res.status(500).json({ error: "Error checking form_sign" });
+        }
 
-    const updateQuery =
-    "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = ?) WHERE id = ?";
-  const updateValues = [signature_id, hashedId];
-  
-  
-  db1.query(updateQuery, updateValues, async (error, result) => {
-      if (error) {
-        console.error("Error updating form_sign:", error);
-        return res.status(500).json({ error: "Error updating form_sign" });
-      }
+        const formSignValue = result[0] && result[0].form_sign;
 
-      console.log("form_sign updated successfully");
-      const puppeteer = require("puppeteer");
-      const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
+        if (formSignValue) {
+          console.log("Already Signed");
+          return res.status(200).send("Already Signed");
+        }
 
-      try {
-        const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
-        const page = await browser.newPage();
-        await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
-        await page.goto(url, { waitUntil: "load" });
-        const pdfBuffer = await page.pdf();
-        await browser.close();
+        const updateQuery =
+          "UPDATE inputted_table SET form_sign = (SELECT form_sign FROM signature_table2 WHERE id = ?) WHERE id = ?";
+        const updateValues = [signature_id, hashedId];
 
-        const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-        db1.query(updateSql, ["Step 3: First Signature Approved: sending email to miguelbaruc12@gmail.com", hashedId], (error, result) => {
+        db1.query(updateQuery, updateValues, async (error, result) => {
           if (error) {
-            console.error("An error occurred while updating rasa_status:", error);
-            return res.status(500).json({ error: "An error occurred while updating rasa_status" });
+            console.error("Error updating form_sign:", error);
+            return res.status(500).json({ error: "Error updating form_sign" });
           }
 
-          else {
-            console.log("rasa_status updated to First Signature Approved: waiting for approval of miguelbaruc12@gmail.com");
-            if (!redirectToVerification2) {
-              redirectToVerification2 = true;
-              res.redirect(`/verification2/${encryptedId}`);
-            }
-          }
-          
-          const selectInventoryQuery = "SELECT * FROM inventory_table WHERE id = ?";
-          db1.query(selectInventoryQuery, [hashedId], function (error, dataInventory) {
-            if (error) {
-              console.error("Error querying inventory_table:", error);
-              return res.status(500).json({ error: "Error querying inventory_table" });
-            }
+          console.log("form_sign updated successfully");
+          const puppeteer = require("puppeteer");
+          const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
 
-            const selectInputtedQuery = "SELECT * FROM inputted_table WHERE id = ?";
-            db1.query(selectInputtedQuery, [hashedId], function (error, dataInputted) {
+          try {
+            const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
+            const page = await browser.newPage();
+            await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
+            await page.goto(url, { waitUntil: "load" });
+            const pdfBuffer = await page.pdf();
+            await browser.close();
+
+            const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+            db1.query(updateSql, ["Step 3: First Signature Approved: sending email to miguelbaruc12@gmail.com", hashedId], (error, result) => {
               if (error) {
-                console.error("Error querying inputted_table:", error);
-                return res.status(500).json({ error: "Error querying inputted_table" });
+                console.error("An error occurred while updating rasa_status:", error);
+                return res.status(500).json({ error: "An error occurred while updating rasa_status" });
+              } else {
+                console.log("rasa_status updated to First Signature Approved: waiting for approval of miguelbaruc12@gmail.com");
+                if (!redirectToVerification2) {
+                  redirectToVerification2 = true;
+                  res.redirect(`/verification2/${encryptedId}`);
+                }
               }
 
-              if (dataInputted.length > 0 && dataInventory.length > 0) {
-                const datainputted = dataInputted[0];
-                const datainventory = dataInventory[0];
-                res.locals.rasaID = decryptedrasaID;
-                res.render("submitrasaCopy", {
-                  inputted_table: datainputted,
-                  inventory_table: datainventory,
-                  universalId,
+              const selectInventoryQuery = "SELECT * FROM inventory_table WHERE id = ?";
+              db1.query(selectInventoryQuery, [hashedId], function (error, dataInventory) {
+                if (error) {
+                  console.error("Error querying inventory_table:", error);
+                  return res.status(500).json({ error: "Error querying inventory_table" });
+                }
+
+                const selectInputtedQuery = "SELECT * FROM inputted_table WHERE id = ?";
+                db1.query(selectInputtedQuery, [hashedId], function (error, dataInputted) {
+                  if (error) {
+                    console.error("Error querying inputted_table:", error);
+                    return res.status(500).json({ error: "Error querying inputted_table" });
+                  }
+
+                  if (dataInputted.length > 0 && dataInventory.length > 0) {
+                    const datainputted = dataInputted[0];
+                    const datainventory = dataInventory[0];
+                    res.locals.rasaID = decryptedrasaID;
+                    res.render("submitrasaCopy", {
+                      inputted_table: datainputted,
+                      inventory_table: datainventory,
+                      universalId,
+                    });
+                  } else {
+                    console.log("res.redirect(`/verification2/${hashedId}`)");
+                  }
                 });
-              } else {
-                console.log("res.redirect(`/verification2/${hashedId}`)");
-              }
+              });
             });
-          });
+          } catch (error) {
+            console.error("An error occurred while generating PDF:", error);
+            return res.status(500).json({ error: "An error occurred while generating PDF" });
+          }
         });
-      } catch (error) {
-        console.error("An error occurred while generating PDF:", error);
-        return res.status(500).json({ error: "An error occurred while generating PDF" });
-      }
-    });
-  });
+      });
+    } catch (error) {
+      console.error("An error occurred:", error);
+      res.status(500).send("An error occurred while processing the request");
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+    res.status(500).send("An error occurred while processing the request");
+  }
 });
 
 
