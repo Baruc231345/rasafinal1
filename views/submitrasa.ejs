@@ -258,7 +258,7 @@
       participants: document.getElementById('participants').value,
       required_day: document.getElementById('required_day').value,
       purpose_objectives: document.getElementById('purpose_objectives').value,
-      endorsed: he.decode('<%= datainputted.endorsed ? datainputted.endorsed : "N/A" %>'),
+      endorsed: document.getElementById('endorsed').value,
       authenticated: 0,
     };
     console.log(rasatesting2 + "this is rasatesting2 json");
