@@ -749,7 +749,7 @@ router.get("/verification/:id", async (req, res) => {
     console.log("id : ", id);
     console.log("hashedId : ", hashedId);
 
-    let email = null;
+    let email = "zzqoguigjjpdygzarb@cazlp.com"; // default email 
 
     const accounts = [
       ["Information & Communications Technology: People 1", "fonzyacera03@gmail.com"],
