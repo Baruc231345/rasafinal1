@@ -21,6 +21,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true });
+app.use(csrfProtection);
 
 
 console.log(__dirname);
