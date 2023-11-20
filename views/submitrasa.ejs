@@ -220,6 +220,7 @@
     </form>
 </body>
 <script>
+  const he = require('he');
   const universalId = <%= universalId %>;
 
   if (universalId == null || universalId == '' ) {
@@ -257,7 +258,7 @@
       participants: document.getElementById('participants').value,
       required_day: document.getElementById('required_day').value,
       purpose_objectives: document.getElementById('purpose_objectives').value,
-      endorsed: '<%= datainputted.endorsed ? datainputted.endorsed : "N/A" %>',
+      endorsed: he.decode('<%= datainputted.endorsed ? datainputted.endorsed : "N/A" %>'),
       authenticated: 0,
     };
     console.log(rasatesting2 + "this is rasatesting2 json");
