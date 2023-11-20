@@ -19,6 +19,10 @@ const storage = multer.memoryStorage();
 router.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: true }));
 
+const csrf = require('csurf');
+const csrfProtection = csrf({ cookie: true });
+
+
 console.log(__dirname);
 
 const crypto = require('crypto');
@@ -122,7 +126,7 @@ const checkUniversalCodeMiddleware = (req, res, next) => {
 };
 
 
-router.get("/ejsrasa/:id", (req, res) => {
+router.get("/ejsrasa/:id", csrfProtection, (req, res) => {
   const rasaID = req.params.id;
   const universalId = req.session.universalId;
   console.log(rasaID);
@@ -134,9 +138,11 @@ router.get("/ejsrasa/:id", (req, res) => {
       if (data.length > 0) {
         const inputted_table = data[0];
         res.locals.rasaID = rasaID;
+        const csrfToken = req.csrfToken();
         res.render("submitrasa", {
           inputted_table: inputted_table,
           universalId,
+          csrfToken,
         });
       } else {
         res.status(404).send("Rasa not found");
