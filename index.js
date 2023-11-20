@@ -8,15 +8,13 @@ const session = require('express-session');
 
 const csrf = require('csurf');
 const csrfProtection = csrf({ cookie: true });
-app.use(csrfProtection);
-
-
 app.use(session({
   secret: "capstone", 
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false },
 }));
+app.use(csrfProtection);
 
 
 app.use(bodyParser.urlencoded({extended:true}))
