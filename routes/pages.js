@@ -259,6 +259,7 @@ router.get("/ejsrasa_copy/:id/:id2",csrfProtection, (req, res) => {
               const datainventory = data2[0];
               res.locals.rasaID = rasaID;
               const csrfToken = req.csrfToken();
+              console.log(csrfToken);
               res.render("submitrasa", {
                 rasaID,
                 datainputted,
