@@ -222,7 +222,7 @@
 <script>
   const universalId = <%= universalId %>;
 
-  if (universalId == null) {
+  if (universalId == null || universalId == '' ) {
     // Redirect to the logout page
     window.location.href = "/logout";
   }
