@@ -737,12 +737,13 @@ async function generatePDF(id) {
 }
 
 const nodemailer = require("nodemailer");
+
 //verification1
 router.get("/verification/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const hashedId = encryptId(id); // Convert id to a cryptographic hash
-    const nodemailer = require("nodemailer");
+
     console.log("----------------------------------------");
     console.log("/verification");
     console.log("id : ", id);
@@ -757,54 +758,57 @@ router.get("/verification/:id", async (req, res) => {
       ["Business & Management: People 2", "nekins213@gmail.com"],
       ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
       ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
-    ];try {
-      const results = await new Promise((resolve, reject) => {
-        const query = `SELECT endorsed FROM inputted_table WHERE id = ${id}`;
-        db1.query(query, (error, results) => {
-          if (error) {
-            console.error(error);
-            reject(error);
-          } else {
-            resolve(results);
-          }
-        });
-      });
-    
-      if (results.length > 0) {
-        const endorsedValue = results[0].endorsed;
-    
-        // Find the email corresponding to the endorsedValue
-        for (const account of accounts) {
-          if (endorsedValue === account[0]) {
-            const email = account[1];
-            console.log(email);
-    
-            const pdfFileName = `rasa_${id}.pdf`;
-    
-            const html = `
-              <h1>Rasa for Approval Email</h1>
-              <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
-            `;
-    
-            // Update rasa_status
-            const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-            db1.query(updateSql, [`Step 1: Waiting for approval of ${email}`, id], (error, result) => {
-              if (error) {
-                console.error(error);
-                return res.status(500).send("Error updating rasa_status");
-              }
-              console.log(`rasa_status updated to waiting for email of ${email} for ID: ${id}`);
-              sendEmail(id, email, hashedId, pdfFileName, html, res);
-            });
-          }
+    ];
+
+    const query = `SELECT endorsed FROM inputted_table WHERE id = ${id}`;
+
+    const results = await new Promise((resolve, reject) => {
+      db1.query(query, (error, results) => {
+        if (error) {
+          console.error(error);
+          reject(error);
+        } else {
+          resolve(results);
         }
-      } else {
-        console.log("No matching record found");
+      });
+    });
+
+    if (results.length > 0) {
+      const endorsedValue = results[0].endorsed;
+
+      // Find the email corresponding to the endorsedValue
+      for (const account of accounts) {
+        if (endorsedValue === account[0]) {
+          email = account[1];
+          console.log(email);
+
+          const pdfFileName = `rasa_${id}.pdf`;
+
+          const html = `
+            <h1>Rasa for Approval Email</h1>
+            <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+          `;
+
+          // Update rasa_status
+          const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+          db1.query(updateSql, [`Step 1: Waiting for approval of ${email}`, id], (error, result) => {
+            if (error) {
+              console.error(error);
+              return res.status(500).send("Error updating rasa_status");
+            }
+            console.log(`rasa_status updated to waiting for email of ${email} for ID: ${id}`);
+            sendEmail(id, email, hashedId, pdfFileName, html, res);
+          });
+        }
       }
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("An error occurred while processing the request");
+    } else {
+      console.log("No matching record found");
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while processing the request");
+  }
+});
 
 async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
   try {
@@ -840,7 +844,6 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
         return res.redirect("/rasaview");
       }
     );
-
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while sending the email");
