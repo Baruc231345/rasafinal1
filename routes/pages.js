@@ -235,7 +235,7 @@ router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
   });
 });
 
-router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
+router.get("/ejsrasa_copy/:id/:id2",csrfProtection, (req, res) => {
   const rasaID = req.params.id;
   const universalId = req.session.universalId;
 
@@ -258,11 +258,13 @@ router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
               const datainputted = data1[0];
               const datainventory = data2[0];
               res.locals.rasaID = rasaID;
+              const csrfToken = req.csrfToken();
               res.render("submitrasa", {
                 rasaID,
                 datainputted,
                 datainventory,
                 universalId,
+                csrfToken,
               });
             } else {
               res.status(404).send("Data from second table not found");
