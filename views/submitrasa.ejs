@@ -283,10 +283,9 @@
         const blackpanel_quantity = <%= datainventory.blackpanel_quantity || 0 %>;
         const whiteboard_quantity = <%= datainventory.whiteboard_quantity || 0 %>;
         const aircon = <%= datainventory.aircon || 0 %>;
-        const start_aircon = <%= datainventory.start_aircon || 0 %>;
-        const end_aircon = <%= datainventory.end_aircon || 0 %>;
+        const start_aircon = '<%= datainventory.start_aircon || "0:00:00" %>';
+        const end_aircon = '<%= datainventory.end_aircon || "0:00:00" %>';
         const other_quantity = '<%= datainventory.other_quantity || "N/A" %>';
-
         const inventory = {
           sound_system: sound_system_quantity > 0 ? 1 : 0,
           sound_system_quantity: sound_system_quantity,
