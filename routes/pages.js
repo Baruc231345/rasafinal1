@@ -1011,10 +1011,10 @@ router.get("/getSignature/:id", async (req, res) => {
     console.log("encryptedId: ", encryptedId);
     
     const accounts = [
-      ["Information &amp; Communications Technology: People 1", 10],
-      ["Information &amp; Communications Technology: People 2", 10],
-      ["Business &amp; Management: People 1", 9],
-      ["Business &amp; Management: People 2", 9],
+      ["Information &; Communications Technology: People 1", 10],
+      ["Information &; Communications Technology: People 2", 10],
+      ["Business &; Management: People 1", 9],
+      ["Business &; Management: People 2", 9],
       ["Hospitality Management: People 1", 11],
       ["Hospitality Management: People 2", 11],
     ];
