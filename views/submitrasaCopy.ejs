@@ -343,9 +343,15 @@
 
   var image1 = new Image();
   image1.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
-
   image1.onload = function() {
-    context.drawImage(image1, 0, 0, canvas.width, canvas.height);
+    // Scale the image to fit the canvas while maintaining aspect ratio
+    var scaleFactor = Math.min(canvas.width / image1.width, canvas.height / image1.height);
+    var newWidth = image1.width * scaleFactor;
+    var newHeight = image1.height * scaleFactor;
+    var x = (canvas.width - newWidth) / 2;
+    var y = (canvas.height - newHeight) / 2;
+
+    context.drawImage(image1, x, y, newWidth, newHeight);
   };
 
   // form_sign2
@@ -355,7 +361,14 @@
     var image2 = new Image();
     image2.src = '<%= datainputted.form_sign2 ? "data:image/png;base64," + datainputted.form_sign2.toString("base64") : "" %>';
     image2.onload = function() {
-      context2.drawImage(image2, 0, 0, canvas2.width, canvas2.height);
+      // Scale the image to fit the canvas while maintaining aspect ratio
+      var scaleFactor = Math.min(canvas2.width / image2.width, canvas2.height / image2.height);
+      var newWidth = image2.width * scaleFactor;
+      var newHeight = image2.height * scaleFactor;
+      var x = (canvas2.width - newWidth) / 2;
+      var y = (canvas2.height - newHeight) / 2;
+
+      context2.drawImage(image2, x, y, newWidth, newHeight);
     };
   }
 </script>
