@@ -6,15 +6,12 @@ const cookie = require("cookie-parser");
 const PORT = process.env.PORT;
 const session = require('express-session');
 
-const csrf = require('csurf');
-const csrfProtection = csrf({ cookie: true });
 app.use(session({
   secret: "capstone", 
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false },
 }));
-app.use(csrfProtection);
 
 
 app.use(bodyParser.urlencoded({extended:true}))
