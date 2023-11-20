@@ -799,6 +799,7 @@ router.get("/verification/:id", async (req, res) => {
             console.log(`rasa_status updated to waiting for email of ${email} for ID: ${id}`);
             sendEmail(id, email, hashedId, pdfFileName, html, res);
           });
+          break; // Break the loop once email is found
         }
       }
     } else {
