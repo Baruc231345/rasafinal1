@@ -232,6 +232,13 @@ router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
   const rasaID = req.params.id;
   const universalId = req.session.universalId;
 
+    // Check if universalId is null or empty
+    if (universalId == null || universalId === '') {
+      // Redirect to the logout page
+      return res.redirect("/logout");
+    }
+  
+
   // Define queries for both tables
   const query1 = "SELECT * FROM temporary_inputted_table WHERE id = ?";
   const query2 =
