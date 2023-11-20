@@ -19,11 +19,6 @@ const storage = multer.memoryStorage();
 router.use(express.static(__dirname + "/public"));
 app.use(express.urlencoded({ extended: true }));
 
-const csrf = require('csurf');
-const csrfProtection = csrf({ cookie: true });
-app.use(csrfProtection);
-
-
 console.log(__dirname);
 
 const crypto = require('crypto');
@@ -127,7 +122,7 @@ const checkUniversalCodeMiddleware = (req, res, next) => {
 };
 
 
-router.get("/ejsrasa/:id", csrfProtection, (req, res) => {
+router.get("/ejsrasa/:id", (req, res) => {
   const rasaID = req.params.id;
   const universalId = req.session.universalId;
   console.log(rasaID);
@@ -139,11 +134,9 @@ router.get("/ejsrasa/:id", csrfProtection, (req, res) => {
       if (data.length > 0) {
         const inputted_table = data[0];
         res.locals.rasaID = rasaID;
-        const csrfToken = req.csrfToken();
         res.render("submitrasa", {
           inputted_table: inputted_table,
           universalId,
-          csrfToken,
         });
       } else {
         res.status(404).send("Rasa not found");
@@ -235,9 +228,7 @@ router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
   });
 });
 
-const usedCsrfTokens = new Set();
-
-router.get("/ejsrasa_copy/:id/:id2", csrfProtection, (req, res) => {
+router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
   const rasaID = req.params.id;
   const universalId = req.session.universalId;
 
@@ -260,47 +251,22 @@ router.get("/ejsrasa_copy/:id/:id2", csrfProtection, (req, res) => {
               const datainputted = data1[0];
               const datainventory = data2[0];
               res.locals.rasaID = rasaID;
-
-              // Set cache control headers
-              res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate');
-              res.header('Pragma', 'no-cache');
-              res.header('Expires', '-1');
-
-              const csrfToken = req.csrfToken();
-              usedCsrfTokens.add(csrfToken); // Mark the token as used
-
-              console.log(csrfToken);
               res.render("submitrasa", {
                 rasaID,
                 datainputted,
                 datainventory,
                 universalId,
-                csrfToken,
               });
             } else {
-              res.status(404).send("Data from the second table not found");
+              res.status(404).send("Data from second table not found");
             }
           }
         });
       } else {
-        res.status(404).send("Data from the first table not found");
+        res.status(404).send("Data from first table not found");
       }
     }
   });
-});
-
-// Middleware to check if the CSRF token has been used
-router.post("/api/rasatesting2", csrfProtection, (req, res, next) => {
-  const csrfToken = req.body._csrf;
-
-  if (usedCsrfTokens.has(csrfToken)) {
-    // If the token has already been used, reject the request
-    res.status(403).send("CSRF token already used");
-  } else {
-    // Proceed with the next middleware (or route handler)
-    usedCsrfTokens.add(csrfToken); // Mark the token as used
-    next();
-  }
 });
 
 router.get("/ejsrasa_copy2/:id", (req, res) => {
