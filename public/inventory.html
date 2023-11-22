@@ -289,47 +289,71 @@ function fetchData() {
 
       // Create the expand button and content
       function createExpandButton(table, eventDateData) {
-        const expandButton = document.createElement("button");
-        expandButton.textContent = "Expand";
-        expandButton.classList.add("expand-button");
+  const expandButton = document.createElement("button");
+  expandButton.textContent = "Expand";
+  expandButton.classList.add("expand-button");
 
-        const expandContent = document.createElement("div");
-        expandContent.classList.add("expand-content");
+  const expandContent = document.createElement("div");
+  expandContent.classList.add("expand-content");
 
-        const totalEquipmentQuantities =
-          calculateTotalEquipmentQuantities(eventDateData);
+  const totalEquipmentQuantities =
+    calculateTotalEquipmentQuantities(eventDateData);
 
-        const equipmentList = document.createElement("ul");
+  const equipmentList = document.createElement("ul");
 
-        for (const key in totalEquipmentQuantities) {
-          if (totalEquipmentQuantities.hasOwnProperty(key)) {
-            const listItem = document.createElement("li");
-            listItem.textContent = `${
-              key.charAt(0).toUpperCase() + key.slice(1)
-            }: ${totalEquipmentQuantities[key]}`;
-            equipmentList.appendChild(listItem);
-          }
-        }
+  // Add MIS Equipments information
+  const misEquipmentsItem = document.createElement("li");
+  misEquipmentsItem.textContent = `MIS Equipment:`;
+  const misQuantitiesList = document.createElement("ul");
 
-        expandContent.appendChild(equipmentList);
+  if (totalEquipmentQuantities.mis !== undefined) {
+    const misListItem = document.createElement("li");
+    misListItem.textContent = `Chairs: ${totalEquipmentQuantities.chairs}`;
+    misQuantitiesList.appendChild(misListItem);
 
-        expandButton.addEventListener("click", () => {
-          if (expandContent.style.display === "block") {
-            expandContent.style.display = "none";
-          } else {
-            expandContent.style.display = "block";
-          }
-        });
+    const tablesListItem = document.createElement("li");
+    tablesListItem.textContent = `Tables: ${totalEquipmentQuantities.tables}`;
+    misQuantitiesList.appendChild(tablesListItem);
 
-        const headerRow = table.querySelector("thead tr");
-        if (headerRow) {
-          const th = document.createElement("th");
-          th.appendChild(expandButton);
-          headerRow.appendChild(th);
-        }
+    const blackpanelListItem = document.createElement("li");
+    blackpanelListItem.textContent = `Blackpanel: ${totalEquipmentQuantities.blackpanel}`;
+    misQuantitiesList.appendChild(blackpanelListItem);
 
-        table.appendChild(expandContent);
-      }
+    const whiteboardListItem = document.createElement("li");
+    whiteboardListItem.textContent = `Whiteboard: ${totalEquipmentQuantities.whiteboard}`;
+    misQuantitiesList.appendChild(whiteboardListItem);
+
+    const otherListItem = document.createElement("li");
+    otherListItem.textContent = `Other: ${totalEquipmentQuantities.other}`;
+    misQuantitiesList.appendChild(otherListItem);
+  } else {
+    const noDataItem = document.createElement("li");
+    noDataItem.textContent = "No MIS Equipment data available";
+    misQuantitiesList.appendChild(noDataItem);
+  }
+
+  misEquipmentsItem.appendChild(misQuantitiesList);
+  equipmentList.appendChild(misEquipmentsItem);
+
+  expandContent.appendChild(equipmentList);
+
+  expandButton.addEventListener("click", () => {
+    if (expandContent.style.display === "block") {
+      expandContent.style.display = "none";
+    } else {
+      expandContent.style.display = "block";
+    }
+  });
+
+  const headerRow = table.querySelector("thead tr");
+  if (headerRow) {
+    const th = document.createElement("th");
+    th.appendChild(expandButton);
+    headerRow.appendChild(th);
+  }
+
+  table.appendChild(expandContent);
+}
 
       // Calculate total equipment quantities
       function calculateTotalEquipmentQuantities(eventDateData) {
