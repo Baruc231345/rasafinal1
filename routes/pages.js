@@ -331,7 +331,7 @@ app.get("/fetch-data", (req, res) => {
   });
 });
 
-router.get("/inventory12", (req, res) => {
+router.get("/inventory", (req, res) => {
   res.sendFile("inventory.html", { root: "./public/" });
 });
 

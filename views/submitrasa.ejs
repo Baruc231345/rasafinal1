@@ -351,6 +351,7 @@
           .then(response => response.json())
           .then(data => {
             alert("Your Rasa Submission is successfully submitted!");
+            document.getElementById('btnSubmit').disabled = true;
             setTimeout(function () {
               window.location.href = `/rasaview/${universalId}`;
             }, 3000);
