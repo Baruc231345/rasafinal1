@@ -287,8 +287,7 @@ function fetchData() {
         }
       }
 
-      // Create the expand button and content
-      function createExpandButton(table, eventDateData) {
+      // Create the expand button and contentfunction createExpandButton(table, eventDateData) {
   const expandButton = document.createElement("button");
   expandButton.textContent = "Expand";
   expandButton.classList.add("expand-button");
@@ -301,21 +300,10 @@ function fetchData() {
   const equipmentList = document.createElement("ul");
 
   // Add MIS Equipment information
-  const misEquipmentItem = document.createElement("li");
-  misEquipmentItem.textContent = `Title: MIS Equipment`;
+  addEquipmentSection(equipmentList, "MIS Equipment", totalEquipmentQuantities, ["sound_system", "microphone", "lcd", "widescreen"]);
 
-  const misQuantitiesList = document.createElement("ul");
-
-  for (const key in totalEquipmentQuantities) {
-    if (totalEquipmentQuantities.hasOwnProperty(key)) {
-      const listItem = document.createElement("li");
-      listItem.textContent = `${key.charAt(0).toUpperCase() + key.slice(1)}: ${totalEquipmentQuantities[key]}`;
-      misQuantitiesList.appendChild(listItem);
-    }
-  }
-
-  misEquipmentItem.appendChild(misQuantitiesList);
-  equipmentList.appendChild(misEquipmentItem);
+  // Add BAG Equipment information
+  addEquipmentSection(equipmentList, "BAG Equipment", totalEquipmentQuantities, ["chairs", "tables", "blackpanel", "whiteboard", "other"]);
 
   expandContent.appendChild(equipmentList);
 
@@ -337,9 +325,30 @@ function fetchData() {
   table.appendChild(expandContent);
 }
 
+// Function to add equipment section to the list
+function addEquipmentSection(equipmentList, title, quantities, keys) {
+  const equipmentItem = document.createElement("li");
+  equipmentItem.textContent = `TITLE: ${title}`;
+  const quantitiesList = document.createElement("ul");
+
+  keys.forEach((key) => {
+    const listItem = document.createElement("li");
+    listItem.textContent = `${key}: ${quantities[key]}`;
+    quantitiesList.appendChild(listItem);
+  });
+
+  equipmentItem.appendChild(quantitiesList);
+  equipmentList.appendChild(equipmentItem);
+}
+
       // Calculate total equipment quantities
       function calculateTotalEquipmentQuantities(eventDateData) {
         let totalEquipmentQuantities = {
+          sound_system: 0,
+          microphone: 0,
+          lcd: 0,
+          widescreen: 0,
+
           chairs: 0,
           tables: 0,
           blackpanel: 0,
@@ -348,13 +357,18 @@ function fetchData() {
         };
 
         eventDateData.forEach((row) => {
-          // Add quantities to the total
+          // MIS 
+          totalEquipmentQuantities.sound_system += row.sound_system_quantity || 0;
+          totalEquipmentQuantities.microphone += row.microphone_quantity || 0;
+          totalEquipmentQuantities.lcd += row.lcd_quantity || 0;
+          totalEquipmentQuantities.widescreen += row.widescreen_quantity || 0;
+          
+          // BAG
           totalEquipmentQuantities.chairs += row.chair_quantity || 0;
           totalEquipmentQuantities.tables += row.table_quantity || 0;
           totalEquipmentQuantities.blackpanel += row.blackpanel_quantity || 0;
           totalEquipmentQuantities.whiteboard += row.whiteboard_quantity || 0;
         });
-
         return totalEquipmentQuantities;
       }
     </script>
