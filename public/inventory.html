@@ -324,7 +324,6 @@ function fetchData() {
         const headerRow = table.querySelector("thead tr");
         if (headerRow) {
           const th = document.createElement("th");
-          th.textContent = "Expand";
           th.appendChild(expandButton);
           headerRow.appendChild(th);
         }
