@@ -17,6 +17,26 @@ const rasatesting2 = async (req, res,) => {
     const end_date = eventDate.toISOString().split("T")[0];
 
   try {
+
+    const overlappingEvents = await new Promise((resolve, reject) => {
+      db1.query(
+        'SELECT * FROM calendar_table WHERE event_day = ? AND ((? >= start_time AND ? < end_time) OR (? > start_time AND ? <= end_time) OR (? <= start_time AND ? >= end_time))',
+        [event_day, start_time, start_time, end_time, end_time, start_time, end_time],
+        (error, results) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+
+     // If there are overlapping events, return an error
+     if (overlappingEvents.length > 0) {
+      return res.status(400).json({ error: 'Overlapping event found in calendar_table. Please choose a different time.' });
+    }
+
     const results = await new Promise((resolve, reject) => {
       db1.query('INSERT INTO inputted_table SET ?', {
         full_name: full_name,
