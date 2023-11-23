@@ -20,7 +20,7 @@ const rasatesting2 = async (req, res,) => {
 
     const overlappingEvents = await new Promise((resolve, reject) => {
       db1.query(
-        'SELECT * FROM calendar_table WHERE event_day = ? AND ((? >= start_time AND ? < end_time) OR (? > start_time AND ? <= end_time) OR (? <= start_time AND ? >= end_time))',
+        'SELECT * FROM calendar_input WHERE event_day = ? AND ((? >= start_time AND ? < end_time) OR (? > start_time AND ? <= end_time) OR (? <= start_time AND ? >= end_time))',
         [event_day, start_time, start_time, end_time, end_time, start_time, end_time],
         (error, results) => {
           if (error) {
