@@ -67,7 +67,7 @@ const rasatesting2 = async (req, res,) => {
 
     console.log(results + "OFFICIAL OFFICIAL OFFICIAL OFFICIAL OFFICIAL OFFICIAL OFFICIALOFFICIAL.js"); // Check the entire results object
     const insertedId = results.insertId; // Retrieve the generated ID
-    console.log(insertedId); // Verify the generated ID
+    console.log(insertedId + "rasatesting2.js line 70"); // Verify the generated ID
     return res.json({
       status: "success",
       id: insertedId,
