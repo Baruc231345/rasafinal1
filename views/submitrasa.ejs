@@ -272,6 +272,7 @@
       .then(response => response.json())
       .then(data => {
         const insertedId = data.id;
+        console.log(insertedId + "submitrasa.ejs line 275")
 
         const sound_system_quantity = <%= datainventory.sound_system_quantity || 0 %>;
         const microphone_quantity = <%= datainventory.microphone_quantity || 0 %>;
