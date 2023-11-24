@@ -688,3 +688,9 @@ input[type="checkbox"]:checked::before {
 .required_day{
     width: 50px;
 }
+.classroom_number {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 50%;
+  }
