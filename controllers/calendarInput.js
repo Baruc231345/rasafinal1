@@ -30,6 +30,28 @@ const calendarInput = async (req, res) => {
       });
     }
 
+    // Insert into calendar_input2
+    await new Promise((resolve, reject) => {
+      db1.query(
+        'INSERT INTO calendar_input2 SET ?',
+        {
+          id: id,
+          event_name: event_name,
+          event_day: event_day,
+          event_description: event_description,
+          required_day: required_day,
+        },
+        (error, results) => {
+          if (error) {
+            console.error("Error:", error);
+            reject(error);
+          } else {
+            resolve(results);
+          }
+        }
+      );
+    });
+
     res.status(201).json({ message: "Data inserted successfully" });
   } catch (error) {
     console.error("Error:", error);
