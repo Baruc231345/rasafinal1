@@ -202,15 +202,24 @@
                     </div>
                     <div class="row6">
                       <label for="myRadioId3" class="radio">
-                        <input type="checkbox" name="myRadioField" id="myRadioId3" class="radio_input">
+                        <input type="checkbox" name="myRadioField" id="myRadioId3" class="radio_input" onchange="toggleClassroomNumber()">
                         <div class="radio_radio"></div>
                         Classrooms
                       </label>
-                      <div class="classroom_number flex-container">
+                      <div class="classroom_number flex-container" style="display: none;">
                         <label for="room" style="padding-left: 20px;">Room#</label>
-                        <input type="text" id="classroom_number" style="margin-left: 2px;height: 30.818182px;">
+                        <input type="text" id="classroom_number" style="margin-left: 2px; height: 30.818182px;">
                       </div>
                     </div>
+                    
+                    <script>
+                      function toggleClassroomNumber() {
+                        const checkbox = document.getElementById("myRadioId3");
+                        const classroomNumberContainer = document.querySelector(".classroom_number");
+                    
+                        classroomNumberContainer.style.display = checkbox.checked ? "flex" : "none";
+                      }
+                    </script>
                   </div>
                 </div>
                 <div class="details personal">
