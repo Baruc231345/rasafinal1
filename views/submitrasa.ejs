@@ -38,7 +38,8 @@
               <input type="text" id="requestor_type" value="<%= datainputted.requestor_type %>" disabled>
             </div>
 
-            <% if (datainputted.requestor_information==="Student" || datainputted.requestor_information==="Student Leader" ) { %>
+            <% if (datainputted.requestor_information==="Student" ||
+              datainputted.requestor_information==="Student Leader" ) { %>
               <div class="input-field">
                 <label>Endorsed by</label>
                 <input type="text" id="endorsed" value="<%= datainputted.endorsed %>" disabled>
@@ -123,13 +124,13 @@
                                     <li><span class="check-symbol">✔</span> <span
                                         class="selected-facility">Gymnasium</span></li>
                                     <% } %>
-                                      <% if (datainventory.classroom===1) { %>
+                                      <% if (datainventory.kitchen===1) { %>
                                         <li><span class="check-symbol">✔</span> <span
-                                            class="selected-facility">Classroom</span></li>
+                                            class="selected-facility">Kitchen</span></li>
                                         <% } %>
-                                          <% if (datainventory.kitchen===1) { %>
+                                          <% if (datainventory.classroom===1) { %>
                                             <li><span class="check-symbol">✔</span> <span
-                                                class="selected-facility">Kitchen</span></li>
+                                                class="selected-facility">Classroom</span></li>
                                             <% } %>
             </ul>
           </div>
@@ -222,7 +223,7 @@
 <script>
   const universalId = <%= universalId %>;
 
-  if (universalId == null || universalId == '' ) {
+  if (universalId == null || universalId == '') {
     // Redirect to the logout page
     window.location.href = "/logout";
   }
