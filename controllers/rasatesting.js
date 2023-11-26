@@ -22,6 +22,7 @@ const rasatesting = async (req, res) => {
   eventDate.setDate(eventDate.getDate() + Number(required_day));
   const end_date = eventDate.toISOString().split("T")[0];
 
+  console.log("----------------------------------------")
   console.log(full_name);
   console.log(event_name);
   console.log(event_description);
@@ -33,6 +34,11 @@ const rasatesting = async (req, res) => {
   console.log(requestor_type);
   console.log(contact_number);
   console.log(purpose_objectives);
+  console.log("----------------------------------------")
+  console.log("")
+  console.log("")
+  console.log("")
+
 
   db1.query(
     'INSERT INTO temporary_inputted_table SET ?',

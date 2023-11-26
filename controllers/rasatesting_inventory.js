@@ -2,7 +2,7 @@ const db1 = require("../routes/rasa-db");
 
 const rasatesting2_inventory = async (req, res,) => {
   const { auditorium, foodandbeverage, multihall, dancestudio, 
-    gym, classroom, kitchen, mainlobby, rasa_inventory_id, sound_system, 
+    gym, classroom, classroom_number, kitchen, mainlobby, rasa_inventory_id, sound_system, 
     sound_system_quantity, microphone, microphone_quantity, lcd, lcd_quantity,
     widescreen, widescreen_quantity, chair, chair_quantity, table_input, table_quantity,
     other, other_quantity, blackpanel, blackpanel_quantity, whiteboard, whiteboard_quantity, aircon, 
@@ -25,6 +25,7 @@ const rasatesting2_inventory = async (req, res,) => {
         dancestudio: dancestudio,
         gym: gym,
         classroom: classroom,
+        classroom_number: classroom_number,
         kitchen: kitchen,
         mainlobby: mainlobby,
         sound_system: soundSystemValue,

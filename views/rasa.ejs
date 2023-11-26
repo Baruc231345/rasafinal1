@@ -69,7 +69,7 @@
                       <option value="Student Leader">Student Leader</option>
                       <option value="Student">Student</option>
                       <option value="Teacher">Teacher</option>
-                      <option value="Admin">Staff</option>
+                      <option value="Staff">Staff</option>
                     </select>
                   </div>
                 </div>
@@ -449,7 +449,8 @@
         multihall: document.getElementById("myRadioId1").checked ? 1 : 0,
         gym: document.getElementById("myRadioId2").checked ? 1 : 0,
         kitchen: document.getElementById("myRadioId6").checked ? 1 : 0,
-        classroom: document.getElementById("myRadioId3").checked ? 1 : 0
+        classroom: document.getElementById("myRadioId3").checked ? 1 : 0,
+        classroom_number: document.getElementById("classroom_number").value ? document.getElementById("classroom_number").value : null
       };
 
       const inventory2 = {

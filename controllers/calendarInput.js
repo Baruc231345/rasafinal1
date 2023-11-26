@@ -1,7 +1,7 @@
 const db1 = require("../routes/rasa-db");
 
 const calendarInput = async (req, res) => {
-  const { id, event_name, event_day, event_description, required_day } = req.body;
+  const { id, event_name, event_day, event_description, required_day, start_time, end_time } = req.body;
 
   try {
     for (let i = 0; i < required_day; i++) {
@@ -18,6 +18,8 @@ const calendarInput = async (req, res) => {
             event_day: formattedEventDay,
             event_description: event_description,
             required_day: required_day,
+            start_time: start_time,
+            end_time: end_time,
           },
           (error, results) => {
             if (error) {
@@ -40,6 +42,8 @@ const calendarInput = async (req, res) => {
           event_day: event_day,
           event_description: event_description,
           required_day: required_day,
+          start_time: start_time,
+          end_time: end_time,
         },
         (error, results) => {
           if (error) {
