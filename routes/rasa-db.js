@@ -6,6 +6,38 @@ const db1 = sql.createConnection({
     password: process.env.DATABASE_PASSWORD1,
     database: process.env.DATABASE1
 })
+
+function getTemporaryInputtedRowCount(callback) {
+    const query = "SELECT COUNT(*) as rowCount FROM temporary_inputted_table";
+    pool.query(query, (err, results) => {
+      if (err) {
+        return callback(err, null);
+      }
+      const rowCount = results[0].rowCount;
+      callback(null, rowCount);
+    });
+  }
+  
+  function resetAndDeleteTemporaryInputtedTable(callback) {
+    const resetQuery = "ALTER TABLE temporary_inputted_table AUTO_INCREMENT = 1";
+    const deleteQuery = "DELETE FROM temporary_inputted_table";
+    
+    pool.query(resetQuery, (resetErr) => {
+      if (resetErr) {
+        return callback(resetErr);
+      }
+  
+      pool.query(deleteQuery, (deleteErr) => {
+        if (deleteErr) {
+          return callback(deleteErr);
+        }
+  
+        callback(null);
+      });
+    });
+  }
+
+
 /*
 const db1 = sql.createConnection({
     host: process.env.DATABASE_HOST1,
@@ -40,4 +72,8 @@ function createTablesIfNotExist()
     });
 }
 */
-module.exports = db1;
+module.exports = {
+    getTemporaryInputtedRowCount,
+    resetAndDeleteTemporaryInputtedTable,
+    db1
+};

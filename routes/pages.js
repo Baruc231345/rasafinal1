@@ -435,7 +435,7 @@ router.post("/api/updateAuthenticated/:id", (req, res) => {
 router.get("/rasaview/:id", checkUniversalCodeMiddleware, (req, res) => {
   const hashedId = req.params.id;
   const universalId = req.session.universalId;
-  const encryptedId = encryptId(hashedId); // Encrypt the hashedId
+  const encryptedId = encryptId(hashedId); 
   const originalId = decryptId(encryptedId);
 
   const itemsPerPage = 15;
@@ -607,7 +607,7 @@ router.get("/pdf2/:encryptedId", async (req, res) => {
   try {
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
-    await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
+    await page.setViewport({ width: 941, height: 700 });
     await page.goto(url, { waitUntil: "load" });
     const pdfBuffer = await page.pdf();
     await browser.close();
@@ -1248,89 +1248,6 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
     });
   });
 });
-
-/*
-router.get("/getSignature2/:hashedId", (req, res) => {
-  const rasaID = req.params.hashedId;
-  const originalId = decryptId(rasaID);
-  const decryptedrasaID = decryptId(rasaID);
-  const hashedId = encryptId(originalId);
-
-  const query1 = "SELECT * FROM inputted_table WHERE id = ?";
-  const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
-
-
-  console.log("This is getSignature2 route")
-  console.log(rasaID);
-  console.log(originalId);
-  console.log("this is headhs " + decryptedrasaID);
-  
-
-  const checkFormSignQuery = "SELECT form_sign2 FROM inputted_table WHERE id = ?";
-
-  db1.query(checkFormSignQuery, [decryptedrasaID], async (error, result) => {
-    if (error) {
-      console.error("Error checking form_sign:", error);
-      res.status(500).json({ error: "Error checking form_sign" });
-    }
-
-    const formSignValue = result[0] && result[0].form_sign;
-    const formSignValue2 = result[0] && result[0].form_sign2;
-
-    if (formSignValue && formSignValue2 ) {
-      console.log("Already Signed");
-      return res.status(200).send("Signed 1 and Signature 2 is Already Signed");
-    }
-
-  const updateQuery =
-    "UPDATE inputted_table SET form_sign2 = (SELECT form_sign FROM signature_table2 WHERE id = 2) WHERE id = ?";
-
-  db1.query(updateQuery, [decryptedrasaID], function (error, result) {
-    if (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Error updating form_sign2" });
-    } else {
-      console.log("form_sign2 updated successfully");
-
-      const updateSql =
-        "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
-      db1.query(
-        updateSql,
-        [`Step 6: Second Signatuure is done, sending email to @gmail.com`, decryptedrasaID],
-        (error, result) => {
-          if (error) {
-            console.error(error);
-            return res
-              .status(500)
-              .send("An error occurred while updating rasa_status");
-          } else {
-            console.log("All Signature Approved");
-            const selectQuery = "SELECT * FROM inputted_table WHERE id = ?";
-            db1.query(selectQuery, [rasaID], function (error, data) {
-              if (error) {
-                throw error;
-              } else {
-                if (data.length > 0) {
-                  const inputted_table = data[0];
-                  res.locals.rasaID = decryptedrasaID;
-                  res.render("submitrasaCopy", {
-                    rasaID: decryptedrasaID,
-                    inputted_table: inputted_table,
-                    universalId,
-                  });
-                } else {
-                  res.status(404).send("Rasa not found");
-                }
-              }
-            });
-          }
-        }
-      );
-    }
-  });
-});
-});
-*/
 
 router.get("/api/calendarFinal", (req, res) => {
   const query =
