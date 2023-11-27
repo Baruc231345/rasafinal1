@@ -435,6 +435,8 @@ router.post("/api/updateAuthenticated/:id", (req, res) => {
 router.get("/rasaview/:id", checkUniversalCodeMiddleware, (req, res) => {
   const hashedId = req.params.id;
   const universalId = req.session.universalId;
+
+  
   const encryptedId = encryptId(hashedId); 
   const originalId = decryptId(encryptedId);
 
@@ -551,13 +553,13 @@ router.get("/editUserView/:id", (req, res) => {
 router.get("/pdf1/:id", async (req, res) => {
   const puppeteer = require("puppeteer");
   const rasaID = req.params.id;
-  //const url = `http://localhost:3005/ejsrasaVanilla/${rasaID}`;
-  const url = `http://154.41.254.18:3306/ejsrasaVanilla/${rasaID}`;
+  const url = `http://localhost:3005/ejsrasaVanilla/${rasaID}`;
+  //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${rasaID}`;
 
   try {
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
     const page = await browser.newPage();
-    await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
+    await page.setViewport({ width: 941, height: 700 }); // Wid
     await page.goto(url, { waitUntil: "load" });
     const pdfBuffer = await page.pdf();
     await browser.close();
@@ -601,8 +603,8 @@ router.get("/pdf2/:encryptedId", async (req, res) => {
     return res.status(400).send("Invalid encrypted ID");
   }
 
-  //const url = `http://localhost:3005/ejsrasaVanilla/${decryptedId}`;
-  const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedId}`;
+  const url = `http://localhost:3005/ejsrasaVanilla/${decryptedId}`;
+  //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedId}`;
 
   try {
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
@@ -713,7 +715,8 @@ router.get("/approve/:id", (req, res) => {
 
 async function generatePDF(id) {
   const puppeteer = require("puppeteer");
-  const url = `http://154.41.254.18:3306/ejsrasaVanilla/${id}`;
+  const url = `http://localhost:3005/ejsrasaVanilla/${id}`;
+  //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${id}`;
 
   try {
     const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
@@ -739,12 +742,15 @@ async function generatePDF(id) {
 }
 
 const nodemailer = require("nodemailer");
+const { hash } = require("bcryptjs");
 
 // verification1
 router.get("/verification/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const hashedId = encryptId(id); // Convert id to a cryptographic hash
+    const number = 1;
+    const encryptedNumber = encryptId(number);
 
     console.log("----------------------------------------");
     console.log("/verification");
@@ -798,7 +804,8 @@ router.get("/verification/:id", async (req, res) => {
 
       const html = `
         <h1>Rasa for Approval Email</h1>
-        <a href="http://154.41.254.18:3306/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+        <a href="http://localhost:3005/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
+        <a href="http://localhost:3005/voidRasa/${hashedId}/${encryptedNumber}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Void Rasa</a>
       `;
 
       // Update rasa_status
@@ -859,6 +866,61 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
     res.status(500).send("An error occurred while sending the email");
   }
 }
+
+router.get("/voidRasa/:hashedId/:encryptedNumber", async (req, res)=> {
+
+  function decryptId(encryptedId) {
+    const decipher = crypto.createDecipheriv('aes-256-cbc', encryptionKey, iv);
+    let decryptedId = decipher.update(encryptedId, 'hex', 'utf8');
+    decryptedId += decipher.final('utf8');
+    return decryptedId;
+  }
+
+  const hashedId = req.params.hashedId // 12duvas76edd51231
+  const encryptedNumber = req.params.encryptedNumber // dsasdase21231
+  
+  const decryptedId = decryptId(hashedId) // 406
+  const decryptedNumber = decryptId(encryptedNumber) // 1
+
+  console.log("------------------------------")
+  console.log("----voidRasa------")
+  console.log(hashedId)
+  console.log(encryptedNumber)
+  console.log(decryptedId)
+  console.log(decryptedNumber)
+
+  const query1 = "SELECT * FROM inputted_table WHERE id = ?";
+  const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
+  db1.query(query1, [decryptedId], (error, data1) => {
+    if (error) {
+      throw error;
+    } else {
+      if (data1.length > 0) {
+        db1.query(query2, [decryptedId], (error, data2) => {
+          if (error) {
+            console.error("Error fetching data from inventory_table:", error); 
+            throw error;
+          } else {
+            if (data2.length > 0) {
+              const datainputted = data1[0];
+              const datainventory = data2[0];
+              res.render("submitrasaCopy", {
+                datainputted,
+                datainventory,
+                decryptedNumber
+              });
+            } else {
+              res.status(404).send("Data from second table not found");
+            }
+          }
+        });
+      } else {
+        res.status(404).send("Data from first table not found");
+      }
+    }
+  });
+
+});
 
 router.get("/verification2/:hashedId", async (req, res) => {
 
@@ -1079,7 +1141,8 @@ router.get("/getSignature/:id", async (req, res) => {
 
           console.log("form_sign updated successfully");
           const puppeteer = require("puppeteer");
-          const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
+          const url = `http://localhost:3005/ejsrasaVanilla/${hashedId}`;
+          //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
 
           try {
             const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
@@ -1185,7 +1248,8 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
 
       console.log("form_sign updated successfully");
       const puppeteer = require("puppeteer");
-      const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedrasaID}`;
+      const url = `http://localhost:3005/ejsrasaVanilla/${decryptedrasaID}`;
+      //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedrasaID}`;
 
       try {
         const browser = await puppeteer.launch({ headless: true, args: ['--no-sandbox'] });
