@@ -13,32 +13,8 @@ app.use(session({
   cookie: { secure: false },
 }));
 
+
 app.use(bodyParser.urlencoded({extended:true}))
-
-app.use((req, res, next) => {
-  db.getTemporaryInputtedRowCount((err, rowCount) => {
-    if (err) {
-      console.error("Error checking temporary_inputted_table row count:", err);
-      return next(err);
-    }
-
-    if (rowCount >= 100) {
-      // If there are 100 or more rows in temporary_inputted_table, reset and delete
-      db.resetAndDeleteTemporaryInputtedTable((resetErr) => {
-        if (resetErr) {
-          console.error("Error resetting and deleting temporary_inputted_table:", resetErr);
-          return next(resetErr);
-        }
-
-        console.log("temporary_inputted_table reset and content deleted.");
-        next();
-      });
-    } else {
-      // Continue to the next middleware or route
-      next();
-    }
-  });
-});
 
 app.get("/dashboardRegular/css/dashboard1.css", (req, res) => {
   res.sendFile(__dirname + "/public/css/dashboard1.css");
