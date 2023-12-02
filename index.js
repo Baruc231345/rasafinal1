@@ -82,6 +82,19 @@ app.get("/ejsrasa_copy/:id1/css/rasa.css", (req, res) => {
     res.sendFile(__dirname + "/public/css/rasa.css");
   });
 
+  app.get("/voidRasa/:hashedId/:encryptedNumber/css/rasa.css", (req, res) => {
+    res.sendFile(__dirname + "/public/css/rasa.css");
+  });
+
+  app.get("/voidRasa/:hashedId/css/rasa.css", (req, res) => {
+    res.sendFile(__dirname + "/public/css/rasa.css");
+  });
+
+  app.get("/voidRasa/:hashedId/:encryptedNumber/js/rasa.js", (req, res) => {
+    res.sendFile(__dirname + "/public/js/rasa.js");
+  });
+
+
 app.get("/ejsrasa_copy/:id1/js/rasa.js", (req, res) => {
   res.sendFile(__dirname + "/public/js/rasa.js");
 });
@@ -89,6 +102,8 @@ app.get("/ejsrasa_copy/:id1/js/rasa.js", (req, res) => {
 app.get("/ejsrasa_copy2/:id/js/rasa.js", (req, res) => {
   res.sendFile(__dirname + "/public/js/rasa.js");
 });
+
+
 app.get("/ejsrasa_copy2/css/rasa.css", (req, res) => {
   res.sendFile(__dirname + "/public/css/rasa.css");
 });

@@ -1,0 +1,76 @@
+const db1 = require("../routes/rasa-db");
+
+const rasa_signature = async (req, res) => {
+  const { number, email, id } = req.body;
+
+  console.log("----------------------");
+  console.log("rasa_signature.js controller");
+  console.log("Received data:", "number:", number, "email", email, "id", id);
+
+  let number1 = parseInt(number, 10);
+  console.log(number1, "A")
+
+  var numberForm = [
+    [1, "form_sign"],
+    [2, "form_sign0"],
+    [3, "form_sign2"],
+    [4, "form_sign3"],
+    [5, "form_sign4"],
+  ];
+  const x = numberForm.find(item => item[0] === number1);
+  let finalNumber;
+  if (x) {
+    console.log("Final Number:", x[1]);
+    finalNumber = x[1];
+  } else {
+    console.log("Number not found in the mapping");
+  }
+
+  var accounts = [
+    ["wowo16221@gmail.com", 7],
+    ["nekins213@gmail.com", 8],
+    ["miguelbaruc12@gmail.com", 9],
+    ["fonzyacera03@gmail.com", 11],
+  ];
+
+  const y = accounts.find(item => item[0] === email);
+  let finalEmail;
+  if (y) {
+    console.log("Final Email:", y[1]);
+    finalEmail = y[1];
+  } else {
+    console.log("Email not found");
+  }
+
+  console.log("Final Number", finalNumber);
+  console.log("Final Email", finalEmail);
+
+  try {
+    db1.query(
+      `UPDATE inputted_table SET ${finalNumber} = 
+      (SELECT form_sign FROM signature_table2 WHERE id = ?) WHERE id = ?`,
+      [finalEmail, id],
+      (error, results) => {
+        if (error) {
+          console.error(error);
+          res.status(500).json({
+            status: "error",
+            error: `Error updating ${finalNumber} in inputted_table.`,
+          });
+        } else {
+          res.json({
+            status: "success",
+            message: `${finalNumber} updated successfully.`,
+          });
+        }
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ status: "error", error: "Internal server error." });
+  }
+};
+
+module.exports = rasa_signature;

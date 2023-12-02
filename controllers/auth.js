@@ -3,6 +3,8 @@ const express = require("express");
 const register = require("./register");
 const login = require("./login");
 const editUserView = require("./editUserView");
+const rasa_note = require("./rasa_note");
+const rasa_signature = require("./rasa_signature");
 const rasatesting = require("./rasatesting");
 const rasatesting2 = require("./rasatesting2");
 const rasatesting2_inventory = require("./rasatesting2_inventory");
@@ -12,6 +14,8 @@ const calendarInput = require ("./calendarInput");
 const rasa_view = require ("./rasa_view");
 
 const router = express.Router();
+router.post("/rasa_signature", rasa_signature)
+router.post("/rasa_note", rasa_note)
 router.post("/register", register)
 router.post("/rasa_view", rasa_view)
 router.post("/calendarInput", calendarInput)

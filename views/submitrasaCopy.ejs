@@ -12,6 +12,11 @@
 <body>
   <div class="container">
     <header>Summary Rasa Form</header>
+    <div class="notice">
+      <div class="note">Additional Note: <br>
+        <%= datainputted.rasa_note %><br>
+      </div>
+    </div>
     <form name="myForm" onsubmit="return false;" id="form">
       <div class="form first">
         <div class="details personal">
@@ -212,8 +217,7 @@
                   <% } %>
                 </div>
           </div>
-        </div>
-        
+
         <div class="signature-form">
           <div class="signature-column">
             <div class="signature-container">
