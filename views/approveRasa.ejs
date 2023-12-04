@@ -354,10 +354,7 @@
       return;
 
     } else {
-      do {
-        finalNote = prompt("Enter additional notes:");
-      } while (rasa_note === null || rasa_note === "");
-      console.log('User input:', rasa_note);
+
 
       try {
         const response = await fetch("/api/rasa_note", {
