@@ -349,15 +349,15 @@
       console.log("Verification", finalVerification);
     }
 
-    if (finalNote !== null && finalNote !== "") {
-      alert('Rasa already voided and has note:', finalNote);
+    if (rasa_note !== null && rasa_note !== "") {
+      alert('Rasa already voided and has note:', rasa_note);
       return;
 
     } else {
       do {
         finalNote = prompt("Enter additional notes:");
-      } while (finalNote === null || finalNote === "");
-      console.log('User input:', finalNote);
+      } while (rasa_note === null || rasa_note === "");
+      console.log('User input:', rasa_note);
 
       try {
         const response = await fetch("/api/rasa_note", {
