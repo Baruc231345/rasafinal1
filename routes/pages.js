@@ -225,8 +225,7 @@ router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
 router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
   const encryptedId = req.params.encryptedId;
   const universalId = req.session.universalId;
-  const decryptedId = decrypt(encryptedId)
-
+  const decryptedId = decrypt(encryptedId);
 
   console.log("A");
   console.log("encryptedId =" + encryptedId);
@@ -787,7 +786,6 @@ const { hash } = require("bcryptjs");
 
 // verification1
 router.get("/verification/:id", async (req, res) => {
-
   try {
     const id = req.params.id;
     const hashedId = encryptId(id);
@@ -852,8 +850,7 @@ router.get("/verification/:id", async (req, res) => {
       const encryptedEmail = encryptId(email);
       const html = `
         <h1>Rasa for Approval Email</h1>
-        <a href="http://localhost:3005/getSignature/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
-        <a href="http://localhost:3005/voidRasa/${id}/${number}/${email}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Void Rasa</a>
+        <a href="http://localhost:3005/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
       `;
 
       // Update rasa_status
@@ -915,7 +912,14 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
             .send("An error occurred while sending the email");
         }
         console.log("Message Sent: " + info.messageId);
-        return res.redirect("/rasaview");
+        const alertScript = `
+        <script>
+          alert('Email sent successfully to ${id}');
+          window.location.href = '/rasaview';
+        </script>
+      `;
+
+        res.send(alertScript);
       }
     );
   } catch (error) {
@@ -925,7 +929,7 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
 }
 
 router.get(
-  "/voidRasa/:hashedId/:encryptedNumber/:encryptedEmail",
+  "/approveRasa/:hashedId/:encryptedNumber/:encryptedEmail",
   async (req, res) => {
     const hashedId = req.params.hashedId; // 12duvas76edd51231
     const encryptedNumber = req.params.encryptedNumber; // dsasdase21231
@@ -933,7 +937,7 @@ router.get(
     const encryptedId = encryptId(hashedId);
 
     console.log("------------------------------");
-    console.log("----voidRasa------");
+    console.log("----approveRasa------");
     console.log(hashedId);
     console.log(encryptedNumber);
     console.log(encryptedId);
@@ -953,7 +957,7 @@ router.get(
               if (data2.length > 0) {
                 const datainputted = data1[0];
                 const datainventory = data2[0];
-                res.render("voidRasa", {
+                res.render("approveRasa", {
                   datainputted,
                   datainventory,
                   encryptedNumber,
@@ -975,20 +979,21 @@ router.get(
 
 let isProcessing = false;
 router.get("/verification2/:hashedId", async (req, res) => {
-
-
   isProcessing = true;
 
   try {
     const originalId = req.params.hashedId;
     const hashedId = decryptId(originalId);
     const encryptedId = encryptId(hashedId);
+    const number = 2;
+    
 
     console.log("----------------------------------------");
     console.log("/verification2");
     console.log("originalId : ", originalId);
     console.log("hashedId : ", hashedId);
     console.log("encryptedId : ", encryptedId);
+    console.log("number", number)
 
     const query1 = "SELECT * FROM inputted_table WHERE id = ?";
     const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
@@ -1012,8 +1017,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
             const email = "miguelbaruc12@gmail.com";
             const html = `
               <h1>Rasa for Approval Email</h1>
-              <a href="http://localhost:300/getSignature2/${hashedId}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve</a>
-              <a href="http://localhost:3005/getSignature2/${hashedId}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Void Rasa</a>
+              <a href="http://localhost:3005/approveRasa/${hashedId}/${number}/${email}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
             `;
 
             const updateSql =
@@ -1314,7 +1318,7 @@ router.get("/getSignature/:id", async (req, res) => {
   }
 });
 
-/*
+
 router.get("/getSignature2/:hashedId", async (req, res) => {
   const crypto = require("crypto");
   const encryptionKey = crypto.randomBytes(32);
@@ -1402,11 +1406,11 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
               console.log(
                 "rasa_status updated to Step 6: 2/2 Signature: sending email to @gmail.com"
               );
-              /*
+
             if (!redirectToVerification2) {
               redirectToVerification2 = true;
               res.redirect(`/verification2/${hashedId}`);
-            } Root123!
+            } //Root123!
 
             }
 
@@ -1466,8 +1470,8 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
   });
 });
 
-*/
 
+/*
 // New getsignature2 route for demo
 router.get("/getSignature2/:hashedId", async (req, res) => {
   const hashedId = req.params.hashedId;
@@ -1538,7 +1542,6 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
               redirectToVerification2 = true;
               res.redirect(`/verification2/${hashedId}`);
             } Root123!
-            */
             }
 
             const selectInventoryQuery =
@@ -1594,6 +1597,7 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
     });
   });
 });
+*/
 
 router.get("/api/calendarFinal", (req, res) => {
   const query =

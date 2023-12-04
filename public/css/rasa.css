@@ -84,7 +84,7 @@ body {
 }
 
 .container form {
-    position: relative;
+    /*position: relative;*/
     margin-top: 10px;
     min-height: 1000px;
     max-height: 10000px;
@@ -566,27 +566,17 @@ canvas {
     margin-bottom: 40px;
 }
 
-.additional-notes {
-    position: fixed;
-    top: 10px;
-    right: 10px;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  }
 
-  .note {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 10px;
-    color: #f00404;
+.notice {
+    position: relative;
+    width: 500px;
+    display: block;
   }
-  .note1 {
+  
+  .note, .note2, .note3 {
     position: absolute;
-    top: 10px;
-    right: 10px;
+    top: 0;
+    right: 0;
     padding: 10px;
     color: #f00404;
   }

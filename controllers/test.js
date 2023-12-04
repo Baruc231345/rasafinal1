@@ -1,16 +1,19 @@
-let number = 2; 
+let number = 2;
 
-var noteForm = [
-  [1, "rasa_note"],
-  [2, "rasa_note2"],
-  [3, "rasa_note3"],
-  [4, "rasa_note4"],
-  [5, "rasa_note5"],
+var numberForm = [
+  [0, "verification"],
+  [1, "verification2"],
+  [2, "verification3"],
+  [3, "verification4"],
+  [4, "verification5"],
+  [5, "verification6"],
 ];
-const x = noteForm.find(item => item[0] === number);
 
+const x = numberForm.find(item => item[0] === number);
+let finalVerification;
 if (x) {
-  console.log("Final Note:", x[1]);
-  let finalNote = x[1];
-  console.log(finalNote)
+  console.log("Verification:", x[1]);
+  finalVerification = x[1];
+} else {
+  console.log("Verification");
 }
