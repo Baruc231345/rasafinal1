@@ -584,8 +584,8 @@ router.get("/editUserView/:id", (req, res) => {
 router.get("/pdf1/:id", async (req, res) => {
   const puppeteer = require("puppeteer");
   const rasaID = req.params.id;
+  //const url = `http://localhost:3005/ejsrasaVanilla/${rasaID}`;
   const url = `http://154.41.254.18:3306/ejsrasaVanilla/${rasaID}`;
-  //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${rasaID}`;
 
   try {
     const browser = await puppeteer.launch({

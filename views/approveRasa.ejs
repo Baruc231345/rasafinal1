@@ -10,12 +10,15 @@
 </head>
 
 <body>
+
+
   <div class="container">
     <div class="note">
       <%= datainputted.rasa_note %> <br>
       <%= datainputted.rasa_note2 %> <br>
       <%= datainputted.rasa_note3 %> <br>
     </div>
+
     <header>Summary Rasa Form</header>
       <form name="myForm" onsubmit="return false;" id="form">
         <div class="form first">
@@ -354,7 +357,10 @@
       return;
 
     } else {
-
+      do {
+        rasa_note = prompt("Enter additional notes:");
+      } while (rasa_note === null || rasa_note === "");
+      console.log('User input:', rasa_note);
 
       try {
         const response = await fetch("/api/rasa_note", {
