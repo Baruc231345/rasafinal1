@@ -53,7 +53,6 @@ fetch("/api/rasa_view")
         };
         actionsCell.appendChild(approvedButton);
       }
-
       row.appendChild(fullNameCell);
       row.appendChild(eventNameCell);
       row.appendChild(eventDescriptionCell);
@@ -106,12 +105,8 @@ fetch("/api/rasa_view")
       })
       .then((data) => {
         console.log("Response from API:", data);
-  
-        // Check if the API response indicates success
         if (data.message === "Data inserted successfully") {
-          // Assuming you have a unique identifier (e.g., data-id) on your table rows
           const rowToRemove = document.querySelector(`tr[data-id="${id}"]`);
-  
           if (rowToRemove) {
             rowToRemove.remove();
           }
@@ -120,7 +115,6 @@ fetch("/api/rasa_view")
       .catch((error) => {
         console.error("Error:", error);
       });
-
 
   fetch(`/api/updateAuthenticated/${id}`, {
     method: "POST",

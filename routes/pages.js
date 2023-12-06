@@ -225,7 +225,7 @@ router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
 router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
   const encryptedId = req.params.encryptedId;
   const universalId = req.session.universalId;
-  const decryptedId = decrypt(encryptedId);
+  const decryptedId = decryptId(encryptedId);
 
   console.log("A");
   console.log("encryptedId =" + encryptedId);
@@ -429,7 +429,7 @@ router.get("/rasaview", loggedIn, adminMiddleware, (req, res) => {
   const currentPage = parseInt(req.query.page) || 1;
   const offset = (currentPage - 1) * itemsPerPage;
 
-  const query = `SELECT * FROM inputted_table WHERE authenticated = 0 ORDER BY id DESC LIMIT ?, ?`;
+  const query = `SELECT * FROM inputted_table WHERE authenticated != 1 ORDER BY id DESC LIMIT ?, ?`;
   db1.query(query, [offset, itemsPerPage], (error, data) => {
     if (error) {
       throw error;
@@ -447,7 +447,6 @@ router.get("/rasaview", loggedIn, adminMiddleware, (req, res) => {
 
 router.post("/api/updateAuthenticated/:id", (req, res) => {
   const id = req.params.id;
-
   const query = "UPDATE inputted_table SET authenticated = 1 WHERE id = ?";
 
   db1.query(query, [id], (error, results) => {
@@ -584,8 +583,8 @@ router.get("/editUserView/:id", (req, res) => {
 router.get("/pdf1/:id", async (req, res) => {
   const puppeteer = require("puppeteer");
   const rasaID = req.params.id;
-  //const url = `http://localhost:3005/ejsrasaVanilla/${rasaID}`;
-  const url = `http://154.41.254.18:3306/ejsrasaVanilla/${rasaID}`;
+  const url = `http://localhost:3005/ejsrasaVanilla/${rasaID}`;
+  //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${rasaID}`;
 
   try {
     const browser = await puppeteer.launch({
@@ -637,7 +636,7 @@ router.get("/pdf2/:encryptedId", async (req, res) => {
     return res.status(400).send("Invalid encrypted ID");
   }
 
-  const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedId}`;
+  const url = `http://localhost:3005/ejsrasaVanilla/${decryptedId}`;
   //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedId}`;
 
   try {
@@ -752,7 +751,7 @@ router.get("/approve/:id", (req, res) => {
 
 async function generatePDF(id) {
   const puppeteer = require("puppeteer");
-  const url = `http://154.41.254.18:3306/ejsrasaVanilla/${id}`;
+  const url = `http://localhost:3005/ejsrasaVanilla/${id}`;
   //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${id}`;
 
   try {
@@ -850,7 +849,8 @@ router.get("/verification/:id", async (req, res) => {
       const encryptedEmail = encryptId(email);
       const html = `
         <h1>Rasa for Approval Email</h1>
-        <a href="http://154.41.254.18:3306/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://localhost:3005/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://localhost:3005/disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
       `;
 
       // Update rasa_status
@@ -977,6 +977,53 @@ router.get(
   }
 );
 
+router.get(
+  "/disregardRasa/:hashedId/:encryptedNumber",
+  async (req, res) => {
+    const hashedId = req.params.hashedId; 
+    const encryptedNumber = req.params.encryptedNumber; 
+    const encryptedId = encryptId(hashedId);
+
+    console.log("------------------------------");
+    console.log("----disregardRasa------");
+    console.log(hashedId);
+    console.log(encryptedNumber);
+    console.log(encryptedId);
+
+    const query1 = "SELECT * FROM inputted_table WHERE id = ?";
+    const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
+    db1.query(query1, [hashedId], (error, data1) => {
+      if (error) {
+        throw error;
+      } else {
+        if (data1.length > 0) {
+          db1.query(query2, [hashedId], (error, data2) => {
+            if (error) {
+              console.error("Error fetching data from inventory_table:", error);
+              throw error;
+            } else {
+              if (data2.length > 0) {
+                const datainputted = data1[0];
+                const datainventory = data2[0];
+                res.render("disregardRasa", {
+                  datainputted,
+                  datainventory,
+                  encryptedNumber,
+                  encryptedId,
+                });
+              } else {
+                res.status(404).send("Data from second table not found");
+              }
+            }
+          });
+        } else {
+          res.status(404).send("Data from first table not found");
+        }
+      }
+    });
+  }
+);
+
 let isProcessing = false;
 router.get("/verification2/:hashedId", async (req, res) => {
   isProcessing = true;
@@ -1017,7 +1064,8 @@ router.get("/verification2/:hashedId", async (req, res) => {
             const email = "miguelbaruc12@gmail.com";
             const html = `
               <h1>Rasa for Approval Email</h1>
-              <a href="http://154.41.254.18:3306/approveRasa/${hashedId}/${number}/${email}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+              <a href="http://localhost:3005/approveRasa/${hashedId}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+              <a href="http://localhost:3005/disregardRasa/${hashedId}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
             `;
 
             const updateSql =
@@ -1208,8 +1256,8 @@ router.get("/getSignature/:id", async (req, res) => {
 
           console.log("form_sign updated successfully");
           const puppeteer = require("puppeteer");
-          //const url = `http://localhost:3005/ejsrasaVanilla/${hashedId}`;
-          const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
+          const url = `http://localhost:3005/ejsrasaVanilla/${hashedId}`;
+          //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
 
           try {
             const browser = await puppeteer.launch({
@@ -1371,8 +1419,8 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
 
       console.log("form_sign updated successfully");
       const puppeteer = require("puppeteer");
-      //const url = `http://localhost:3005/ejsrasaVanilla/${decryptedrasaID}`;
-      const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedrasaID}`;
+      const url = `http://localhost:3005/ejsrasaVanilla/${decryptedrasaID}`;
+      //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedrasaID}`;
 
       try {
         const browser = await puppeteer.launch({

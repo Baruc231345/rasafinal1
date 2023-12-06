@@ -10,12 +10,15 @@
 </head>
 
 <body>
+
+
   <div class="container">
     <div class="note">
       <%= datainputted.rasa_note %> <br>
         <%= datainputted.rasa_note2 %> <br>
           <%= datainputted.rasa_note3 %> <br>
     </div>
+
     <header>Summary Rasa Form</header>
     <form name="myForm" onsubmit="return false;" id="form">
       <div class="form first">
@@ -116,7 +119,8 @@
                         <li><span class="check-symbol">✔</span> <span class="selected-facility">Main Lobby</span></li>
                         <% } %>
                           <% if (datainventory.dancestudio===1) { %>
-                            <li><span class="check-symbol">✔</span> <span class="selected-facility">Dance Studio</span>
+                            <li><span class="check-symbol">✔</span> <span class="selected-facility">Dance
+                                Studio</span>
                             </li>
                             <% } %>
                               <% if (datainventory.multihall===1) { %>
@@ -150,8 +154,8 @@
                   <h3 class="equipment-section">MIS/IT</h3>
                   <ul class="equipment-list">
                     <% if (datainventory.sound_system===1) { %>
-                      <li><span class="check-symbol">✔</span> <span class="selected-equipment">Sound System</span> - <%=
-                          datainventory.sound_system_quantity %>
+                      <li><span class="check-symbol">✔</span> <span class="selected-equipment">Sound System</span> -
+                        <%= datainventory.sound_system_quantity %>
                       </li>
                       <% } %>
                         <% if (datainventory.microphone===1) { %>
@@ -220,10 +224,11 @@
           </div>
         </div>
 
+
         <div class="signature-form">
           <div class="signature-column">
             <div class="signature-container">
-              <canvas id="form_sign0" width="200" height="150"></canvas>
+              <canvas id="form_signClassroom" width="200" height="150"></canvas>
               <img id="form_sign_image"
                 src="<%= datainputted.form_signClassroom ? 'data:image/png;base64,' + datainputted.form_signClassroom.toString('base64') : '' %>"
                 alt="Classroom Facilitator">
@@ -294,146 +299,97 @@
           </div>
         </div>
       </div>
-
-
     </form>
 </body>
+
 <script>
-  const universalId = <%= universalId %>;
-  document.getElementById('btnBack').addEventListener('click', function () {
-    window.location.href = "/rasa";
-  });
+  window.onload = async function () {
+    var number = '<%= encryptedNumber %>';
+    var digit = 404
+    var email = "no email";
+    var encryptedId = '<%= encryptedId %>';
+    var rasa_note = '<%= datainputted.rasa_note %>';
+    var rasa_note2 = '<%= datainputted.rasa_note2 %>';
+    var rasa_note3 = '<%= datainputted.rasa_note3 %>';
+    var rasa_note4 = '<%= datainputted.rasa_note4 %>';
+    console.log(encryptedId, "encryptedId")
+    console.log(number, "var number");
 
-  function formatDate() {
-    const eventDayInput = document.getElementById("event_day");
-    const selectedDate = eventDayInput.value;
-    const dateObject = new Date(selectedDate);
-    const year = dateObject.getFullYear();
-    const month = String(dateObject.getMonth() + 1).padStart(2, "0");
-    const day = String(dateObject.getDate()).padStart(2, "0");
-    const formattedDate = `${year}-${month}-${day}`;
-    eventDayInput.value = formattedDate;
-  }
+    let number1 = parseInt(number, 10);
+    ///////////////
+    let finalVerification = "ejsrasaVanilla2";
+    /////////////////
 
-  document.getElementById('btnSubmit').addEventListener('click', function () {
-    console.log("Button clicked!");
-    const rasatesting2 = {
-      user_id: universalId,
-      full_name: document.getElementById('full_name').value,
-      event_name: document.getElementById('event_name').value,
-      event_description: document.getElementById('event_description').value,
-      event_day: document.getElementById('event_day').value,
-      start_time: document.getElementById('start_time').value,
-      end_time: document.getElementById('end_time').value,
-      contact_number: document.getElementById('contact_number').value,
-      requestor_information: document.getElementById('requestor_information').value,
-      requestor_type: document.getElementById('requestor_type').value,
-      participants: document.getElementById('participants').value,
-      required_day: document.getElementById('required_day').value,
-      purpose_objectives: document.getElementById('purpose_objectives').value,
-      endorsed: document.getElementById('endorsed').value,
-      authenticated: 0,
-    };
-    console.log(rasatesting2 + "this is rasatesting2 json");
+    var noteForm = [
+      [1, '<%= datainputted.rasa_note %>'],
+      [2, '<%= datainputted.rasa_note2 %>'],
+      [3, '<%= datainputted.rasa_note3 %>'],
+      [4, '<%= datainputted.rasa_note4 %>'],
+      [5, '<%= datainputted.rasa_note5 %>'],
+    ];
 
-    fetch("/api/rasatesting2", {
-      method: "POST",
-      body: JSON.stringify(rasatesting2),
-      headers: {
-        "Content-type": "application/json"
-      }
-    })
-      .then(response => response.json())
-      .then(data => {
-        const insertedId = data.id;
-        const inventory = {
-          inventory_id: insertedId,
-          auditorium: document.getElementById('myRadioId')?.checked ? 1 : 0,
-          foodandbeverage: document.getElementById('myRadioId4')?.checked ? 1 : 0,
-          multihall: document.getElementById('myRadioId1')?.checked ? 1 : 0,
-          dancestudio: document.getElementById('myRadioId5')?.checked ? 1 : 0,
-          gym: document.getElementById('myRadioId2')?.checked ? 1 : 0,
-          classroom: document.getElementById('myRadioId3')?.checked ? 1 : 0,
-          kitchen: document.getElementById('myRadioId6')?.checked ? 1 : 0,
-          mainlobby: document.getElementById('myRadioId7')?.checked ? 1 : 0,
-          sound_system: document.getElementById("myRadioId_1")?.checked ? 1 : 0,
-          sound_system_quantity: document.getElementById("sound-system_input")?.value,
-          microphone: document.getElementById("myRadioId_2")?.checked ? 1 : 0,
-          microphone_quantity: document.getElementById("microphone_input")?.value,
-          lcd: document.getElementById("myRadioId_3")?.checked ? 1 : 0,
-          lcd_quantity: document.getElementById("lcd-projector_input")?.value,
-          widescreen: document.getElementById("myRadioId_4")?.checked ? 1 : 0,
-          widescreen_quantity: document.getElementById("wide-screen_input")?.value,
-          chair: document.getElementById("myRadioId-1")?.checked ? 1 : 0,
-          chair_quantity: document.getElementById("chair_input")?.value,
-          table_input: document.getElementById("myRadioId-2")?.checked ? 1 : 0,
-          table_quantity: document.getElementById("table_input")?.value,
-          blackpanel: document.getElementById("myRadioId-3")?.checked ? 1 : 0,
-          blackpanel_quantity: document.getElementById("black-panel_input")?.value,
-          whiteboard: document.getElementById("myRadioId-4")?.checked ? 1 : 0,
-          whiteboard_quantity: document.getElementById("whiteboard_input")?.value,
-          aircon: document.getElementById("myRadioId-6")?.checked ? 1 : 0,
-          start_aircon: document.getElementById("start_time")?.value,
-          end_aircon: document.getElementById("end_time")?.value,
-          other: document.getElementById("myRadioId-7")?.checked ? 1 : 0,
-          other_quantity: document.getElementById("otherInput")?.value,
-        };
+    let finalNote;
+    const y = noteForm.find(item => item[0] === number1);
 
-        console.log(inventory + "this is rasatesting2_inventory json");
-        fetch("/api/rasatesting2_inventory", {
+    if (y) {
+      console.log("Disregard Note:", y[1]);
+      finalNote = y[1];
+    } else {
+      console.log("Verification", finalNote);
+    }
+
+    if (finalNote !== null && finalNote !== "") {
+      alert('Rasa already has a note: ' + finalNote);
+      return;
+    } else {
+      do {
+        finalNote = prompt("Enter Note:");
+      } while (finalNote === null || finalNote === "");
+      console.log('User input:', finalNote);
+
+      try {
+        const response = await fetch("/api/rasa_note", {
           method: "POST",
-          body: JSON.stringify(inventory),
+          body: JSON.stringify({ note: finalNote, number: number, id: '<%= datainputted.id %>' }),
           headers: {
             "Content-type": "application/json"
           }
-        })
-          .then(response => response.json())
-          .then(data => {
-            alert("Your Rasa Submission is successfully submitted!");
-            setTimeout(function () {
-              window.location.href = `/rasaview/${universalId}`;
-            }, 3000);
-          })
+        });
 
-      })
+        if (response.ok) {
+          console.log('Rasa note updated successfully.');
+          const signatureResponse = await fetch("/api/rasa_signature", {
+            method: "POST",
+            body: JSON.stringify({ number: number, email: email, id: '<%= datainputted.id %>' }),
+            headers: {
+              "Content-type": "application/json"
+            }
+          });
 
-  });
-</script>
-
-<script>
-  // form_sign1
-  var canvas = document.getElementById('form_sign');
-  var context = canvas.getContext('2d');
-
-  var image1 = new Image();
-  image1.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
-  image1.onload = function () {
-    // Scale the image to fit the canvas while maintaining aspect ratio
-    var scaleFactor = Math.min(canvas.width / image1.width, canvas.height / image1.height);
-    var newWidth = image1.width * scaleFactor;
-    var newHeight = image1.height * scaleFactor;
-    var x = (canvas.width - newWidth) / 2;
-    var y = (canvas.height - newHeight) / 2;
-
-    context.drawImage(image1, x, y, newWidth, newHeight);
-  };
-
-  // form_sign2
-  var canvas2 = document.getElementById('form_sign2');
-  if (canvas2) {
-    var context2 = canvas2.getContext('2d');
-    var image2 = new Image();
-    image2.src = '<%= datainputted.form_sign2 ? "data:image/png;base64," + datainputted.form_sign2.toString("base64") : "" %>';
-    image2.onload = function () {
-      // Scale the image to fit the canvas while maintaining aspect ratio
-      var scaleFactor = Math.min(canvas2.width / image2.width, canvas2.height / image2.height);
-      var newWidth = image2.width * scaleFactor;
-      var newHeight = image2.height * scaleFactor;
-      var x = (canvas2.width - newWidth) / 2;
-      var y = (canvas2.height - newHeight) / 2;
-
-      context2.drawImage(image2, x, y, newWidth, newHeight);
-    };
+          if (signatureResponse.ok) {
+            const authenticateResponse = await fetch("/api/rasa_authenticate", {
+              method: "POST",
+              body: JSON.stringify({ digit: digit, id: '<%= datainputted.id %>' }),
+              headers: {
+                "Content-type": "application/json"
+              }
+            });
+          } else {
+            console.log("Signature Response has error")
+          }
+          if (authenticateResponse.ok) {
+            console.log('Rasa signature API processed successfully.');
+            window.location.href = `/${finalVerification}/${encryptedId}`;
+          } else {
+            console.error('There was a problem with the rasa_signature fetch operation.');
+          }
+        } else {
+          throw new Error('Network response was not ok');
+        }
+      } catch (error) {
+        console.error('There was a problem with the rasa_note fetch operation:', error);
+      }
+    }
   }
 </script>
 </body>

@@ -11,11 +11,13 @@ const rasa_signature = async (req, res) => {
   console.log(number1, "A")
 
   var numberForm = [
+    [20, "form_signClassroom"],
+    [21, "form_signHRM"],
     [1, "form_sign"],
-    [2, "form_sign0"],
-    [3, "form_sign2"],
-    [4, "form_sign3"],
-    [5, "form_sign4"],
+    [2, "form_sign2"],
+    [3, "form_sign3"],
+    [4, "form_sign4"],
+    [5, "form_sign5"],
   ];
   const x = numberForm.find(item => item[0] === number1);
   let finalNumber;
@@ -31,6 +33,7 @@ const rasa_signature = async (req, res) => {
     ["nekins213@gmail.com", 8],
     ["miguelbaruc12@gmail.com", 9],
     ["fonzyacera03@gmail.com", 11],
+    ["no email",13]
   ];
 
   const y = accounts.find(item => item[0] === email);
@@ -41,7 +44,6 @@ const rasa_signature = async (req, res) => {
   } else {
     console.log("Email not found");
   }
-
   console.log("Final Number", finalNumber);
   console.log("Final Email", finalEmail);
 

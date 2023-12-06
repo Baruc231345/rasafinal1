@@ -94,6 +94,14 @@ app.get("/ejsrasa_copy/:id1/css/rasa.css", (req, res) => {
     res.sendFile(__dirname + "/public/js/rasa.js");
   });
 
+  app.get("/disregardRasa/:hashedId/css/rasa.css", (req, res) => {
+    res.sendFile(__dirname + "/public/css/rasa.css");
+  });
+
+  app.get("/disregardRasa/:hashedId/js/rasa.js", (req, res) => {
+    res.sendFile(__dirname + "/public/js/rasa.js");
+  });
+
 
 app.get("/ejsrasa_copy/:id1/js/rasa.js", (req, res) => {
   res.sendFile(__dirname + "/public/js/rasa.js");

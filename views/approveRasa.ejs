@@ -15,46 +15,44 @@
   <div class="container">
     <div class="note">
       <%= datainputted.rasa_note %> <br>
-      <%= datainputted.rasa_note2 %> <br>
-      <%= datainputted.rasa_note3 %> <br>
+        <%= datainputted.rasa_note2 %> <br>
+          <%= datainputted.rasa_note3 %> <br>
     </div>
 
     <header>Summary Rasa Form</header>
-      <form name="myForm" onsubmit="return false;" id="form">
-        <div class="form first">
-          <div class="details personal">
-            <span class="title">Personal Details</span>
+    <form name="myForm" onsubmit="return false;" id="form">
+      <div class="form first">
+        <div class="details personal">
+          <span class="title">Personal Details</span>
 
-            <div class="fields1">
-              <div class="input-field">
-                <label>Full Name</label>
-                <input type="text" id="full_name" value="<%= datainputted.full_name %>" disabled>
-              </div>
-
-              <div class="input-field">
-                <label>Contact Number </label>
-                <input type="text" id="contact_number" value="<%= datainputted.contact_number %>" disabled>
-              </div>
-
-              <div class="input-field">
-                <label>Requestor Information</label>
-                <input type="text" id="requestor_information" value="<%= datainputted.requestor_information %>"
-                  disabled>
-              </div>
-
-              <div class="input-field" style="width: 380px;">
-                <label>Requestor Type </label>
-                <input type="text" id="requestor_type" value="<%= datainputted.requestor_type %>" disabled>
-              </div>
-
-              <% if (datainputted.requestor_type==="Student" || datainputted.requestor_type==="Student Leader" ) { %>
-                <div class="input-field">
-                  <label>Endorsed by</label>
-                  <input type="text" id="endorsed" value="<%= datainputted.endorsed %>" disabled>
-                </div>
-                <% } %>
-
+          <div class="fields1">
+            <div class="input-field">
+              <label>Full Name</label>
+              <input type="text" id="full_name" value="<%= datainputted.full_name %>" disabled>
             </div>
+
+            <div class="input-field">
+              <label>Contact Number </label>
+              <input type="text" id="contact_number" value="<%= datainputted.contact_number %>" disabled>
+            </div>
+
+            <div class="input-field">
+              <label>Requestor Information</label>
+              <input type="text" id="requestor_information" value="<%= datainputted.requestor_information %>" disabled>
+            </div>
+
+            <div class="input-field" style="width: 380px;">
+              <label>Requestor Type </label>
+              <input type="text" id="requestor_type" value="<%= datainputted.requestor_type %>" disabled>
+            </div>
+
+            <% if (datainputted.requestor_type==="Student" || datainputted.requestor_type==="Student Leader" ) { %>
+              <div class="input-field">
+                <label>Endorsed by</label>
+                <input type="text" id="endorsed" value="<%= datainputted.endorsed %>" disabled>
+              </div>
+              <% } %>
+
           </div>
         </div>
         <div class="form second">
@@ -103,7 +101,6 @@
                 <input type="time" id="end_time" value="<%= datainputted.end_time %>" disabled>
               </div>
             </div>
-          </div>
 
           <div class="mid" style="padding-top: 20px;margin-bottom: 0px;">
             <div class="top" style="width: 400px; padding-left: 20px;">
@@ -226,7 +223,7 @@
                     <% } %>
                 </div>
             </div>
-
+          </div>
 
             <div class="signature-form">
               <div class="signature-column">
@@ -302,7 +299,7 @@
               </div>
             </div>
           </div>
-      </form>
+    </form>
 </body>
 
 <script>
@@ -311,6 +308,9 @@
     var email = '<%= encryptedEmail %>';
     var encryptedId = '<%= encryptedId %>';
     var rasa_note = '<%= datainputted.rasa_note %>';
+    var rasa_note2 = '<%= datainputted.rasa_note2 %>';
+    var rasa_note3 = '<%= datainputted.rasa_note3 %>';
+    var rasa_note4 = '<%= datainputted.rasa_note4 %>';
     console.log(encryptedId, "encryptedId")
     console.log(number, "var number");
 
@@ -319,7 +319,7 @@
     var verificationForm = [
       [0, "verification"],
       [1, "verification2"],
-      [2, "verification3"],
+      [2, "ejsrasaVanilla2"],
       [3, "verification4"],
       [4, "verification5"],
       [5, "verification6"],
@@ -335,12 +335,12 @@
     /////////////////
 
     var noteForm = [
-    [1, "rasa_note"],
-    [2, "rasa_note2"],
-    [3, "rasa_note3"],
-    [4, "rasa_note4"],
-    [5, "rasa_note5"],
-  ];
+      [1, '<%= datainputted.rasa_note %>'],
+      [2, '<%= datainputted.rasa_note2 %>'],
+      [3, '<%= datainputted.rasa_note3 %>'],
+      [4, '<%= datainputted.rasa_note4 %>'],
+      [5, '<%= datainputted.rasa_note5 %>'],
+    ];
 
     let finalNote;
     const y = noteForm.find(item => item[0] === number1);
@@ -352,20 +352,19 @@
       console.log("Verification", finalVerification);
     }
 
-    if (rasa_note !== null && rasa_note !== "") {
-      alert('Rasa already voided and has note:', rasa_note);
+    if (finalNote !== null && finalNote !== "") {
+      alert('Rasa already has a note: ' + finalNote);
       return;
-
     } else {
       do {
-        rasa_note = prompt("Enter additional notes:");
-      } while (rasa_note === null || rasa_note === "");
-      console.log('User input:', rasa_note);
+        finalNote = prompt("Enter additional notes:");
+      } while (finalNote === null || finalNote === "");
+      console.log('User input:', finalNote);
 
       try {
         const response = await fetch("/api/rasa_note", {
           method: "POST",
-          body: JSON.stringify({ note: rasa_note, number: number, id: '<%= datainputted.id %>' }),
+          body: JSON.stringify({ note: finalNote, number: number, id: '<%= datainputted.id %>' }),
           headers: {
             "Content-type": "application/json"
           }
@@ -382,7 +381,19 @@
             }
           });
 
-          if (signatureResponse.ok) {
+          if ((signatureResponse.ok) && (finalNote === '2')) {
+            const authenticateResponse = await fetch("/api/rasa_authenticate", {
+              method: "POST",
+              body: JSON.stringify({ digit: finalNote, id: '<%= datainputted.id %>' }),
+              headers: {
+                "Content-type": "application/json"
+              }
+            });
+          } else{
+            console.log('Rasa signature API processed successfully.');
+            window.location.href = `/${finalVerification}/${encryptedId}`;
+          }
+            if (authenticateResponse.ok){
             console.log('Rasa signature API processed successfully.');
             window.location.href = `/${finalVerification}/${encryptedId}`;
           } else {

@@ -27,7 +27,7 @@ const rasa_note = async (req, res) => {
   } else {
     console.log("Note not Found");
     res.status(400).json({ status: 'error', error: 'Note not found for the given number.' });
-    return; // Exit the function early
+    return; 
   }
 
   try {

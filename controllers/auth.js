@@ -5,6 +5,7 @@ const login = require("./login");
 const editUserView = require("./editUserView");
 const rasa_note = require("./rasa_note");
 const rasa_signature = require("./rasa_signature");
+const rasa_authenticate = require("./rasa_authenticate");
 const rasatesting = require("./rasatesting");
 const rasatesting2 = require("./rasatesting2");
 const rasatesting2_inventory = require("./rasatesting2_inventory");
@@ -18,6 +19,7 @@ router.post("/rasa_signature", rasa_signature)
 router.post("/rasa_note", rasa_note)
 router.post("/register", register)
 router.post("/rasa_view", rasa_view)
+router.post("/rasa_authenticate", rasa_authenticate)
 router.post("/calendarInput", calendarInput)
 router.post("/editUserView", editUserView)
 router.post("/login", login)
