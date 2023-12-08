@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const cookie = require("cookie-parser");
 const PORT = process.env.PORT;
-const session = require('cookie-session');
+const session = require('express-session');
 
 app.use(session({
   secret: "capstone", 
@@ -155,7 +155,7 @@ app.use(cookie())
 app.use(express.json())
 db.connect((err)=>{
     if(err)throw err;
-    console.log("database connected 12 ");
+    console.log("database connected 12");
 })
 
 const router = require("./routes/pages")
