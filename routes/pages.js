@@ -1676,9 +1676,11 @@ router.get("/api/calendarInputData", (req, res) => {
   });
 });
 
+/*
 router.get("/insertSign", async (req, res) => {
   res.sendFile("insertSign.html", { root: "./public/" });
 });
+*/
 
 router.get("/logout", logout);
 router.get("/newreg", newreg);
