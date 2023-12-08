@@ -4,7 +4,7 @@ const db1 = require("../routes/rasa-db");
 const bcrypt = require("bcryptjs");
 const app = express();
 
-const session = require('express-session');
+const session = require('cookie-session');
 
 app.use(session({
   secret: "capstone", 
