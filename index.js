@@ -4,7 +4,7 @@ const app = express();
 const bodyParser = require("body-parser");
 const cookie = require("cookie-parser");
 const PORT = process.env.PORT;
-const session = require('express-session');
+const session = require('cookie-session');
 
 app.use(session({
   secret: "capstone", 
