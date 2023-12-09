@@ -886,7 +886,7 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
       service: "hotmail",
       auth: {
         user: "processtest2@outlook.ph",
-        pass: "cwbomrdgiphyvvnz",
+        pass: "Capstone2!",
       },
     });
 
@@ -910,7 +910,8 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
             .status(500)
             .send("An error occurred while sending the email");
         }
-        console.log("Message Sent: " + info.messageId);
+        console.log("Message Sent: " + info.messageId+ email);
+        console.log("Preview URL: " + nodemailer.getTestMessageUrl(info));
         const alertScript = `
         <script>
           alert('Email sent successfully to ${id}');

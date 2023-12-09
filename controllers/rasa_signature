@@ -37,13 +37,19 @@ const rasa_signature = async (req, res) => {
     ["no email",13] // Void Rasa
   ];
 
-  const y = accounts.find(item => item[0] === email);
+  const y = accounts.find(item => item && item[0] === email);
   let finalEmail;
   if (y) {
     console.log("Final Email:", y[1]);
     finalEmail = y[1];
   } else {
     console.log("Email not found");
+    // Handle the case where the email is not found, e.g., set a default value or return an error response
+    res.status(404).json({
+      status: "error",
+      error: "Email not found.",
+    });
+    return; // Stop further execution
   }
   console.log("Final Number", finalNumber);
   console.log("Final Email", finalEmail);
