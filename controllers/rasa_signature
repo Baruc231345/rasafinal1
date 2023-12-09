@@ -11,8 +11,8 @@ const rasa_signature = async (req, res) => {
   console.log(number1, "A")
 
   var numberForm = [
-    [20, "form_signClassroom"],
-    [21, "form_signHRM"],
+    [20, "form_signClassroom"], // Classroom Facilitator Form
+    [21, "form_signHRM"], // HRM Custodian Form
     [1, "form_sign"],
     [2, "form_sign2"],
     [3, "form_sign3"],
@@ -32,8 +32,9 @@ const rasa_signature = async (req, res) => {
     ["wowo16221@gmail.com", 7],
     ["nekins213@gmail.com", 8],
     ["miguelbaruc12@gmail.com", 9],
-    ["fonzyacera03@gmail.com", 11],
-    ["no email",13]
+    ["fonzyacera03@gmail.com", 16], // HRM Signature
+    ["baruc.231345@globalcity.sti.edu.ph", 17] // Classroom Signature
+    ["no email",13] // Void Rasa
   ];
 
   const y = accounts.find(item => item[0] === email);
