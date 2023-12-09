@@ -317,12 +317,15 @@
     let number1 = parseInt(number, 10);
     ///////////////
     var verificationForm = [
-      [0, "verification"],
+      [20, "verification"], // Classroom?
+      [21, "verification"], // Kitchen
       [1, "verification2"],
       [2, "ejsrasaVanilla2"],
-      [3, "verification4"],
+    /*[3, "verification4"],
       [4, "verification5"],
       [5, "verification6"],
+      */ 
+      //for future verification
     ];
     const x = verificationForm.find(item => item[0] === number1);
     let finalVerification;
@@ -335,11 +338,15 @@
     /////////////////
 
     var noteForm = [
+      [20,'<%= datainputted.rasa_noteClassroom%>'],
+      [21,'<%= datainputted.rasa_noteHRM %>'],
       [1, '<%= datainputted.rasa_note %>'],
       [2, '<%= datainputted.rasa_note2 %>'],
+      /*
       [3, '<%= datainputted.rasa_note3 %>'],
       [4, '<%= datainputted.rasa_note4 %>'],
       [5, '<%= datainputted.rasa_note5 %>'],
+      */
     ];
 
     let finalNote;

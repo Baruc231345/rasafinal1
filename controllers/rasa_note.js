@@ -11,6 +11,8 @@ const rasa_note = async (req, res) => {
   let number1 = parseInt(number, 10);
 
   var noteForm = [
+    [20,'rasa_noteClassroom'],
+    [21,'rasa_noteHRM'],
     [1, "rasa_note"],
     [2, "rasa_note2"],
     [3, "rasa_note3"],

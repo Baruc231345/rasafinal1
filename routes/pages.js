@@ -429,7 +429,15 @@ router.get("/rasaview", loggedIn, adminMiddleware, (req, res) => {
   const currentPage = parseInt(req.query.page) || 1;
   const offset = (currentPage - 1) * itemsPerPage;
 
-  const query = `SELECT * FROM inputted_table WHERE authenticated != 1 ORDER BY id DESC LIMIT ?, ?`;
+  // Modify the query to select the id from the inputted_table
+  const query = `
+    SELECT i.id as inputted_id, i.*, iv.* 
+    FROM inputted_table i
+    LEFT JOIN inventory_table iv ON i.id = iv.inventory_id
+    WHERE i.authenticated != 1 
+    ORDER BY i.id DESC 
+    LIMIT ?, ?`;
+
   db1.query(query, [offset, itemsPerPage], (error, data) => {
     if (error) {
       throw error;
@@ -796,7 +804,7 @@ router.get("/verification/:id", async (req, res) => {
     console.log("id : ", id);
     console.log("hashedId : ", hashedId);
 
-    let email = "zzqoguigjjpdygzarb@cazlp.com"; // Set default email
+    let email;
 
     const accounts = [
       [
@@ -841,7 +849,6 @@ router.get("/verification/:id", async (req, res) => {
       }
 
       if (!emailFound && (endorsedValue === "N/A" || endorsedValue === "")) {
-        // If email is not found and endorsedValue is "N/A" or empty, use default email
         email = "miguelbaruc12@gmail.com";
       }
 
@@ -928,6 +935,98 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
   }
 }
 
+// verificationKitchen
+router.get("/verificationHRM/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const hashedId = encryptId(id);
+    const number = 21;
+    const encryptedNumber = encryptId(number); // encrypt email
+
+    console.log("----------------------------------------");
+    console.log("/verificationKitchen");
+    console.log("id : ", id);
+    console.log("hashedId : ", hashedId);
+    let email = "fonzyacera03@gmail.com";
+
+    const pdfFileName = `rasa_${id}.pdf`;
+    const encryptedEmail = encryptId(email);
+    const html = `
+        <h1>Rasa for Approval Email</h1>
+        <a href="http://localhost:3005/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://localhost:3005/disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+      `;
+
+    const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+    db1.query(
+      updateSql,
+      [`Approval of HRM Custodian: ${email}`, id],
+      (error, result) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send("Error updating rasa_status");
+        }
+        console.log(
+          `rasa_status updated to waiting for email of ${email} for ID: ${id}`
+        );
+        sendEmail_Kitchen(id, email, hashedId, pdfFileName, html, res);
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while processing the request");
+  }
+});
+
+async function sendEmail_Kitchen(id, email, hashedId, pdfFileName, html, res) {
+  try {
+    const pdfBuffer = await generatePDF(id);
+
+    const transporter = nodemailer.createTransport({
+      service: "hotmail",
+      auth: {
+        user: "processtest2@outlook.ph",
+        pass: "cwbomrdgiphyvvnz",
+      },
+    });
+
+    transporter.sendMail(
+      {
+        from: "STI-Building Administration <processtest2@outlook.ph>",
+        to: email,
+        subject: "HRM Custodian Signature:",
+        html: html,
+        attachments: [
+          {
+            filename: `Rasa_File_${id}.pdf`,
+            content: pdfBuffer,
+          },
+        ],
+      },
+      (error, info) => {
+        if (error) {
+          console.error(error);
+          return res
+            .status(500)
+            .send("An error occurred while sending the email");
+        }
+        console.log("Message Sent: " + info.messageId);
+        const alertScript = `
+        <script>
+          alert('Email sent successfully to ${id}');
+          window.location.href = '/rasaview';
+        </script>
+      `;
+
+        res.send(alertScript);
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while sending the email");
+  }
+}
+
 router.get(
   "/approveRasa/:hashedId/:encryptedNumber/:encryptedEmail",
   async (req, res) => {
@@ -977,52 +1076,49 @@ router.get(
   }
 );
 
-router.get(
-  "/disregardRasa/:hashedId/:encryptedNumber",
-  async (req, res) => {
-    const hashedId = req.params.hashedId; 
-    const encryptedNumber = req.params.encryptedNumber; 
-    const encryptedId = encryptId(hashedId);
+router.get("/disregardRasa/:hashedId/:encryptedNumber", async (req, res) => {
+  const hashedId = req.params.hashedId;
+  const encryptedNumber = req.params.encryptedNumber;
+  const encryptedId = encryptId(hashedId);
 
-    console.log("------------------------------");
-    console.log("----disregardRasa------");
-    console.log(hashedId);
-    console.log(encryptedNumber);
-    console.log(encryptedId);
+  console.log("------------------------------");
+  console.log("----disregardRasa------");
+  console.log(hashedId);
+  console.log(encryptedNumber);
+  console.log(encryptedId);
 
-    const query1 = "SELECT * FROM inputted_table WHERE id = ?";
-    const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
-    db1.query(query1, [hashedId], (error, data1) => {
-      if (error) {
-        throw error;
-      } else {
-        if (data1.length > 0) {
-          db1.query(query2, [hashedId], (error, data2) => {
-            if (error) {
-              console.error("Error fetching data from inventory_table:", error);
-              throw error;
+  const query1 = "SELECT * FROM inputted_table WHERE id = ?";
+  const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
+  db1.query(query1, [hashedId], (error, data1) => {
+    if (error) {
+      throw error;
+    } else {
+      if (data1.length > 0) {
+        db1.query(query2, [hashedId], (error, data2) => {
+          if (error) {
+            console.error("Error fetching data from inventory_table:", error);
+            throw error;
+          } else {
+            if (data2.length > 0) {
+              const datainputted = data1[0];
+              const datainventory = data2[0];
+              res.render("disregardRasa", {
+                datainputted,
+                datainventory,
+                encryptedNumber,
+                encryptedId,
+              });
             } else {
-              if (data2.length > 0) {
-                const datainputted = data1[0];
-                const datainventory = data2[0];
-                res.render("disregardRasa", {
-                  datainputted,
-                  datainventory,
-                  encryptedNumber,
-                  encryptedId,
-                });
-              } else {
-                res.status(404).send("Data from second table not found");
-              }
+              res.status(404).send("Data from second table not found");
             }
-          });
-        } else {
-          res.status(404).send("Data from first table not found");
-        }
+          }
+        });
+      } else {
+        res.status(404).send("Data from first table not found");
       }
-    });
-  }
-);
+    }
+  });
+});
 
 let isProcessing = false;
 router.get("/verification2/:hashedId", async (req, res) => {
@@ -1033,14 +1129,13 @@ router.get("/verification2/:hashedId", async (req, res) => {
     const hashedId = decryptId(originalId);
     const encryptedId = encryptId(hashedId);
     const number = 2;
-    
 
     console.log("----------------------------------------");
     console.log("/verification2");
     console.log("originalId : ", originalId);
     console.log("hashedId : ", hashedId);
     console.log("encryptedId : ", encryptedId);
-    console.log("number", number)
+    console.log("number", number);
 
     const query1 = "SELECT * FROM inputted_table WHERE id = ?";
     const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
@@ -1366,7 +1461,6 @@ router.get("/getSignature/:id", async (req, res) => {
   }
 });
 
-
 router.get("/getSignature2/:hashedId", async (req, res) => {
   const crypto = require("crypto");
   const encryptionKey = crypto.randomBytes(32);
@@ -1455,11 +1549,10 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
                 "rasa_status updated to Step 6: 2/2 Signature: sending email to @gmail.com"
               );
 
-            if (!redirectToVerification2) {
-              redirectToVerification2 = true;
-              res.redirect(`/verification2/${hashedId}`);
-            } //Root123!
-
+              if (!redirectToVerification2) {
+                redirectToVerification2 = true;
+                res.redirect(`/verification2/${hashedId}`);
+              } //Root123!
             }
 
             const selectInventoryQuery =
@@ -1517,7 +1610,6 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
     });
   });
 });
-
 
 /*
 // New getsignature2 route for demo
@@ -1676,11 +1768,10 @@ router.get("/api/calendarInputData", (req, res) => {
   });
 });
 
-/*
 router.get("/insertSign", async (req, res) => {
   res.sendFile("insertSign.html", { root: "./public/" });
 });
-*/
+
 
 router.get("/logout", logout);
 router.get("/newreg", newreg);

@@ -35,8 +35,7 @@ const rasa_authenticate = async (req, res) => {
           status: 'success',
           message: 'Rasa Authenticate updated successfully.',
         });
-  
-        // Check if finalNote is equal to 3
+
         if (finalDigit === 3) {
           try {
             const query = `UPDATE inputted_table SET rasa_status = ? WHERE id = ?`;
