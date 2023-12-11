@@ -429,7 +429,14 @@ router.get("/rasaview", loggedIn, adminMiddleware, (req, res) => {
   const currentPage = parseInt(req.query.page) || 1;
   const offset = (currentPage - 1) * itemsPerPage;
 
-  const query = `SELECT * FROM inputted_table WHERE authenticated != 1 ORDER BY id DESC LIMIT ?, ?`;
+  const query = `
+    SELECT i.id as inputted_id, i.*, iv.* 
+    FROM inputted_table i
+    LEFT JOIN inventory_table iv ON i.id = iv.inventory_id
+    WHERE i.authenticated != 1 
+    ORDER BY i.id DESC 
+    LIMIT ?, ?`;
+
   db1.query(query, [offset, itemsPerPage], (error, data) => {
     if (error) {
       throw error;
@@ -533,12 +540,7 @@ router.get("/calendar12", loggedIn, dashboardAccessMiddleware, (req, res) => {
   res.render("calendar", { id: universalId });
 });
 
-router.get(
-  "/calendarAdmin",
-  loggedIn,
-  dashboardAccessMiddleware,
-  adminMiddleware,
-  (req, res) => {
+router.get("/calendarAdmin",loggedIn,dashboardAccessMiddleware,adminMiddleware,(req, res) => {
     res.sendFile("calendarAdmin.html", { root: "./public/" });
   }
 );
@@ -841,11 +843,11 @@ router.get("/verification/:id", async (req, res) => {
       }
 
       if (!emailFound && (endorsedValue === "N/A" || endorsedValue === "")) {
-        email = "miguelbaruc12@gmail.com";
+        email = "baruc.231345@globalcity.sti.edu.ph";
       }
-
+      console.log("email: ", email)
       const pdfFileName = `rasa_${id}.pdf`;
-      const encryptedEmail = encryptId(email);
+      //const encryptedEmail = encryptId(email);
       const html = `
         <h1>Rasa for Approval Email</h1>
         <a href="http://localhost:3005/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
@@ -885,14 +887,14 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
     const transporter = nodemailer.createTransport({
       service: "hotmail",
       auth: {
-        user: "processtest2@outlook.ph",
-        pass: "Capstone2!",
+        user: "rodillas.222275@globalcity.sti.edu.ph",
+        pass: "Idontknow16221",
       },
     });
 
     transporter.sendMail(
       {
-        from: "STI-Building Administration <processtest2@outlook.ph>",
+        from: "STI-Building Administration <rodillas.222275@globalcity.sti.edu.ph>",
         to: email,
         subject: "First Signature:",
         html: html,
@@ -928,28 +930,232 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
   }
 }
 
+router.get("/verificationHRM/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const hashedId = encryptId(id);
+    const number = 21;
+    const encryptedNumber = encryptId(number); // encrypt email
+    console.log("----------------------------------------");
+    console.log("/verificationHRM");
+    console.log("id : ", id);
+    console.log("hashedId : ", hashedId);
+    let email = "baruc.231345@globalcity.sti.edu.ph";
+
+    const pdfFileName = `rasa_${id}.pdf`;
+    const encryptedEmail = encryptId(email);
+    const html = `
+        <h1>Rasa for Approval Email</h1>
+        <a href="http://localhost:3005/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://localhost:3005/disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+      `;
+
+    const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+    db1.query(
+      updateSql,
+      [`Approval of HRM Custodian: ${email}`, id],
+      (error, result) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send("Error updating rasa_status");
+        }
+        console.log(
+          `rasa_status updated to waiting for email of ${email} for ID: ${id}`
+        );
+        sendEmail_Kitchen(id, email, hashedId, pdfFileName, html, res);
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while processing the request");
+  }
+});
+
+async function sendEmail_Kitchen(id, email, hashedId, pdfFileName, html, res) {
+  try {
+    const pdfBuffer = await generatePDF(id);
+
+    const transporter = nodemailer.createTransport({
+      service: "hotmail",
+      /*
+      auth: {
+        user: "processtest2@outlook.ph",
+        pass: "cwbomrdgiphyvvnz",
+      },
+      */
+      auth: {
+        user: "rodillas.222275@globalcity.sti.edu.ph",
+        pass: "Idontknow16221",
+      },
+
+      
+    });
+
+    transporter.sendMail(
+      {
+        from: "STI-Building Administration <rodillas.222275@globalcity.sti.edu.ph>",
+        to: email,
+        subject: "HRM Custodian Signature:",
+        html: html,
+        attachments: [
+          {
+            filename: `Rasa_File_${id}.pdf`,
+            content: pdfBuffer,
+          },
+        ],
+      },
+      (error, info) => {
+        if (error) {
+          console.error(error);
+          return res
+            .status(500)
+            .send("An error occurred while sending the email");
+        }
+        console.log("Message Sent HRM: " + info.messageId);
+        console.log("Preview URL:", nodemailer.getTestMessageUrl(info)); // Log preview URL
+        const alertScript = `
+        <script>
+          alert('Email sent successfully to ${id}');
+          window.location.href = '/rasaview';
+        </script>
+      `;
+
+        res.send(alertScript);
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while sending the email");
+  }
+}
+
+// digit yung isesend natin instead of number sa approverasa Route for kitchen and classroom
+// if 30 yung digit, deretso sa verificationHRM
+// if 31 yung digit, deretso sa verification
+router.get("/verificationClassroom/:id/:digit", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const digit = req.params.digit;
+    const hashedId = encryptId(id);
+    const number = 20;
+    const encryptedNumber = encryptId(number);
+
+    console.log("----------------------------------------");
+    console.log("/verificationClassroom");
+    console.log("digit", digit)
+    console.log("id : ", id);
+    console.log("hashedId : ", hashedId);
+    let email = "magistrado.222133@globalcity.sti.edu.ph";
+
+    const pdfFileName = `rasa_${id}.pdf`;
+    const encryptedEmail = encryptId(email);
+    const html = `
+        <h1>Rasa for Classroom Facilitator Email</h1>
+        <a href="http://localhost:3005/approveRasa/${id}/${digit}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://localhost:3005/disregardRasa/${id}/${digit}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+      `;
+
+    const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
+    db1.query(
+      updateSql,
+      [`Approval of Classroom Facilitator : ${email}`, id],
+      (error, result) => {
+        if (error) {
+          console.error(error);
+          return res.status(500).send("Error updating rasa_status");
+        }
+        console.log(
+          `rasa_status updated to waiting for email of ${email} for ID: ${id}`
+        );
+        sendEmail_Classroom(id, email, hashedId, pdfFileName, html, res);
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while processing the request");
+  }
+});
+
+async function sendEmail_Classroom(id, email, hashedId, pdfFileName, html, res) {
+  try {
+    const pdfBuffer = await generatePDF(id);
+
+    const transporter = nodemailer.createTransport({
+      service: "hotmail",
+      /*
+      auth: {
+        user: "processtest2@outlook.ph",
+        pass: "cwbomrdgiphyvvnz",
+      },
+      */
+      auth: {
+        user: "rodillas.222275@globalcity.sti.edu.ph",
+        pass: "Idontknow16221",
+      },
+
+      
+    });
+
+    transporter.sendMail(
+      {
+        from: "STI-Building Administration <rodillas.222275@globalcity.sti.edu.ph>",
+        to: email,
+        subject: "Classroom Facilitator Signature:",
+        html: html,
+        attachments: [
+          {
+            filename: `Rasa_File_${id}.pdf`,
+            content: pdfBuffer,
+          },
+        ],
+      },
+      (error, info) => {
+        if (error) {
+          console.error(error);
+          return res
+            .status(500)
+            .send("An error occurred while sending the email");
+        }
+        console.log("Message Sent Classroom Facilitator: " + info.messageId);
+        console.log("Preview URL:", nodemailer.getTestMessageUrl(info)); // Log preview URL
+        const alertScript = `
+        <script>
+          alert('Email sent successfully to ${id}');
+          window.location.href = '/rasaview';
+        </script>
+      `;
+
+        res.send(alertScript);
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while sending the email");
+  }
+}
+
 router.get(
   "/approveRasa/:hashedId/:encryptedNumber/:encryptedEmail",
   async (req, res) => {
-    const hashedId = req.params.hashedId; // 12duvas76edd51231
+    const encryptedId = req.params.hashedId; // 1221
     const encryptedNumber = req.params.encryptedNumber; // dsasdase21231
     const encryptedEmail = req.params.encryptedEmail; // 128368712637813
-    const encryptedId = encryptId(hashedId);
+    //const encryptedId = encryptId(hashedId);
 
     console.log("------------------------------");
     console.log("----approveRasa------");
-    console.log(hashedId);
-    console.log(encryptedNumber);
     console.log(encryptedId);
+    console.log(encryptedNumber);
+    //console.log(hashedId);
 
     const query1 = "SELECT * FROM inputted_table WHERE id = ?";
     const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
-    db1.query(query1, [hashedId], (error, data1) => {
+    db1.query(query1, [encryptedId], (error, data1) => {
       if (error) {
         throw error;
       } else {
         if (data1.length > 0) {
-          db1.query(query2, [hashedId], (error, data2) => {
+          db1.query(query2, [encryptedId], (error, data2) => {
             if (error) {
               console.error("Error fetching data from inventory_table:", error);
               throw error;
@@ -1027,19 +1233,16 @@ router.get(
 let isProcessing = false;
 router.get("/verification2/:hashedId", async (req, res) => {
   isProcessing = true;
-
   try {
-    const originalId = req.params.hashedId;
-    const hashedId = decryptId(originalId);
-    const encryptedId = encryptId(hashedId);
+    const hashedId = req.params.hashedId; // change from orginalId to hashedId para ma remove yung decrypt
+    //const hashedId = decryptId(originalId);
+   // const encryptedId = encryptId(hashedId);
     const number = 2;
-    
-
     console.log("----------------------------------------");
     console.log("/verification2");
-    console.log("originalId : ", originalId);
-    console.log("hashedId : ", hashedId);
-    console.log("encryptedId : ", encryptedId);
+    //console.log("originalId : ", originalId);
+    //console.log("hashedId : ", hashedId);
+   // console.log("encryptedId : ", encryptedId);
     console.log("number", number)
 
     const query1 = "SELECT * FROM inputted_table WHERE id = ?";
@@ -1061,7 +1264,7 @@ router.get("/verification2/:hashedId", async (req, res) => {
             const datainputted = data1[0];
             const datainventory = data2[0];
 
-            const email = "miguelbaruc12@gmail.com";
+            const email = "baruc.231345@globalcity.sti.edu.ph";
             const html = `
               <h1>Rasa for Approval Email</h1>
               <a href="http://localhost:3005/approveRasa/${hashedId}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
@@ -1084,8 +1287,6 @@ router.get("/verification2/:hashedId", async (req, res) => {
                       " for ID: " +
                       hashedId
                   );
-
-                  // Generate PDF using the provided function
                   generatePDF(hashedId)
                     .then((pdfBuffer) => {
                       sendApprovalEmail(res, email, html, hashedId, pdfBuffer);
@@ -1146,14 +1347,14 @@ function sendApprovalEmail(res, email, html, hashedId, pdfBuffer) {
   const transporter = nodemailer.createTransport({
     service: "hotmail",
     auth: {
-      user: "processtest2@outlook.ph",
-      pass: "cwbomrdgiphyvvnz",
+      user: "rodillas.222275@globalcity.sti.edu.ph",
+      pass: "Idontknow16221",
     },
   });
 
   transporter.sendMail(
     {
-      from: "STI-Building Administration <processtest2@outlook.ph>",
+      from: "STI-Building Administration <rodillas.222275@globalcity.sti.edu.ph>",
       to: email,
       subject: "Second Signature:",
       html: html,

@@ -58,6 +58,12 @@ const rasatesting2 = async (req, res) => {
               required_day: required_day,
               rasa_status: "Pending",
               authenticated: authenticated,
+              rasa_noteClassroom: 0,
+              rasa_noteHRM: 0,
+              rasa_note: 0,
+              rasa_note2: 0,
+              rasa_note3: 0,
+              rasa_note_void: 0,
             }, (error, results) => {
               if (error) {
                 console.error(error);

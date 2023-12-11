@@ -320,26 +320,10 @@
     let finalVerification = "ejsrasaVanilla2";
     /////////////////
 
-    var noteForm = [
-      [1, '<%= datainputted.rasa_note %>'],
-      [2, '<%= datainputted.rasa_note2 %>'],
-      [3, '<%= datainputted.rasa_note3 %>'],
-      [4, '<%= datainputted.rasa_note4 %>'],
-      [5, '<%= datainputted.rasa_note5 %>'],
-    ];
+    let finalNote = '<%= datainputted.rasa_note_void %>';
 
-    let finalNote;
-    const y = noteForm.find(item => item[0] === number1);
-
-    if (y) {
-      console.log("Disregard Note:", y[1]);
-      finalNote = y[1];
-    } else {
-      console.log("Verification", finalNote);
-    }
-
-    if (finalNote !== null && finalNote !== "") {
-      alert('Rasa already has a note: ' + finalNote);
+    if (finalNote !== "0") {
+      alert('Void Rasa has already Noted: ' + finalNote);
       return;
     } else {
       do {
@@ -347,10 +331,11 @@
       } while (finalNote === null || finalNote === "");
       console.log('User input:', finalNote);
 
+      // 200 number for rasa_note_void
       try {
         const response = await fetch("/api/rasa_note", {
           method: "POST",
-          body: JSON.stringify({ note: finalNote, number: number, id: '<%= datainputted.id %>' }),
+          body: JSON.stringify({ note: finalNote, number: 200, id: '<%= datainputted.id %>' }),
           headers: {
             "Content-type": "application/json"
           }

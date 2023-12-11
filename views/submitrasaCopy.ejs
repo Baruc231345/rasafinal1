@@ -12,9 +12,19 @@
 <body>
   <div class="container">
     <div class="note">
-      <%= datainputted.rasa_note %> <br>
+      <% if (!datainputted.rasa_note_void) { %>
+        <%= datainputted.rasa_note %> <br>
+      <% } %>
+    
+      <% if (!datainputted.rasa_note_void) { %>
         <%= datainputted.rasa_note2 %> <br>
-          <%= datainputted.rasa_note3 %> <br>
+      <% } %>
+    
+      <% if (!datainputted.rasa_note_void) { %>
+        <%= datainputted.rasa_note3 %> <br>
+      <% } %>
+    
+        <%= datainputted.rasa_note_void %> <br>
     </div>
     <header>Summary Rasa Form</header>
     <form name="myForm" onsubmit="return false;" id="form">

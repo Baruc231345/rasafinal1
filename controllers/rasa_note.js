@@ -1,5 +1,5 @@
+// 200 number for rasa_note_void
 const db1 = require("../routes/rasa-db");
-
 const rasa_note = async (req, res) => {
   const { note, number, id } = req.body;
 
@@ -7,17 +7,17 @@ const rasa_note = async (req, res) => {
   console.log("rasa_note.js controller");
   console.log("Received data:", note, number, id);
 
-
   let number1 = parseInt(number, 10);
-
   var noteForm = [
-    [20,'rasa_noteClassroom'],
+    [30,'rasa_noteClassroom'],
+    [31,'rasa_noteClassroom'],
     [21,'rasa_noteHRM'],
     [1, "rasa_note"],
     [2, "rasa_note2"],
     [3, "rasa_note3"],
     [4, "rasa_note4"],
     [5, "rasa_note5"],
+    [200,"rasa_note_void"],
   ];
 
   let finalNote;

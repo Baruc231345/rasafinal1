@@ -5,13 +5,17 @@ const rasa_signature = async (req, res) => {
 
   console.log("----------------------");
   console.log("rasa_signature.js controller");
-  console.log("Received data:", "number:", number, "email", email, "id", id);
+  console.log("Received data:", "number:", number, ": email", email, ": id", id);
+  
+  const emailReq = req.body.email;
+  const email1 = emailReq.trim();
 
   let number1 = parseInt(number, 10);
   console.log(number1, "A")
 
   var numberForm = [
-    [20, "form_signClassroom"], // Classroom Facilitator Form
+    [31, "form_signClassroom"], // Classroom Facilitator Form
+    [30, "form_signClassroom"], // Classroom Facilitator Form
     [21, "form_signHRM"], // HRM Custodian Form
     [1, "form_sign"],
     [2, "form_sign2"],
@@ -29,27 +33,23 @@ const rasa_signature = async (req, res) => {
   }
 
   var accounts = [
-    ["wowo16221@gmail.com", 7],
-    ["nekins213@gmail.com", 8],
-    ["miguelbaruc12@gmail.com", 9],
+    ["baruc.231345@globalcity.sti.edu.ph", 7],
+    ["baruc.231345@globalcity.sti.edu.ph", 8],
+    ["rodillas.222275@globalcity.sti.edu.ph", 9],
     ["fonzyacera03@gmail.com", 16], // HRM Signature
-    ["baruc.231345@globalcity.sti.edu.ph", 17] // Classroom Signature
+    ["magistrado.222133@globalcity.sti.edu.ph", 17], // Classroom Signature
     ["no email",13] // Void Rasa
   ];
 
-  const y = accounts.find(item => item && item[0] === email);
+  const y = accounts.find(item => item && item[0].trim() === email1);
+
   let finalEmail;
   if (y) {
     console.log("Final Email:", y[1]);
     finalEmail = y[1];
   } else {
-    console.log("Email not found");
-    // Handle the case where the email is not found, e.g., set a default value or return an error response
-    res.status(404).json({
-      status: "error",
-      error: "Email not found.",
-    });
-    return; // Stop further execution
+    console.log("Email not found 123");
+    //finalEmail = "baruc.231345@globalcity.sti.edu.ph"
   }
   console.log("Final Number", finalNumber);
   console.log("Final Email", finalEmail);
