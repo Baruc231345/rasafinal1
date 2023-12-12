@@ -15,9 +15,10 @@ const rasatesting2 = async (req, res) => {
   console.log("");
 
   const eventDate = new Date(event_day);
-  eventDate.setDate(eventDate.getDate() + Number(required_day));
+  const requiredDays = Number(required_day);
+  eventDate.setDate(eventDate.getDate() + requiredDays - 1);
   const end_date = eventDate.toISOString().split("T")[0];
-
+  
   try {
     const overlappingEvents = await new Promise((resolve, reject) => {
       db1.query(
