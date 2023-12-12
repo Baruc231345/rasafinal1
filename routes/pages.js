@@ -17,6 +17,7 @@ const { default: puppeteer } = require("puppeteer");
 let universalId = null;
 const storage = multer.memoryStorage();
 router.use(express.static(__dirname + "/public"));
+require('dotenv').config();
 app.use(express.urlencoded({ extended: true }));
 console.log(__dirname);
 
@@ -801,18 +802,9 @@ router.get("/verification/:id", async (req, res) => {
     let email;
 
     const accounts = [
-      [
-        "Information & Communications Technology: People 1",
-        "rodillas.francis12@gmail.com",
-      ],
-      [
-        "Information & Communications Technology: People 2",
-        "rodillas.francis12@gmail.com",
-      ],
-      ["Business & Management: People 1", "wowo16221@gmail.com"],
-      ["Business & Management: People 2", "wowo16221@gmail.com"],
-      ["Hospitality Management: People 1", "miguelbaruc12@gmail.com"],
-      ["Hospitality Management: People 2", "miguelbaruc12@gmail.com"],
+      ["Information & Communications Technology: People 1","lopez.195633@globalcity.sti.edu.ph",],
+      ["Business & Management: People 1", "magistrado.222133@globalcity.sti.edu.ph"],
+      ["Hospitality Management: People 1", "rodillas.222275@globalcity.sti.edu.ph.com"],
     ];
 
     const query = `SELECT endorsed FROM inputted_table WHERE id = ${id}`;
@@ -830,20 +822,18 @@ router.get("/verification/:id", async (req, res) => {
 
     if (results.length > 0) {
       const endorsedValue = results[0].endorsed;
-
-      // Find the email corresponding to the endorsedValue
       let emailFound = false;
       for (const account of accounts) {
         if (endorsedValue === account[0]) {
           email = account[1];
           console.log(email);
           emailFound = true;
-          break; // Break the loop once email is found
+          break;
         }
       }
 
       if (!emailFound && (endorsedValue === "N/A" || endorsedValue === "")) {
-        email = "baruc.231345@globalcity.sti.edu.ph";
+        email = "rodillas.222275@globalcity.sti.edu.ph";
       }
       console.log("email: ", email)
       const pdfFileName = `rasa_${id}.pdf`;
@@ -887,8 +877,13 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
     const transporter = nodemailer.createTransport({
       service: "hotmail",
       auth: {
+        /*
+        user: process.env.ACCOUNT_USER,
+        pass: process.env.ACCOUNT_PASSWORD,
+        */
         user: "rodillas.222275@globalcity.sti.edu.ph",
         pass: "Idontknow16221",
+        
       },
     });
 
@@ -987,8 +982,6 @@ async function sendEmail_Kitchen(id, email, hashedId, pdfFileName, html, res) {
         user: "rodillas.222275@globalcity.sti.edu.ph",
         pass: "Idontknow16221",
       },
-
-      
     });
 
     transporter.sendMail(
@@ -1089,6 +1082,10 @@ async function sendEmail_Classroom(id, email, hashedId, pdfFileName, html, res) 
       },
       */
       auth: {
+        /*
+        user: process.env.ACCOUNT_USER,
+        pass: process.env.ACCOUNT_PASSWORD,
+        */
         user: "rodillas.222275@globalcity.sti.edu.ph",
         pass: "Idontknow16221",
       },
@@ -1347,6 +1344,10 @@ function sendApprovalEmail(res, email, html, hashedId, pdfBuffer) {
   const transporter = nodemailer.createTransport({
     service: "hotmail",
     auth: {
+      /*
+      user: process.env.ACCOUNT_USER,
+      pass: process.env.ACCOUNT_PASSWORD,
+      */
       user: "rodillas.222275@globalcity.sti.edu.ph",
       pass: "Idontknow16221",
     },
@@ -1394,11 +1395,8 @@ router.get("/getSignature/:id", async (req, res) => {
 
     const accounts = [
       ["Information & Communications Technology: People 1", 10],
-      ["Information & Communications Technology: People 2", 10],
       ["Business & Management: People 1", 9],
-      ["Business & Management: People 2", 9],
       ["Hospitality Management: People 1", 11],
-      ["Hospitality Management: People 2", 11],
     ];
 
     try {

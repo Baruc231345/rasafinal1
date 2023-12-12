@@ -31,12 +31,11 @@ const rasa_signature = async (req, res) => {
   } else {
     console.log("Number not found in the mapping");
   }
-
   var accounts = [
     ["baruc.231345@globalcity.sti.edu.ph", 7],
     ["baruc.231345@globalcity.sti.edu.ph", 8],
     ["rodillas.222275@globalcity.sti.edu.ph", 9],
-    ["fonzyacera03@gmail.com", 16], // HRM Signature
+    ["lopez.195633@globalcity.sti.edu.ph", 16], // HRM Signature
     ["magistrado.222133@globalcity.sti.edu.ph", 17], // Classroom Signature
     ["no email",13] // Void Rasa
   ];
@@ -48,9 +47,12 @@ const rasa_signature = async (req, res) => {
     console.log("Final Email:", y[1]);
     finalEmail = y[1];
   } else {
-    console.log("Email not found 123");
-    //finalEmail = "baruc.231345@globalcity.sti.edu.ph"
-  }
+    const confirmation = confirm("Email not found.");
+    if (confirmation) {
+        throw { status: 404, redirectTo: '/logout' };
+        //finalEmail = "baruc.231345@globalcity.sti.edu.ph"
+    }
+}
   console.log("Final Number", finalNumber);
   console.log("Final Email", finalEmail);
 

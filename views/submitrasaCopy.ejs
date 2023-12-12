@@ -12,20 +12,23 @@
 <body>
   <div class="container">
     <div class="note">
-      <% if (!datainputted.rasa_note_void) { %>
-        <%= datainputted.rasa_note %> <br>
+      <% if (datainputted.rasa_note_void === "0" && datainputted.rasa_note !== "0") { %>
+        NOTE 1: <%= datainputted.rasa_note %> <br>
       <% } %>
     
-      <% if (!datainputted.rasa_note_void) { %>
-        <%= datainputted.rasa_note2 %> <br>
+      <% if (datainputted.rasa_note_void === "0" && datainputted.rasa_note2 !== "0") { %>
+        NOTE 2: <%= datainputted.rasa_note2 %> <br>
       <% } %>
     
-      <% if (!datainputted.rasa_note_void) { %>
-        <%= datainputted.rasa_note3 %> <br>
+      <% if (datainputted.rasa_note_void === "0" && datainputted.rasa_note3 !== "0") { %>
+        NOTE 3: <%= datainputted.rasa_note3 %> <br>
       <% } %>
     
-        <%= datainputted.rasa_note_void %> <br>
+      <% if (datainputted.rasa_note_void !== "0") { %>
+        RASA VOID: <%= datainputted.rasa_note_void %> <br>
+      <% } %>
     </div>
+    
     <header>Summary Rasa Form</header>
     <form name="myForm" onsubmit="return false;" id="form">
       <div class="form first">

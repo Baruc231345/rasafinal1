@@ -14,9 +14,21 @@
 
   <div class="container">
     <div class="note">
-      <%= datainputted.rasa_note %> <br>
-        <%= datainputted.rasa_note2 %> <br>
-          <%= datainputted.rasa_note3 %> <br>
+      <% if (datainputted.rasa_note_void === "0" && datainputted.rasa_note !== "0") { %>
+        NOTE 1: <%= datainputted.rasa_note %> <br>
+      <% } %>
+    
+      <% if (datainputted.rasa_note_void === "0" && datainputted.rasa_note2 !== "0") { %>
+        NOTE 2: <%= datainputted.rasa_note2 %> <br>
+      <% } %>
+    
+      <% if (datainputted.rasa_note_void === "0" && datainputted.rasa_note3 !== "0") { %>
+        NOTE 3: <%= datainputted.rasa_note3 %> <br>
+      <% } %>
+    
+      <% if (datainputted.rasa_note_void !== "0") { %>
+        RASA VOID: <%= datainputted.rasa_note_void %> <br>
+      <% } %>
     </div>
 
     <header>Summary Rasa Form</header>
@@ -397,10 +409,10 @@
             }
           });
 
-          if ((signatureResponse.ok) && (finalNote === '2')) {
+          if ((signatureResponse.ok) && (number === '2')) {
             const authenticateResponse = await fetch("/api/rasa_authenticate", {
               method: "POST",
-              body: JSON.stringify({ digit: finalNote, id: '<%= datainputted.id %>' }),
+              body: JSON.stringify({ digit: number, id: '<%= datainputted.id %>' }),
               headers: {
                 "Content-type": "application/json"
               }
