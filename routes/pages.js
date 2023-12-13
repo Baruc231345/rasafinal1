@@ -704,6 +704,36 @@ router.get("/pdf2/:encryptedId", async (req, res) => {
   }
 });
 
+const express = require('express');
+const router = express.Router();
+
+const db1 = require('../routes/rasa-db');
+
+router.get('/delete/:id', async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    const getUserQuery = 'SELECT * FROM users WHERE id = ?';
+    const [userData] = await db1.query(getUserQuery, [userId]);
+
+    if (!userData || userData.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const deleteUserQuery = 'DELETE FROM users WHERE id = ?';
+    await db1.query(deleteUserQuery, [userId]);
+
+    const insertArchivedUserQuery = 'INSERT INTO archived_users SET ?';
+    await db1.query(insertArchivedUserQuery, userData[0]);
+
+    res.json({ status: 'success', message: 'User deleted and archived successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: 'error', error: 'Internal server error' });
+  }
+});
+
+
 router.get("/delete_rasa_request/:id", async (req, res) => {
   const rasaID = req.params.id;
   try {
