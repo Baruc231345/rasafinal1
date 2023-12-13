@@ -708,14 +708,14 @@ router.get('/delete/:id', async (req, res) => {
   const userId = req.params.id;
 
   try {
-    const getUserQuery = 'SELECT * FROM users WHERE id = ?';
+    const getUserQuery = 'SELECT * FROM user WHERE id = ?';
     const [userData] = await db1.query(getUserQuery, [userId]);
 
     if (!userData || userData.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const deleteUserQuery = 'DELETE FROM users WHERE id = ?';
+    const deleteUserQuery = 'DELETE FROM user WHERE id = ?';
     await db1.query(deleteUserQuery, [userId]);
 
     const insertArchivedUserQuery = 'INSERT INTO archived_users SET ?';
