@@ -40,7 +40,6 @@ app.get("/ejsrasaCalendar/css/rasa.css", (req, res) => {
   res.sendFile(__dirname + "/public/css/rasa.css");
 });
 
-
 app.get("/ejsrasaVanilla2/css/rasa_copy.css", (req, res) => {
   res.sendFile(__dirname + "/public/css/rasa.css");
 });
