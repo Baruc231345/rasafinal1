@@ -8,7 +8,7 @@ const rasatesting2 = async () => {
 
   let auditorium = 1;
   let foodandbeverage = 0;
-  let mainlobby = 1;
+  let mainlobby = 0;
   let dancestudio = 0;
   let multihall = 0;
   let gym = 0;
@@ -30,10 +30,11 @@ const rasatesting2 = async () => {
     .filter(([value]) => value === 1)
     .map(([_, name]) => name);
 
+  console.log("Date:", event_day);
   console.log("Selected venues:", selectedArray);
 
   try {
-    const results = await new Promise((resolve, reject) => {
+    const overlappingVenues = await new Promise((resolve, reject) => {
       const venueConditions = selectedArray.map((venue) => `${venue} = 1`).join(' OR ');
 
       db1.query(
