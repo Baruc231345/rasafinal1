@@ -52,30 +52,6 @@ const rasatesting2_inventory = async (req, res) => {
 
   try {
 
-    const duplicateResults = await new Promise((resolve, reject) => {
-      db1.query(
-        `SELECT * FROM inputted_table WHERE full_name = ? AND event_name = ? AND event_description = ? 
-        AND event_day = ? AND start_time = ?`,
-        [full_name, event_name, event_description, event_day, start_time],
-        (error, results) => {
-          if (error) {
-            reject(error);
-            console.error("Error on selecting:", error);
-          } else {
-            resolve(results);
-          }
-        }
-      );
-    });
-
-    if (duplicateResults.length > 0) {
-      console.log("Duplicate Event. Please Try again:", duplicateResults);
-      return res.status(400).json({
-        status: "duplicated",
-        error: "Duplicate RASA.",
-      });
-    }
-
     const results = await new Promise((resolve, reject) => {
       db1.query(
         'INSERT INTO inventory_table SET ?',
