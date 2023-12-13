@@ -129,7 +129,7 @@ fetch("/api/rasa_view")
       return res.json();
     })
     .then((data) => {
-      console.log("Authenticated updated successfully:", data);
+      alert("Authenticated updated successfully:", data);
   
       window.location.href = "/dashboardAdmin";
     })

@@ -1,21 +1,74 @@
-let email = "baruc.231345@globalcity.sti.edu.ph"
+const db1 = require("../routes/rasa-db");
 
-  var accounts = [
-    ["baruc.231345@globalcity.sti.edu.ph", 7],
-    ["baruc.231345@globalcity.sti.edu.ph", 8],
-    ["rodillas.222275@globalcity.sti.edu.ph", 9],
-    ["fonzyacera03@gmail.com", 16], // HRM Signature
-    ["magistrado.222133@globalcity.sti.edu.ph", 17], // Classroom Signature
-    ["no email",13] // Void Rasa
+const rasatesting2 = async () => {
+  let event_day = "2023-12-29";
+  let start_time = "12:00:00";
+  let end_time = "15:00:00";
+  console.log("rasatesting2.js");
+
+  let auditorium = 1;
+  let foodandbeverage = 0;
+  let mainlobby = 1;
+  let dancestudio = 0;
+  let multihall = 0;
+  let gym = 0;
+  let kitchen = 1;
+  let classroom = 0;
+
+  var venueArray = [
+    [auditorium, "auditorium"],
+    [foodandbeverage, "foodandbeverage"],
+    [mainlobby, "mainlobby"],
+    [dancestudio, "dancestudio"],
+    [multihall, "multihall"],
+    [gym, "gym"],
+    [kitchen, "kitchen"],
+    [classroom, "classroom"],
   ];
 
-  const y = accounts.find(item => item && item[0].trim() === email.trim());
+  const selectedArray = venueArray
+    .filter(([value]) => value === 1)
+    .map(([_, name]) => name);
 
-  let finalEmail;
-  if (y) {
-    console.log("Final Email:", y[1]);
-    finalEmail = y[1];
-  } else {
-    console.log("Email not found 123");
-    //finalEmail = "baruc.231345@globalcity.sti.edu.ph"
+  console.log("Selected venues:", selectedArray);
+
+  try {
+    const results = await new Promise((resolve, reject) => {
+      const venueConditions = selectedArray.map((venue) => `${venue} = 1`).join(' OR ');
+
+      db1.query(
+        `SELECT * FROM calendar_input WHERE event_day = ? AND 
+         ((CAST(? AS TIME) >= start_time AND CAST(? AS TIME) < end_time) OR 
+          (CAST(? AS TIME) > start_time AND CAST(? AS TIME) <= end_time) OR 
+          (CAST(? AS TIME) <= start_time AND CAST(? AS TIME) >= end_time)) AND 
+         (${venueConditions})`,
+        [event_day, start_time, start_time, end_time, end_time, start_time, end_time],
+        (error, results) => {
+          if (error) {
+            reject(error);
+            console.log("Error executing the query:", error);
+          } else {
+            console.log("Overlapping events in selected venues:", results);
+
+            // If there are overlapping events, reject the promise with an error message
+            if (results.length > 0) {
+              reject('Overlapping event found in selected venues. Please choose a different time.');
+            } else {
+              console.log("Success");
+              resolve(results);
+            }
+          }
+        }
+      );
+    });
+
+    // Do something with the results if needed
+    console.log("Results:", results);
+  } catch (error) {
+    console.error("Error:", error);
+    // Handle the error appropriately
   }
+};
+
+// Call the function
+rasatesting2();

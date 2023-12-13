@@ -7,6 +7,17 @@ const rasatesting2_inventory = async (req, res,) => {
     widescreen, widescreen_quantity, chair, chair_quantity, table_input, table_quantity,
     other, other_quantity, blackpanel, blackpanel_quantity, whiteboard, whiteboard_quantity, aircon, 
     start_aircon, end_aircon} = req.body;
+
+    console.log("rasatesting2_inventory.js received data")
+    console.log("auditorium: ", auditorium)
+    console.log(foodandbeverage);
+    console.log(mainlobby);
+    console.log(dancestudio);
+    console.log(multihall);
+    console.log(gym);
+    console.log(kitchen);
+    console.log(classroom);
+
   try {
     const results = await new Promise((resolve, reject) => {
       db1.query('INSERT INTO inventory_table SET ?', {

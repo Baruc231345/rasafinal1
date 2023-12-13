@@ -13,12 +13,12 @@ const calendarInput = async (req, res) => {
 
 
   try {
-    for (let i = 1; i < required_day; i++) {
+    for (let i = 1; i <= required_day; i++) {
       const newEventDay = new Date(event_day);
       newEventDay.setDate(newEventDay.getDate() + i);
       const formattedEventDay = newEventDay.toISOString().split("T")[0];
-      console.log("formatted Day:" , formattedEventDay)
-
+      console.log("formatted Day:", formattedEventDay);
+    
       await new Promise((resolve, reject) => {
         db1.query(
           'INSERT INTO calendar_input SET ?',
@@ -35,13 +35,14 @@ const calendarInput = async (req, res) => {
             if (error) {
               reject(error);
             } else {
-              console.log("Sucess on calendar_input")
+              console.log("Success on calendar_input");
               resolve(results);
             }
           }
         );
       });
     }
+    
 
     // Insert into calendar_input2
     await new Promise((resolve, reject) => {
