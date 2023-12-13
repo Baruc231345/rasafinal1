@@ -32,11 +32,11 @@ app.get("/ejsrasa/css/rasa.css", (req, res) => {
   res.sendFile(__dirname + "/public/css/rasa.css");
 });
 
-app.get("/ejsrasaVanilla/css/rasa.css", (req, res) => {
-  res.sendFile(__dirname + "/public/css/rasa.css");
+app.get("/ejsrasaVanilla/css/rasa_copy.css", (req, res) => {
+  res.sendFile(__dirname + "/public/css/rasa_copy.css");
 });
 
-app.get("/ejsrasaVanilla2/css/rasa.css", (req, res) => {
+app.get("/ejsrasaVanilla2/css/rasa_copy.css", (req, res) => {
   res.sendFile(__dirname + "/public/css/rasa.css");
 });
 
@@ -82,20 +82,20 @@ app.get("/ejsrasa_copy/:id1/css/rasa.css", (req, res) => {
     res.sendFile(__dirname + "/public/css/rasa.css");
   });
 
-  app.get("/approveRasa/:hashedId/:encryptedNumber/css/rasa.css", (req, res) => {
-    res.sendFile(__dirname + "/public/css/rasa.css");
+  app.get("/approveRasa/:hashedId/:encryptedNumber/css/rasa_copy.css", (req, res) => {
+    res.sendFile(__dirname + "/public/css/rasa_copy.css");
   });
 
-  app.get("/approveRasa/:hashedId/css/rasa.css", (req, res) => {
-    res.sendFile(__dirname + "/public/css/rasa.css");
+  app.get("/approveRasa/:hashedId/css/rasa_copy.css", (req, res) => {
+    res.sendFile(__dirname + "/public/css/rasa_copy.css");
   });
 
   app.get("/approveRasa/:hashedId/:encryptedNumber/js/rasa.js", (req, res) => {
     res.sendFile(__dirname + "/public/js/rasa.js");
   });
 
-  app.get("/disregardRasa/:hashedId/css/rasa.css", (req, res) => {
-    res.sendFile(__dirname + "/public/css/rasa.css");
+  app.get("/disregardRasa/:hashedId/css/rasa_copy.css", (req, res) => {
+    res.sendFile(__dirname + "/public/css/rasa_copy.css");
   });
 
   app.get("/disregardRasa/:hashedId/js/rasa.js", (req, res) => {

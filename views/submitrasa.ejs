@@ -82,7 +82,7 @@
             </div>
 
             <div class="input-field" style="width: 380px;">
-              <label>How many days do you require use of the facility?</label>
+              <label>Required days of Facility</label>
               <input type="text" id="required_day" value="<%= datainputted.required_day %>" disabled>
             </div>
 
@@ -102,38 +102,32 @@
           <div class="top" style="width: 400px; padding-left: 20px;">
             <span class="title">Facilities Needed</span>
             <p class="text">Here is the list of facilities you have selected:</p>
-            <ul class="facility-list">
-              <% if (datainventory.auditorium===1) { %>
+          
+            <ul class="facility-list" style="list-style-type: none;">
+              <% if (datainventory.auditorium === 1) { %>
                 <li><span class="check-symbol">✔</span> <span class="selected-facility">Auditorium</span></li>
-                <% } %>
-                  <% if (datainventory.foodandbeverage===1) { %>
-                    <li><span class="check-symbol">✔</span> <span class="selected-facility">Food and Beverage
-                        Room</span></li>
-                    <% } %>
-                      <% if (datainventory.mainlobby===1) { %>
-                        <li><span class="check-symbol">✔</span> <span class="selected-facility">Main Lobby</span></li>
-                        <% } %>
-                          <% if (datainventory.dancestudio===1) { %>
-                            <li><span class="check-symbol">✔</span> <span class="selected-facility">Dance Studio</span>
-                            </li>
-                            <% } %>
-                              <% if (datainventory.multihall===1) { %>
-                                <li><span class="check-symbol">✔</span> <span class="selected-facility">Multihall</span>
-                                </li>
-                                <% } %>
-                                  <% if (datainventory.gym===1) { %>
-                                    <li><span class="check-symbol">✔</span> <span
-                                        class="selected-facility">Gymnasium</span></li>
-                                    <% } %>
-                                      <% if (datainventory.kitchen===1) { %>
-                                        <li><span class="check-symbol">✔</span> <span
-                                            class="selected-facility">Kitchen</span></li>
-                                        <% } %>
-                                          <% if (datainventory.classroom===1) { %>
-                                            <li><span class="check-symbol">✔</span>
-                                              <span class="selected-facility">Classroom: <%=
-                                                  datainventory.classroom_number %></span>
-                                              <% } %>
+              <% } %>
+              <% if (datainventory.foodandbeverage === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Food and Beverage Room</span></li>
+              <% } %>
+              <% if (datainventory.mainlobby === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Main Lobby</span></li>
+              <% } %>
+              <% if (datainventory.dancestudio === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Dance Studio</span></li>
+              <% } %>
+              <% if (datainventory.multihall === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Multihall</span></li>
+              <% } %>
+              <% if (datainventory.gym === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Gymnasium</span></li>
+              <% } %>
+              <% if (datainventory.kitchen === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Kitchen</span></li>
+              <% } %>
+              <% if (datainventory.classroom === 1) { %>
+                <li><span class="check-symbol">✔</span> <span class="selected-facility">Classroom: <%= datainventory.classroom_number %></span></li>
+              <% } %>
             </ul>
           </div>
 

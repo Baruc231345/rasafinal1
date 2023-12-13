@@ -31,7 +31,6 @@
         </tr>
       </thead>
       <tbody>
-        <!-- Calendar dates will be dynamically added here -->
       </tbody>
     </table>
   </div>
@@ -48,17 +47,17 @@
           return response.json();
         })
         .then((data) => {
-          events.length = 0; // Clear the existing events array
+          events.length = 0; 
           events.push(
             ...data.map((data) => ({
               id: data.id,
-              date: new Date(data.event_day), // Assuming event_day is in a date format
+              date: new Date(data.event_day), 
               title: data.event_name,
               description: data.event_description,
               duration: data.required_day,
             }))
           );
-          showCalendar(); // Call a function to display the updated calendar
+          showCalendar();
         })
         .catch((error) => {
           console.error('Error:', error);
@@ -180,7 +179,7 @@
 
                   // Add click event listener to the event element
                   eventElement.addEventListener("click", () => {
-                    window.location.href = `/ejsrasaVanilla/${event.id}`;
+                    window.location.href = `/ejsrasaCalendar/${event.id}`;
                   });
                 }
               }

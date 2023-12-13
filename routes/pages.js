@@ -2,6 +2,8 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT;
 const PORT1 = process.env.PORT1;
+const ACCOUNT_USER = process.env.ACCOUNT_USER;
+const ACCOUNT_PASSWORD = process.env.ACCOUNT_PASSWORD;
 const loggedIn = require("../controllers/loggedin");
 const login = require("../controllers/login");
 const logout = require("../controllers/logout");
@@ -19,6 +21,8 @@ const storage = multer.memoryStorage();
 router.use(express.static(__dirname + "/public"));
 require('dotenv').config();
 app.use(express.urlencoded({ extended: true }));
+const nodemailer = require("nodemailer");
+const { hash } = require("bcryptjs");
 console.log(__dirname);
 
 const crypto = require("crypto");
@@ -98,7 +102,6 @@ router.get(
   }
 );
 
-// Middleware to check for the presence of universalId in the session
 const checkUniversalCodeMiddleware = (req, res, next) => {
   const universalCode = req.session.universalId;
   console.log("----------------------------------------");
@@ -106,13 +109,11 @@ const checkUniversalCodeMiddleware = (req, res, next) => {
   console.log(universalCode);
   console.log("test");
 
-  // If universalCode is not present, redirect to the root path
   if (!universalCode) {
     req.session.universalId = null;
     return res.redirect("/");
   }
 
-  // If universalCode is present, continue to the next middleware or route handler
   next();
 };
 
@@ -160,6 +161,44 @@ router.get("/ejsrasaVanilla/:id", (req, res) => {
               const datainventory = data2[0];
               res.locals.rasaID = rasaID;
               res.render("submitrasaCopy", {
+                rasaID,
+                datainputted,
+                datainventory,
+                universalId,
+              });
+            } else {
+              res.status(404).send("Data from second table not found");
+            }
+          }
+        });
+      } else {
+        res.status(404).send("Data from first table not found");
+      }
+    }
+  });
+});
+
+
+router.get("/ejsrasaCalendar/:id", (req, res) => {
+  const rasaID = req.params.id;
+  const universalId = req.session.universalId;
+  const query1 = "SELECT * FROM inputted_table WHERE id = ?";
+  const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
+  db1.query(query1, [rasaID], (error, data1) => {
+    if (error) {
+      throw error;
+    } else {
+      if (data1.length > 0) {
+        db1.query(query2, [rasaID], (error, data2) => {
+          if (error) {
+            console.error("Error fetching data from inventory_table:", error); // Log the error
+            throw error;
+          } else {
+            if (data2.length > 0) {
+              const datainputted = data1[0];
+              const datainventory = data2[0];
+              res.locals.rasaID = rasaID;
+              res.render("submitrasaCalendar", {
                 rasaID,
                 datainputted,
                 datainventory,
@@ -270,18 +309,16 @@ router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
   const rasaID = req.params.id;
   const universalId = req.session.universalId;
 
-  // Check if universalId is null or empty
+
   if (universalId == null || universalId === "") {
-    // Redirect to the logout page
+    // logout
     return res.redirect("/logout");
   }
 
-  // Define queries for both tables
   const query1 = "SELECT * FROM temporary_inputted_table WHERE id = ?";
   const query2 =
     "SELECT * FROM temporary_inventory_table WHERE rasa_inventory_id = ?";
 
-  // Execute the first query
   db1.query(query1, [rasaID], (error, data1) => {
     if (error) {
       throw error;
@@ -317,7 +354,7 @@ router.get("/editUserView", adminMiddleware, (req, res) => {
   res.sendFile("editUserView.html", { root: "./public" });
 });
 
-router.get("/rasa", (req, res) => {
+router.get("/rasa", loggedIn, (req, res) => {
   const universalId = req.session.universalId;
   res.render("rasa", { id: universalId });
 });
@@ -392,7 +429,6 @@ router.get("/inventory123", loggedIn, dashboardAccessMiddleware, (req, res) => {
     }),
   ])
     .then(([inputtedData, inventoryData]) => {
-      // Combine data and send as JSON
       const combinedData = {
         inputtedData: inputtedData,
         inventoryData: inventoryData,
@@ -498,9 +534,7 @@ router.get("/rasaview/:id", checkUniversalCodeMiddleware, (req, res) => {
         console.error("Error fetching data:", error);
         res.status(500).send("Error fetching data.");
       } else {
-        // Process and render data
         const sampleData = data.map((item) => {
-          // Encrypt each data.id before sending it to the template
           return {
             ...item,
             encryptedId: encryptId(item.id),
@@ -557,7 +591,7 @@ router.get("/accesorRegular", loggedIn, (req, res) => {
   if (req.user) {
     res.sendFile("accesor_regular.html", { root: "./public/" });
   } else {
-    // Render a login page with a message
+    // message
     const message = "You need to log in to access the accessor regular page.";
     res.render("login", { message: message });
   }
@@ -595,7 +629,7 @@ router.get("/pdf1/:id", async (req, res) => {
       args: ["--no-sandbox"],
     });
     const page = await browser.newPage();
-    await page.setViewport({ width: 941, height: 700 }); // Wid
+    await page.setViewport({ width: 941, height: 700 }); // Width
     await page.goto(url, { waitUntil: "load" });
     const pdfBuffer = await page.pdf();
     await browser.close();
@@ -747,7 +781,7 @@ router.get("/approve/:id", (req, res) => {
           error: "Error approving user",
         });
       }
-      return res.redirect("/userview"); // Redirect to the '/userview' route after updating the 'user.pending' value
+      return res.redirect("/userview"); // Redirect to the '/userview' 
     }
   );
 });
@@ -763,13 +797,8 @@ async function generatePDF(id) {
       args: ["--no-sandbox"],
     });
     const page = await browser.newPage();
-
-    // Set a custom viewport size
-    await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
-
+    await page.setViewport({ width: 941, height: 700 }); 
     await page.goto(url, { waitUntil: "load" });
-
-    // Scroll to the bottom of the page to ensure all content is visible
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
     });
@@ -782,10 +811,6 @@ async function generatePDF(id) {
     throw Error("An error occurred while generating PDF");
   }
 }
-
-const nodemailer = require("nodemailer");
-const { hash } = require("bcryptjs");
-
 // verification1
 router.get("/verification/:id", async (req, res) => {
   try {
@@ -793,13 +818,11 @@ router.get("/verification/:id", async (req, res) => {
     const hashedId = encryptId(id);
     const number = 1;
     const encryptedNumber = encryptId(number);
-
+    let email;
     console.log("----------------------------------------");
     console.log("/verification");
     console.log("id : ", id);
     console.log("hashedId : ", hashedId);
-
-    let email;
 
     const accounts = [
       ["Information & Communications Technology: People 1","lopez.195633@globalcity.sti.edu.ph",],
@@ -808,7 +831,6 @@ router.get("/verification/:id", async (req, res) => {
     ];
 
     const query = `SELECT endorsed FROM inputted_table WHERE id = ${id}`;
-
     const results = await new Promise((resolve, reject) => {
       db1.query(query, (error, results) => {
         if (error) {
@@ -877,12 +899,13 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
     const transporter = nodemailer.createTransport({
       service: "hotmail",
       auth: {
-        /*
-        user: process.env.ACCOUNT_USER,
-        pass: process.env.ACCOUNT_PASSWORD,
-        */
+
+        user: ACCOUNT_USER,
+        pass: ACCOUNT_PASSWORD,
+ /*
         user: "rodillas.222275@globalcity.sti.edu.ph",
         pass: "Idontknow16221",
+        */
         
       },
     });
@@ -927,6 +950,8 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
 
 router.get("/verificationHRM/:id", async (req, res) => {
   try {
+    console.log(ACCOUNT_PASSWORD)
+    console.log(ACCOUNT_USER)
     const id = req.params.id;
     const hashedId = encryptId(id);
     const number = 21;
@@ -978,10 +1003,16 @@ async function sendEmail_Kitchen(id, email, hashedId, pdfFileName, html, res) {
         pass: "cwbomrdgiphyvvnz",
       },
       */
+     /*
       auth: {
         user: "rodillas.222275@globalcity.sti.edu.ph",
         pass: "Idontknow16221",
       },
+      */
+      auth: {
+        user: ACCOUNT_USER,
+        pass: ACCOUNT_PASSWORD,
+      }
     });
 
     transporter.sendMail(
@@ -1005,7 +1036,7 @@ async function sendEmail_Kitchen(id, email, hashedId, pdfFileName, html, res) {
             .send("An error occurred while sending the email");
         }
         console.log("Message Sent HRM: " + info.messageId);
-        console.log("Preview URL:", nodemailer.getTestMessageUrl(info)); // Log preview URL
+        console.log("Preview URL:", nodemailer.getTestMessageUrl(info)); // FALSE URL
         const alertScript = `
         <script>
           alert('Email sent successfully to ${id}');
@@ -1027,6 +1058,8 @@ async function sendEmail_Kitchen(id, email, hashedId, pdfFileName, html, res) {
 // if 31 yung digit, deretso sa verification
 router.get("/verificationClassroom/:id/:digit", async (req, res) => {
   try {
+    console.log(ACCOUNT_PASSWORD)
+    console.log(ACCOUNT_USER)
     const id = req.params.id;
     const digit = req.params.digit;
     const hashedId = encryptId(id);
@@ -1035,6 +1068,8 @@ router.get("/verificationClassroom/:id/:digit", async (req, res) => {
 
     console.log("----------------------------------------");
     console.log("/verificationClassroom");
+    console.log("password:", ACCOUNT_PASSWORD)
+    console.log("user:" , ACCOUNT_USER)
     console.log("digit", digit)
     console.log("id : ", id);
     console.log("hashedId : ", hashedId);
@@ -1082,12 +1117,13 @@ async function sendEmail_Classroom(id, email, hashedId, pdfFileName, html, res) 
       },
       */
       auth: {
+
+        user: ACCOUNT_USER,
+        pass: ACCOUNT_PASSWORD,
         /*
-        user: process.env.ACCOUNT_USER,
-        pass: process.env.ACCOUNT_PASSWORD,
-        */
         user: "rodillas.222275@globalcity.sti.edu.ph",
         pass: "Idontknow16221",
+        */
       },
 
       
@@ -1344,12 +1380,8 @@ function sendApprovalEmail(res, email, html, hashedId, pdfBuffer) {
   const transporter = nodemailer.createTransport({
     service: "hotmail",
     auth: {
-      /*
-      user: process.env.ACCOUNT_USER,
-      pass: process.env.ACCOUNT_PASSWORD,
-      */
-      user: "rodillas.222275@globalcity.sti.edu.ph",
-      pass: "Idontknow16221",
+      user: ACCOUNT_USER,
+      pass: ACCOUNT_PASSWORD,
     },
   });
 
@@ -1464,7 +1496,7 @@ router.get("/getSignature/:id", async (req, res) => {
               args: ["--no-sandbox"],
             });
             const page = await browser.newPage();
-            await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
+            await page.setViewport({ width: 941, height: 700 });
             await page.goto(url, { waitUntil: "load" });
             const pdfBuffer = await page.pdf();
             await browser.close();
@@ -1627,7 +1659,7 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
           args: ["--no-sandbox"],
         });
         const page = await browser.newPage();
-        await page.setViewport({ width: 941, height: 700 }); // Adjust the width and height as needed
+        await page.setViewport({ width: 941, height: 700 });
         await page.goto(url, { waitUntil: "load" });
         const pdfBuffer = await page.pdf();
         await browser.close();

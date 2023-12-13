@@ -209,7 +209,7 @@
         <div class="signature-form">
           <div class="signature-column">
             <div class="signature-container">
-              <canvas id="form_sign0" width="200" height="150"></canvas>
+              <canvas id="form_signClassroom" width="200" height="150"></canvas>
               <img id="form_sign_image"
                 src="<%= datainputted.form_signClassroom ? 'data:image/png;base64,' + datainputted.form_signClassroom.toString('base64') : '' %>"
                 alt="Classroom Facilitator">
@@ -219,7 +219,7 @@
             </div>
 
             <div class="signature-container">
-              <canvas id="form_sign" width="200" height="150"></canvas>
+              <canvas id="form_signClassroom" width="200" height="150"></canvas>
               <img id="form_sign_image"
                 src="<%= datainputted.form_sign ? 'data:image/png;base64,' + datainputted.form_sign.toString('base64') : '' %>"
                 alt="Endorsed By">
@@ -281,128 +281,74 @@
         </div>
     </form>
 </body>
+<script>
+  const universalId = <%= universalId %>;
+</script>
 
 <script>
-  window.onload = async function () {
-    var number = '<%= encryptedNumber %>';
-    var email = '<%= encryptedEmail %>';
-    var encryptedId = '<%= encryptedId %>';
-    var rasa_note = '<%= datainputted.rasa_note %>';
-    var rasa_note2 = '<%= datainputted.rasa_note2 %>';
-    var rasa_note3 = '<%= datainputted.rasa_note3 %>';
-    var rasa_note4 = '<%= datainputted.rasa_note4 %>';
-    console.log(encryptedId, "encryptedId")
-    console.log(number, "var number");
+  // form_sign1
+  var canvas = document.getElementById('form_sign');
+  var context = canvas.getContext('2d');
+  var image1 = new Image();
+  image1.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
+  image1.onload = function () {
+    // Scale the image to fit the canvas while maintaining aspect ratio
+    var scaleFactor = Math.min(canvas.width / image1.width, canvas.height / image1.height);
+    var newWidth = image1.width * scaleFactor;
+    var newHeight = image1.height * scaleFactor;
+    var x = (canvas.width - newWidth) / 2;
+    var y = (canvas.height - newHeight) / 2;
 
-    let number1 = parseInt(number, 10);
-    console.log("number1: ", number1)
-    console.log("number: ", number)
-    ///////////////
-    var verificationForm = [
-      [31, "verification"],
-      [30, "verificationHRM"],
-      [20, "verification"], // Classroom?
-      [21, "verification"], // Kitchen
-      [1, "verification2"],
-      [2, "ejsrasaVanilla"],
-    /*[3, "verification4"],
-      [4, "verification5"],
-      [5, "verification6"],
-      */ 
-      //for future verification
-    ];
-    const x = verificationForm.find(item => item[0] === number1);
-    let finalVerification;
-    if (x) {
-      console.log("Verification for Approval:", x[1]);
-      finalVerification = x[1];
-    } else {
-      console.log("Verification", finalVerification);
-    }
-    /////////////////
+    context.drawImage(image1, x, y, newWidth, newHeight);
+  };
 
-    var noteForm = [
-      [30,'<%= datainputted.rasa_noteClassroom%>'],
-      [31,'<%= datainputted.rasa_noteClassroom%>'],
-      [21,'<%= datainputted.rasa_noteHRM %>'],
-      [1, '<%= datainputted.rasa_note %>'],
-      [2, '<%= datainputted.rasa_note2 %>'],
-      /*
-      [3, '<%= datainputted.rasa_note3 %>'],
-      [4, '<%= datainputted.rasa_note4 %>'],
-      [5, '<%= datainputted.rasa_note5 %>'],
-      */
-    ];
+  // form_sign2
+  var canvas2 = document.getElementById('form_sign2');
+  if (canvas2) {
+    var context2 = canvas2.getContext('2d');
+    var image2 = new Image();
+    image2.src = '<%= datainputted.form_sign2 ? "data:image/png;base64," + datainputted.form_sign2.toString("base64") : "" %>';
+    image2.onload = function () {
+      // Scale the image to fit the canvas while maintaining aspect ratio
+      var scaleFactor = Math.min(canvas2.width / image2.width, canvas2.height / image2.height);
+      var newWidth = image2.width * scaleFactor;
+      var newHeight = image2.height * scaleFactor;
+      var x = (canvas2.width - newWidth) / 2;
+      var y = (canvas2.height - newHeight) / 2;
 
-    let finalNote;
-    const y = noteForm.find(item => item[0] === number1);
-
-    if (y) {
-      console.log("Final Note for Approval:", y[1]);
-      finalNote = y[1];
-    } else {
-      console.log("Verification", finalVerification);
-    }
-
-    // Check if finalNote is already present or if the user cancels the prompt
-    if (finalNote !== "0") {
-      alert('Rasa already has a note: ' + finalNote);
-    } else {
-      do {
-        finalNote = prompt("Enter additional notes (or click cancel to skip):");
-      } while (finalNote === "");
-      console.log('User input:', finalNote);
-
-      if (finalNote === null) {
-      finalNote = null;
-    }
-
-      try {
-        const response = await fetch("/api/rasa_note", {
-          method: "POST",
-          body: JSON.stringify({ note: finalNote, number: number, id: '<%= datainputted.id %>' }),
-          headers: {
-            "Content-type": "application/json"
-          }
-        });
-
-        if (response.ok) {
-          console.log('Rasa note updated successfully.');
-
-          const signatureResponse = await fetch("/api/rasa_signature", {
-            method: "POST",
-            body: JSON.stringify({ number: number, email: email, id: '<%= datainputted.id %>' }),
-            headers: {
-              "Content-type": "application/json"
-            }
-          });
-
-          if ((signatureResponse.ok) && (number === '2')) {
-            const authenticateResponse = await fetch("/api/rasa_authenticate", {
-              method: "POST",
-              body: JSON.stringify({ digit: number, id: '<%= datainputted.id %>' }),
-              headers: {
-                "Content-type": "application/json"
-              }
-            });
-          } else{
-            console.log('Rasa signature API processed successfully.');
-            window.location.href = `/${finalVerification}/${encryptedId}`;
-          }
-            if (authenticateResponse.ok){
-            console.log('Rasa signature API processed successfully.');
-            window.location.href = `/${finalVerification}/${encryptedId}`;
-          } else {
-            console.error('There was a problem with the rasa_signature fetch operation.');
-          }
-        } else {
-          throw new Error('Network response was not ok');
-        }
-      } catch (error) {
-        console.error('There was a problem with the rasa_note fetch operation:', error);
-      }
-    }
+      context2.drawImage(image2, x, y, newWidth, newHeight);
+    };
   }
+
+  var canvasClassroom = document.getElementById('form_signClassroom');
+  var context = canvas.getContext('2d');
+  var imageClassroom = new Image();
+  imageClassroom.src = '<%= datainputted.form_signClasroom ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
+  imageClassroom.onload = function () {
+    // Scale the image to fit the canvas while maintaining aspect ratio
+    var scaleFactor = Math.min(canvas.width / imageClassroom.width, imageClassroom.height / imageClassroom.height);
+    var newWidth = imageClassroom.width * scaleFactor;
+    var newHeight = imageClassroom.height * scaleFactor;
+    var x = (canvasClassroom.width - newWidth) / 2;
+    var y = (canvasClassroom.height - newHeight) / 2;
+
+    context.drawImage(imageClassroom, x, y, newWidth, newHeight);
+  };
+
+  var canvasHRM = document.getElementById('form_signHRM');
+  var context = canvas.getContext('2d');
+  var imageHRM = new Image();
+  imageHRM.src = '<%= datainputted.form_signHRM ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
+  imageHRM.onload = function () {
+    // Scale the image to fit the canvas while maintaining aspect ratio
+    var scaleFactor = Math.min(canvasHRM.width / imageHRM.width, imageHRM.height / imageHRM.height);
+    var newWidth = imageHRM.width * scaleFactor;
+    var newHeight = imageHRM.height * scaleFactor;
+    var x = (canvasHRM.width - newWidth) / 2;
+    var y = (canvasHRM.height - newHeight) / 2;
+
+    context.drawImage(imageHRM, x, y, newWidth, newHeight);
+  };
 </script>
 </body>
 
