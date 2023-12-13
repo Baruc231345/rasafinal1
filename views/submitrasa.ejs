@@ -329,19 +329,14 @@
           classroom: <%= datainventory.classroom || 0 %>
       };
 
-
-        //const combinedInventory = [ inventory, inventory2 ];
         const rasatesting2_inventory = {
           inventory_id: insertedId,
           ...inventory,
           ...inventory2
         };
 
-
-        // Iterate through rasatesting_inventory properties
         for (const key in rasatesting2_inventory) {
           if (rasatesting2_inventory.hasOwnProperty(key)) {
-            // Check if the value is falsy (empty or null) and set it to a default value (e.g., 0)
             rasatesting2_inventory[key] = rasatesting2_inventory[key] || 0;
           }
         }
