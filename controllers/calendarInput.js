@@ -42,9 +42,7 @@ const calendarInput = async (req, res) => {
         );
       });
     }
-    
 
-    // Insert into calendar_input2
     await new Promise((resolve, reject) => {
       db1.query(
         'INSERT INTO calendar_input2 SET ?',

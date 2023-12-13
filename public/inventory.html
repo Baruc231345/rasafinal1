@@ -108,7 +108,7 @@
       console.log("Testing");
       const month = document.getElementById("month").value;
       const year = document.getElementById("year").value;
-      const url = `http://localhost:3006/fetch-data?month=${month}&year=${year}`;
+      const url = `http://154.41.254.18:3006/fetch-data?month=${month}&year=${year}`;
       fetch(url)
         .then(function (response) {
           return response.json();
