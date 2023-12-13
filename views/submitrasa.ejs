@@ -290,7 +290,7 @@
       .then(response => {
         if (!response.ok) {
           throw new Error("Error processing Rasa form. Please try again.");
-          alert("Error on Rasa, it has overlapped")
+          window.location.href = '/logout';
         }
         return response.json();
       })
