@@ -1,74 +1,134 @@
 const db1 = require("../routes/rasa-db");
 
-const rasatesting2_inventory = async (req, res,) => {
-  const { auditorium, foodandbeverage, multihall, dancestudio, 
-    gym, classroom, classroom_number, kitchen, mainlobby, inventory_id, sound_system, 
-    sound_system_quantity, microphone, microphone_quantity, lcd, lcd_quantity,
-    widescreen, widescreen_quantity, chair, chair_quantity, table_input, table_quantity,
-    other, other_quantity, blackpanel, blackpanel_quantity, whiteboard, whiteboard_quantity, aircon, 
-    start_aircon, end_aircon} = req.body;
+const rasatesting2_inventory = async (req, res) => {
+  const {
+    auditorium,
+    foodandbeverage,
+    multihall,
+    dancestudio,
+    gym,
+    classroom,
+    classroom_number,
+    kitchen,
+    mainlobby,
+    inventory_id,
+    sound_system,
+    sound_system_quantity,
+    microphone,
+    microphone_quantity,
+    lcd,
+    lcd_quantity,
+    widescreen,
+    widescreen_quantity,
+    chair,
+    chair_quantity,
+    table_input,
+    table_quantity,
+    other,
+    other_quantity,
+    blackpanel,
+    blackpanel_quantity,
+    whiteboard,
+    whiteboard_quantity,
+    aircon,
+    start_aircon,
+    end_aircon,
+    full_name,
+    event_name,
+    event_description,
+    event_day,
+    start_time,
+  } = req.body;
 
-    console.log("rasatesting2_inventory.js received data")
-    console.log("auditorium: ", auditorium)
-    console.log(foodandbeverage);
-    console.log(mainlobby);
-    console.log(dancestudio);
-    console.log(multihall);
-    console.log(gym);
-    console.log(kitchen);
-    console.log(classroom);
+  console.log("rasatesting2_inventory.js received data");
+  console.log("auditorium: ", auditorium);
+  console.log(foodandbeverage);
+  console.log(mainlobby);
+  console.log(dancestudio);
+  console.log(multihall);
+  console.log(gym);
+  console.log(kitchen);
+  console.log(classroom);
 
   try {
-    const results = await new Promise((resolve, reject) => {
-      db1.query('INSERT INTO inventory_table SET ?', {
-        inventory_id: inventory_id,
-        auditorium: auditorium,
-        foodandbeverage: foodandbeverage,
-        multihall: multihall,
-        dancestudio: dancestudio,
-        gym: gym,
-        classroom: classroom,
-        classroom_number: classroom_number,
-        kitchen: kitchen,
-        mainlobby: mainlobby,
-        sound_system: sound_system,
-        sound_system_quantity: sound_system_quantity,
-        microphone: microphone,
-        microphone_quantity: microphone_quantity,
-        lcd: lcd,
-        lcd_quantity: lcd_quantity,
-        widescreen: widescreen,
-        widescreen_quantity: widescreen_quantity, 
-        chair: chair, 
-        chair_quantity: chair_quantity,
-        table_input: table_input,
-        table_quantity: table_quantity,
-        other: other,
-        other_quantity: other_quantity,
-        blackpanel: blackpanel,
-        blackpanel_quantity: blackpanel_quantity,
-        whiteboard: whiteboard,
-        whiteboard_quantity: whiteboard_quantity,
-        aircon: aircon,
-        start_aircon: start_aircon,
-        end_aircon: end_aircon,
 
-      }, (error, results) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(results);
+    const duplicateResults = await new Promise((resolve, reject) => {
+      db1.query(
+        `SELECT * FROM inputted_table WHERE full_name = ? AND event_name = ? AND event_description = ? 
+        AND event_day = ? AND start_time = ?`,
+        [full_name, event_name, event_description, event_day, start_time],
+        (error, results) => {
+          if (error) {
+            reject(error);
+            console.error("Error on selecting:", error);
+          } else {
+            resolve(results);
+          }
         }
+      );
+    });
+
+    if (duplicateResults.length > 0) {
+      console.log("Duplicate Event. Please Try again:", duplicateResults);
+      return res.status(400).json({
+        status: "duplicated",
+        error: "Duplicate RASA.",
       });
+    }
+
+    const results = await new Promise((resolve, reject) => {
+      db1.query(
+        'INSERT INTO inventory_table SET ?',
+        {
+          inventory_id: inventory_id,
+          auditorium: auditorium,
+          foodandbeverage: foodandbeverage,
+          multihall: multihall,
+          dancestudio: dancestudio,
+          gym: gym,
+          classroom: classroom,
+          classroom_number: classroom_number,
+          kitchen: kitchen,
+          mainlobby: mainlobby,
+          sound_system: sound_system,
+          sound_system_quantity: sound_system_quantity,
+          microphone: microphone,
+          microphone_quantity: microphone_quantity,
+          lcd: lcd,
+          lcd_quantity: lcd_quantity,
+          widescreen: widescreen,
+          widescreen_quantity: widescreen_quantity, 
+          chair: chair, 
+          chair_quantity: chair_quantity,
+          table_input: table_input,
+          table_quantity: table_quantity,
+          other: other,
+          other_quantity: other_quantity,
+          blackpanel: blackpanel,
+          blackpanel_quantity: blackpanel_quantity,
+          whiteboard: whiteboard,
+          whiteboard_quantity: whiteboard_quantity,
+          aircon: aircon,
+          start_aircon: start_aircon,
+          end_aircon: end_aircon,
+        },
+        (error, results) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(results);
+          }
+        }
+      );
     });
 
     console.log(results + "OFFICIAL INVENTORY TABLE.js");
-    const insertedId = results.insertId; 
-    console.log(insertedId + "wtf is this?"); 
+    const insertedId = results.insertId;
+    console.log(insertedId + "wtf is this?");
     return res.json({
       status: "success",
       inventory_Id: insertedId,
-      success: "Successfully Inputted"
+      success: "Successfully Inputted",
     });
   } catch (error) {
     console.error(error);
