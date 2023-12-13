@@ -71,7 +71,6 @@ const rasatesting2 = async (req, res) => {
       return res.status(400).json({
         status: "duplicated",
         error2: "Duplicate RASA.",
-        return
       });
     } else {
     const overlappingEvents = await new Promise((resolve, reject) => {
