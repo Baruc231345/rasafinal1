@@ -704,11 +704,6 @@ router.get("/pdf2/:encryptedId", async (req, res) => {
   }
 });
 
-const express = require('express');
-const router = express.Router();
-
-const db1 = require('../routes/rasa-db');
-
 router.get('/delete/:id', async (req, res) => {
   const userId = req.params.id;
 
