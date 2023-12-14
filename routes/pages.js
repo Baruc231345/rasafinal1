@@ -708,6 +708,34 @@ router.get('/delete/:id', async (req, res) => {
   const userId = req.params.id;
 
   try {
+    // Fetch user data before deletion
+    const getUserQuery = 'SELECT user WHERE id = ?';
+    const [userData] = await db1.query(getUserQuery, [userId]);
+
+    // Check if the user exists
+    if (!userData || userData.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Delete user from rasa_database.users
+    const deleteUserQuery = 'DELETE FROM users WHERE id = ?';
+    await db1.query(deleteUserQuery, [userId]);
+
+    // Insert deleted user data into rasa_database.archived_user
+    const insertArchivedUserQuery = 'INSERT INTO archived_users SET ?';
+    await db1.query(insertArchivedUserQuery, userData[0]);
+
+    res.json({ status: 'success', message: 'User deleted and archived successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: 'error', error: 'Internal server error' });
+  }
+});
+
+router.get('/delete/:id', async (req, res) => {
+  const userId = req.params.id;
+
+  try {
     const getUserQuery = 'SELECT * FROM user WHERE id = ?';
     const [userData] = await db1.query(getUserQuery, [userId]);
 
