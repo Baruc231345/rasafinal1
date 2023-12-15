@@ -341,20 +341,18 @@
   };
   const universalId = '<%= id %>';
 
-  function setupCheckboxBehavior(checkboxId, inputId) {
-    const checkbox = document.getElementById(checkboxId);
-    const input = document.getElementById(inputId);
+function setupCheckboxBehavior(checkboxId, inputId) {
+  const checkbox = document.getElementById(checkboxId);
+  const input = document.getElementById(inputId);
 
-    checkbox.addEventListener('change', function () {
-      input.disabled = !this.checked;
-      if (!this.checked) {
-        input.value = '';
-        input.required = false;
-      } else {
-        input.required = true;
-      }
-    });
-  }
+  checkbox.addEventListener('change', function () {
+    input.disabled = !this.checked;
+    input.required = this.checked; // Always set required based on the checkbox state
+    if (!this.checked) {
+      input.value = '';
+    }
+  });
+}
 
   // Set up behavior for each checkbox and input field combination
   setupCheckboxBehavior('myRadioId-6', 'start-time');
@@ -399,8 +397,34 @@
       "- All production materials used for the activity shall be removed and disposed properly.\n\n" +
       "- Once approved, the requestor must submit (------) of Request Form to the following offices: OSA, Building Admin, MIS & IT, and Security Officer (Lobby or Basement).";
     var agree = confirm(notice + "\n\nDo you agree to the notice?");
+
+    const start_date1 = document.getElementById("start_date");
+      const end_date1 = document.getElementById("end_date");
+      const full_name1 = document.getElementById("full_name");
+      const event_name1 = document.getElementById("event_name");
+      const event_day1 = document.getElementById("event_day");
+      const start_time1 = document.getElementById("start_time");
+      const end_time1 = document.getElementById("end_time");
+      const event_description1 = document.getElementById("event_description");
+      const requestor_information = document.getElementById("requestor_information");
+      const requestor_type = document.getElementById("requestor_type");
+      const required_day = document.getElementById("required_day");
+      const contact_number = document.getElementById("contact_number");
+      const participants = document.getElementById("participants");
+      const endorsed = document.getElementById("endorsed");
+      const purpose_objectives = document.getElementById("purpose_objectives");
+
+      console.log(required_day.value)
+        console.log(start_time1.value)
+        console.log(end_time1.value)
+
+
     if (agree) {
       alert("You agreed to the notice.");
+      if (parseInt(required_day.value) === 1 && start_time1.value >= end_time1.value) {
+        alert("Error: Start time must be less than end time.");
+        return;
+      } 
       const form = document.querySelector("form");
       const nextBtn = form.querySelector(".nextBtn");
       const nextBtn2 = form.querySelector(".nextBtn2");
@@ -421,22 +445,6 @@
           console.log(`Input Field Values: ${inputFieldValues}`);
         }
       });
-
-      const start_date1 = document.getElementById("start_date");
-      const end_date1 = document.getElementById("end_date");
-      const full_name1 = document.getElementById("full_name");
-      const event_name1 = document.getElementById("event_name");
-      const event_day1 = document.getElementById("event_day");
-      const start_time1 = document.getElementById("start_time");
-      const end_time1 = document.getElementById("end_time");
-      const event_description1 = document.getElementById("event_description");
-      const requestor_information = document.getElementById("requestor_information");
-      const requestor_type = document.getElementById("requestor_type");
-      const required_day = document.getElementById("required_day");
-      const contact_number = document.getElementById("contact_number");
-      const participants = document.getElementById("participants");
-      const endorsed = document.getElementById("endorsed");
-      const purpose_objectives = document.getElementById("purpose_objectives");
 
       const inventory = {
         auditorium: document.getElementById("myRadioId").checked ? 1 : 0,
@@ -468,8 +476,8 @@
         whiteboard: document.getElementById("myRadioId-4").checked ? 1 : 0,
         whiteboard_quantity: document.getElementById("whiteboard_input").value,
         aircon: document.getElementById("myRadioId-6").checked ? 1 : 0,
-        start_aircon: document.getElementById("start_time").value,
-        end_aircon: document.getElementById("end_time").value,
+        start_aircon: document.getElementById("start-time").value,
+        end_aircon: document.getElementById("end-time").value,
         other: document.getElementById("myRadioId-7").checked ? 1 : 0,
         other_quantity: document.getElementById("otherInput").value,
       }
@@ -497,6 +505,8 @@
       const whiteboardInput = document.getElementById("whiteboard_input");
       const blackpanel = document.getElementById("myRadioId-3");
       const blackpanelInput = document.getElementById("black-panel_input");
+      const start_aircontime = document.getElementById("start-time");
+      const end_aircontime = document.getElementById("end-time")
       blackpanel.addEventListener("change", () => {
         blackpanelInput.disabled = !blackpanel.checked;
       });
@@ -509,8 +519,8 @@
       otherInput.disabled = true;
       blackpanelInput.disabled = true;
       whiteboardInput.disabled = true;
-      start_time1.disabled = true;
-      end_time1.disabled = true;
+      start_aircontime.disabled = true;
+      end_aircontime.disabled = true;
 
       soundSystemCheckbox.addEventListener("change", () => {
         soundSystemInput.disabled = !soundSystemCheckbox.checked;
@@ -540,12 +550,11 @@
         whiteboardInput.disabled = !whiteboardCheckbox.checked;
       });
       airconCheckbox.addEventListener("change", () => {
-        start_time1.disabled = !airconCheckbox.checked;
-        end_time1.disabled = !airconCheckbox.checked;
+        start_aircontime.disabled = !airconCheckbox.checked;
+        end_aircontime.disabled = !airconCheckbox.checked;
       });
 
       form.addEventListener("submit", () => {
-
         const rasatesting = {
           full_name: full_name1.value,
           event_name: event_name1.value,
@@ -579,10 +588,8 @@
               ...inventory2
             };
 
-            // Iterate through rasatesting_inventory properties
             for (const key in rasatesting_inventory) {
               if (rasatesting_inventory.hasOwnProperty(key)) {
-                // Check if the value is falsy (empty or null) and set it to a default value (e.g., 0)
                 rasatesting_inventory[key] = rasatesting_inventory[key] || 0;
               }
             }

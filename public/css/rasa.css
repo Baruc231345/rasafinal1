@@ -580,3 +580,13 @@ canvas {
     padding: 10px;
     color: #f00404;
   }
+
+  .highlight-red {
+    color: red; /
+  }
+  
+  .warning-symbol::before {
+    content: "⚠"; /
+    margin-right: 5px; 
+    color: red;
+  }

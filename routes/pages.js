@@ -305,10 +305,90 @@ router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
   });
 });
 
+let maxChairs = 900; // max chairs for inventory
+let maxTable = 900; // max table for inventory
+let maxSoundSystem = 500;
+let maxMicrophone = 400;
+let maxLcd = 300;
+let maxWidescreen = 200;
+let maxBlackpanel = 100;
+let maxWhiteboard = 100;
+
+function getEvents(event_day, start_time, end_time, callback) {
+  const query = `
+    SELECT *, 
+      SUM(table_quantity) as totalTables, 
+      SUM(chair_quantity) as totalChairs,
+      SUM(sound_system_quantity) as totalSoundSystem,
+      SUM(microphone_quantity) as totalMicrophone, 
+      SUM(lcd_quantity) as totalLcd, 
+      SUM(widescreen_quantity) as totalWidescreen,
+      SUM(blackpanel_quantity) as totalBlackpanel,
+      SUM(whiteboard_quantity) as totalWhiteboard
+
+    FROM calendar_input 
+    WHERE event_day = ? AND 
+    (
+      (CAST(? AS TIME) >= start_time AND CAST(? AS TIME) < end_time) OR 
+      (CAST(? AS TIME) > start_time AND CAST(? AS TIME) <= end_time) OR 
+      (CAST(? AS TIME) <= start_time AND CAST(? AS TIME) >= end_time)
+    )
+  `;
+
+  db1.query(
+    query,
+    [
+      event_day,
+      start_time,
+      start_time,
+      end_time,
+      end_time,
+      start_time,
+      end_time,
+    ],
+    (error, results) => {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+
+      // Extract the sum values from the first result (assuming only one row is returned)
+      const totalTables = results.length > 0 ? results[0].totalTables : maxTable;
+      const totalChairs = results.length > 0 ? results[0].totalChairs : maxChairs;
+      const totalSoundSystem = results.length > 0 ? results[0].totalSoundSystem : maxSoundSystem;
+      const totalMicrophone = results.length > 0 ? results[0].totalMicrophone : maxMicrophone;
+      const totalLcd = results.length > 0 ? results[0].totalLcd : maxLcd;
+      const totalWidescreen = results.length > 0 ? results[0].totalWidescreen : maxWidescreen;
+      const totalBlackpanel = results.length > 0 ? results[0].totalBlackpanel : maxBlackpanel;
+      const totalWhiteboard = results.length > 0 ? results[0].totalWhiteboard : maxWhiteboard;
+
+      const availableTables = maxTable - totalTables // total of tables - 900 max table
+      const availableChairs = maxChairs - totalChairs // totalchairs - 900 max table
+      const availableSoundsystem = maxSoundSystem - totalSoundSystem
+      const availableMicrophone = maxMicrophone - totalMicrophone
+      const availableLcd = maxLcd - totalLcd
+      const availableWidescreen = maxWidescreen - totalWidescreen
+      const availableBlackpanel = maxBlackpanel - totalBlackpanel
+      const availableWhiteboard = maxWhiteboard - totalWhiteboard
+
+      callback(null, {
+        results,
+        availableTables,
+        availableChairs,
+        availableSoundsystem,
+        availableMicrophone,
+        availableLcd,
+        availableWidescreen,
+        availableBlackpanel,
+        availableWhiteboard
+      });
+    }
+  );
+}
+
 router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
   const rasaID = req.params.id;
   const universalId = req.session.universalId;
-
 
   if (universalId == null || universalId === "") {
     // logout
@@ -316,8 +396,8 @@ router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
   }
 
   const query1 = "SELECT * FROM temporary_inputted_table WHERE id = ?";
-  const query2 =
-    "SELECT * FROM temporary_inventory_table WHERE rasa_inventory_id = ?";
+  const query2 = "SELECT * FROM temporary_inventory_table WHERE rasa_inventory_id = ?";
+  const query3 = "SELECT event_day, start_time, end_time FROM temporary_inputted_table WHERE id = ?";
 
   db1.query(query1, [rasaID], (error, data1) => {
     if (error) {
@@ -331,12 +411,38 @@ router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
             if (data2.length > 0) {
               const datainputted = data1[0];
               const datainventory = data2[0];
-              res.locals.rasaID = rasaID;
-              res.render("submitrasa", {
-                rasaID,
-                datainputted,
-                datainventory,
-                universalId,
+
+              db1.query(query3, [rasaID], (error, eventData) => {
+                if (error) {
+                  throw error;
+                } else {
+                  if (eventData.length > 0) {
+                    const { event_day, start_time, end_time } = eventData[0];
+
+                    // Console.log the obtained values
+                    console.log("Event Day:", event_day);
+                    console.log("Start Time:", start_time);
+                    console.log("End Time:", end_time);
+
+                    getEvents(event_day, start_time, end_time, (err, eventResults) => {
+                      if (err) {
+                        throw err;
+                      } else {
+                        console.log(eventResults);
+                      }
+                      res.locals.rasaID = rasaID;
+                      res.render("submitrasa", {
+                        rasaID,
+                        datainputted,
+                        datainventory,
+                        universalId,
+                        eventResults,
+                      });
+                    });
+                  } else {
+                    console.log("Event data not found");
+                  }
+                }
               });
             } else {
               res.status(404).send("Data from second table not found");

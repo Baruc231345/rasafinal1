@@ -1,75 +1,55 @@
 const db1 = require("../routes/rasa-db");
 
-const rasatesting2 = async () => {
-  let event_day = "2023-12-29";
-  let start_time = "12:00:00";
-  let end_time = "15:00:00";
-  console.log("rasatesting2.js");
+function getEvents(event_day, start_time, end_time, callback) {
+  const query = `
+    SELECT *, 
+      SUM(table_quantity) as totalTables, 
+      SUM(chair_quantity) as totalChairs 
+    FROM calendar_input 
+    WHERE event_day = ? AND 
+    (
+      (CAST(? AS TIME) >= start_time AND CAST(? AS TIME) < end_time) OR 
+      (CAST(? AS TIME) > start_time AND CAST(? AS TIME) <= end_time) OR 
+      (CAST(? AS TIME) <= start_time AND CAST(? AS TIME) >= end_time)
+    )
+  `;
 
-  let auditorium = 1;
-  let foodandbeverage = 0;
-  let mainlobby = 0;
-  let dancestudio = 0;
-  let multihall = 0;
-  let gym = 0;
-  let kitchen = 1;
-  let classroom = 0;
+  db1.query(
+    query,
+    [
+      event_day,
+      start_time,
+      start_time,
+      end_time,
+      end_time,
+      start_time,
+      end_time,
+    ],
+    (error, results) => {
+      if (error) {
+        callback(error, null);
+        return;
+      }
 
-  var venueArray = [
-    [auditorium, "auditorium"],
-    [foodandbeverage, "foodandbeverage"],
-    [mainlobby, "mainlobby"],
-    [dancestudio, "dancestudio"],
-    [multihall, "multihall"],
-    [gym, "gym"],
-    [kitchen, "kitchen"],
-    [classroom, "classroom"],
-  ];
+      // Extract the sum values from the first result (assuming only one row is returned)
+      const totalTables = results.length > 0 ? results[0].totalTables : 0;
+      const totalChairs = results.length > 0 ? results[0].totalChairs : 0;
 
-  const selectedArray = venueArray
-    .filter(([value]) => value === 1)
-    .map(([_, name]) => name);
+      callback(null, {
+        results,
+        totalTables,
+        totalChairs,
+      });
+    }
+  );
+}
 
-  console.log("Date:", event_day);
-  console.log("Selected venues:", selectedArray);
-
-  try {
-    const overlappingVenues = await new Promise((resolve, reject) => {
-      const venueConditions = selectedArray.map((venue) => `${venue} = 1`).join(' OR ');
-
-      db1.query(
-        `SELECT * FROM calendar_input WHERE event_day = ? AND 
-         ((CAST(? AS TIME) >= start_time AND CAST(? AS TIME) < end_time) OR 
-          (CAST(? AS TIME) > start_time AND CAST(? AS TIME) <= end_time) OR 
-          (CAST(? AS TIME) <= start_time AND CAST(? AS TIME) >= end_time)) AND 
-         (${venueConditions})`,
-        [event_day, start_time, start_time, end_time, end_time, start_time, end_time],
-        (error, results) => {
-          if (error) {
-            reject(error);
-            console.log("Error executing the query:", error);
-          } else {
-            console.log("Overlapping events in selected venues:", results);
-
-            // If there are overlapping events, reject the promise with an error message
-            if (results.length > 0) {
-              reject('Overlapping event found in selected venues. Please choose a different time.');
-            } else {
-              console.log("Success");
-              resolve(results);
-            }
-          }
-        }
-      );
-    });
-
-    // Do something with the results if needed
-    console.log("Results:", results);
-  } catch (error) {
-    console.error("Error:", error);
-    // Handle the error appropriately
+// Example usage
+getEvents('2023-12-30', '01:00:00', '24:00:00', (error, results) => {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log("this is the results2");
+    console.log(results);
   }
-};
-
-// Call the function
-rasatesting2();
+});
