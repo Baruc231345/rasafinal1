@@ -810,6 +810,44 @@ router.get("/pdf2/:encryptedId", async (req, res) => {
   }
 });
 
+router.get("/delete/:id", async (req, res) => {
+  const userID = req.params.id;
+
+  try {
+    // Fetch user data from 'user' table
+    const selectSql = "SELECT * FROM user WHERE id = ?";
+    const [result] = await db1.query(selectSql, [userID]);
+
+    if (!result.length) {
+      return res.status(404).send("The provided ID does not exist in the user");
+    }
+
+    const userData = result[0];
+
+    // Insert fetched user data into 'archived_users' table
+    const insertSql =
+      "INSERT INTO archived_users (id, email, password, role, pending) VALUES (?, ?, ?, ?, ?)";
+    const [insertResult] = await db1.query(insertSql, [
+      userData.id,
+      userData.email,
+      userData.password,
+      userData.role,
+      userData.pending,
+    ]);
+
+    // Delete user data from 'user' table
+    const deleteSql = "DELETE FROM user WHERE id = ?";
+    const [deleteResult] = await db1.query(deleteSql, [userID]);
+
+    res.status(200).send("Data successfully deleted from user and transferred to archived_users");
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("An error occurred while processing the request");
+  }
+});
+
+
+
 router.get("/delete_rasa_request/:id", async (req, res) => {
   const rasaID = req.params.id;
   try {

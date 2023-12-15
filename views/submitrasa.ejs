@@ -333,17 +333,23 @@
       .then(response => {
         if (!response.ok) {
           throw new Error("Error processing Rasa form. Please try again.");
-          alert("Error on Rasa, it has overlapped")
+          window.location.href = '/logout';
         }
         return response.json();
       })
       .then(data => {
         const insertedId = data.id;
         console.log(insertedId + " submitrasa.ejs line 275");
-
+  
         if (data.status === 'aborted') {
           alert(data.error);
           return;  // Stop execution here to prevent rasatesting2_inventory call
+        }
+
+        else if(data.status === "duplicated") {
+          alert(data.error2);
+          
+          return;
         }
 
         const sound_system_quantity = <%= datainventory.sound_system_quantity || 0 %>;
