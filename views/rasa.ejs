@@ -55,11 +55,11 @@
               <div class="fields1">
                 <div class="input-field">
                   <label>Full Name</label>
-                  <input type="text" id="full_name" placeholder="Enter your name" required >
+                  <input type="text" id="full_name" placeholder="Enter your name" required maxlength="30" >
                 </div>
                 <div class="input-field">
                   <label>Contact Number </label>
-                  <input type="text" id="contact_number" placeholder="Enter your mobile number" required>
+                  <input type="text" id="contact_number" placeholder="Enter your mobile number" required pattern="\d{11}" maxlength="11">
                 </div>
                 <div class="input-field">
                   <label for="requestor_information">Requestor Information</label>
@@ -83,11 +83,20 @@
                   <div class="select-wrapper">
                     <select id="endorsed" style="display: none;">
                       <option value="" disabled selected><strong>Information & Communications Technology</strong></option>
-                      <option value="Information & Communications Technology: People 1">Information & Communications Technology: People 1</option> <!--lopez.195633@globalcity.sti.edu.ph-->
+                      <option value="Information & Communications Technology: People 1">Information & Communications Technology: People 1</option>
                       <option value="" disabled selected>Business & Management</option>
-                      <option value="Business & Management: People 1">Business & Management: People 1</option><!--magistrado.222133@globalcity.sti.edu.ph-->
+                      <option value="Business & Management: People 1">Business & Management: People 1</option>
                       <option value="" disabled selected>Hospitality Management</option>
-                      <option value="Hospitality Management: People 1">Hospitality Management: People 1</option><!--rodillas.222275@globalcity.sti.edu.ph.com-->
+                      <option value="Hospitality Management: People 1">Hospitality Management: People 1</option>
+                    </select>
+                    <!-- New select element for teachers -->
+                    <select id="endorsed2" style="display: none;">
+                      <option value="" disabled selected><strong>IT Department</strong></option>
+                      <option value="Mr. Mac Salonga">Mr. Mac Salonga</option>
+                      <option value="" disabled selected>Business & Management Department</option>
+                      <option value="Ms. Anne Bartolome">Ms. Anne Bartolome</option>
+                      <option value="" disabled selected>Hospitality Management</option>
+                      <option value="Mr. Joseph Transmontero">Mr. Joseph Transmontero</option>
                     </select>
                   </div>
                 </div>
@@ -101,7 +110,7 @@
               <div class="fields2">
                 <div class="input-field" required>
                   <label>Event Name</label>
-                  <input type="text" id="event_name" placeholder="Enter Event Name" required>
+                  <input type="text" id="event_name" placeholder="Enter Event Name" required maxlength="30">
                 </div>
                 <div class="input-field" required>
                   <label>Event Date/Day</label>
@@ -122,17 +131,17 @@
 
                 <div class="input-field">
                   <label>Purpose/Objective</label>
-                  <input type="text" id="purpose_objectives" placeholder="Specify the purpose" required>
+                  <input type="text" id="purpose_objectives" placeholder="Specify the purpose" required maxlength="40">
                 </div>
 
                 <div class="input-field" style="width: 300px;">
                   <label>Expected Participants</label>
-                  <input type="number" id="participants" placeholder="# of Participants" min="0" required style="width: 268px;">
+                  <input type="number" id="participants" placeholder="# of Participants" min="0" max="50" required style="width: 268px;">
                 </div>
 
                 <div class="input-field" style="width: 380px;">
                   <label>Required Days</label>
-                  <input type="number" id="required_day" placeholder="Specify the days" min="0" required style="width: 268px;">
+                  <input type="number" id="required_day" placeholder="Specify the days" min="0" max="9"  required style="width: 268px;">
                 </div>
                 <div class="input-field">
                   <label>Start Time</label>
@@ -414,6 +423,32 @@ function setupCheckboxBehavior(checkboxId, inputId) {
       const endorsed = document.getElementById("endorsed");
       const purpose_objectives = document.getElementById("purpose_objectives");
 
+            // Checkboxes
+            const soundSystemCheckbox = document.getElementById("myRadioId_1");
+      const microphoneCheckbox = document.getElementById("myRadioId_2");
+      const lcdCheckbox = document.getElementById("myRadioId_3");
+      const widescreenCheckbox = document.getElementById("myRadioId_4");
+      const chairCheckbox = document.getElementById("myRadioId-1");
+      const tableCheckbox = document.getElementById("myRadioId-2");
+      const otherCheckbox = document.getElementById("myRadioId-7");
+      const airconCheckbox = document.getElementById("myRadioId-6");
+      const blackpanelCheckbox = document.getElementById("myRadioId-3");
+      const whiteboardCheckbox = document.getElementById("myRadioId-4");
+
+      // Input fields
+      const soundSystemInput = document.getElementById("sound-system_input");
+      const microphoneInput = document.getElementById("microphone_input");
+      const lcdInput = document.getElementById("lcd-projector_input");
+      const widescreenInput = document.getElementById("widescreen_input");
+      const chairInput = document.getElementById("chair_input");
+      const tableInput = document.getElementById("table_input");
+      const otherInput = document.getElementById('otherInput');
+      const whiteboardInput = document.getElementById("whiteboard_input");
+      const blackpanel = document.getElementById("myRadioId-3");
+      const blackpanelInput = document.getElementById("black-panel_input");
+      const start_aircontime = document.getElementById("start-time");
+      const end_aircontime = document.getElementById("end-time")
+
       console.log(required_day.value)
         console.log(start_time1.value)
         console.log(end_time1.value)
@@ -424,7 +459,12 @@ function setupCheckboxBehavior(checkboxId, inputId) {
       if (parseInt(required_day.value) === 1 && start_time1.value >= end_time1.value) {
         alert("Error: Start time must be less than end time.");
         return;
-      } 
+      }
+
+      if (start_aircontime1.value >= start_time1.value ||end_aircontime1.value <= end_time1.value) {
+  alert("Error: Aircon Time has an error.");
+  return;
+}
       const form = document.querySelector("form");
       const nextBtn = form.querySelector(".nextBtn");
       const nextBtn2 = form.querySelector(".nextBtn2");
@@ -482,31 +522,6 @@ function setupCheckboxBehavior(checkboxId, inputId) {
         other_quantity: document.getElementById("otherInput").value,
       }
 
-      // Checkboxes
-      const soundSystemCheckbox = document.getElementById("myRadioId_1");
-      const microphoneCheckbox = document.getElementById("myRadioId_2");
-      const lcdCheckbox = document.getElementById("myRadioId_3");
-      const widescreenCheckbox = document.getElementById("myRadioId_4");
-      const chairCheckbox = document.getElementById("myRadioId-1");
-      const tableCheckbox = document.getElementById("myRadioId-2");
-      const otherCheckbox = document.getElementById("myRadioId-7");
-      const airconCheckbox = document.getElementById("myRadioId-6");
-      const blackpanelCheckbox = document.getElementById("myRadioId-3");
-      const whiteboardCheckbox = document.getElementById("myRadioId-4");
-
-      // Input fields
-      const soundSystemInput = document.getElementById("sound-system_input");
-      const microphoneInput = document.getElementById("microphone_input");
-      const lcdInput = document.getElementById("lcd-projector_input");
-      const widescreenInput = document.getElementById("widescreen_input");
-      const chairInput = document.getElementById("chair_input");
-      const tableInput = document.getElementById("table_input");
-      const otherInput = document.getElementById('otherInput');
-      const whiteboardInput = document.getElementById("whiteboard_input");
-      const blackpanel = document.getElementById("myRadioId-3");
-      const blackpanelInput = document.getElementById("black-panel_input");
-      const start_aircontime = document.getElementById("start-time");
-      const end_aircontime = document.getElementById("end-time")
       blackpanel.addEventListener("change", () => {
         blackpanelInput.disabled = !blackpanel.checked;
       });
@@ -565,7 +580,7 @@ function setupCheckboxBehavior(checkboxId, inputId) {
           requestor_information: requestor_information.value,
           requestor_type: requestor_type.value,
           required_day: required_day.value,
-          endorsed: decodeURIComponent(endorsed.value.trim()) || "N/A",
+          endorsed: (requestor_information.value === "Teacher") ? decodeURIComponent(endorsed2.value.trim()) || "N/A" : decodeURIComponent(endorsed.value.trim()) || "N/A",
           contact_number: contact_number.value,
           participants: participants.value,
           purpose_objectives: purpose_objectives.value,
@@ -641,17 +656,28 @@ function setupCheckboxBehavior(checkboxId, inputId) {
     requestorTypeInput.value = "";
 
     //////////////////////////////////////////////////////
-
     var endorsedLabel = document.getElementById('endorsedLabel');
     var endorsedSelect = document.getElementById('endorsed');
+    var endorsedSelect2 = document.getElementById('endorsed2');
+
     if (requestorInformation.value === 'Student' || requestorInformation.value === 'Student Leader') {
-      endorsedLabel.style.display = 'block'; // Show the label
-      endorsedSelect.style.display = 'block'; // Show the select
-      endorsedSelect.setAttribute('required', true); // Make the select required
+      endorsedLabel.style.display = 'block';
+      endorsedSelect.style.display = 'block';
+      endorsedSelect2.style.display = 'none';
+      endorsedSelect.setAttribute('required', true);
+      endorsedSelect2.removeAttribute('required');
+    } else if (requestorInformation.value === 'Teacher') {
+      endorsedLabel.style.display = 'block';
+      endorsedSelect.style.display = 'none';
+      endorsedSelect2.style.display = 'block';
+      endorsedSelect.removeAttribute('required');
+      endorsedSelect2.setAttribute('required', true);
     } else {
-      endorsedLabel.style.display = 'none'; // Hide the label
-      endorsedSelect.style.display = 'none'; // Hide the select
-      endorsedSelect.removeAttribute('required'); // Remove the required attribute
+      endorsedLabel.style.display = 'none';
+      endorsedSelect.style.display = 'none';
+      endorsedSelect2.style.display = 'none';
+      endorsedSelect.removeAttribute('required');
+      endorsedSelect2.removeAttribute('required');
     }
   }
 

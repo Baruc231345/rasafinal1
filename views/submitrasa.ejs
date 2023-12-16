@@ -39,7 +39,7 @@
             </div>
 
             <% if (datainputted.requestor_information==="Student" ||
-              datainputted.requestor_information==="Student Leader" ) { %>
+              datainputted.requestor_information==="Student Leader" || datainputted.requestor_information==="Teacher" ) { %>
               <div class="input-field">
                 <label>Endorsed by</label>
                 <input type="text" id="endorsed" value="<%= datainputted.endorsed %>" disabled>
