@@ -8,7 +8,6 @@ fetch("/api/rasa_view")
     return response.json();
   })
   .then((data) => {
-    // Iterate through the data and create table rows
     data.forEach((entry) => {
       const row = document.createElement("tr");
       const fullNameCell = document.createElement("td");
@@ -69,7 +68,9 @@ fetch("/api/rasa_view")
     console.error("Error:", error);
   });
 
-  function confirmAction(id, event_name, event_day, event_description, required_day, form_sign, form_sign2) {
+  function confirmAction(id, event_name, event_day, event_description, required_day, start_time,
+    end_time, chair_quantity, table_quantity, lcd_quantity, widescreen_quantity, blackpanel_quantity,
+    whiteboard_quantity, sound_system_quantity) {
     console.log("test");
     const fetchDate = new Date(event_day);
   
@@ -86,6 +87,15 @@ fetch("/api/rasa_view")
       event_day: formattedEventDay,
       event_description: event_description,
       required_day: required_day,
+      start_time: start_time,
+      end_time: end_time,
+      chair_quantity: chair_quantity,
+      table_quantity: table_quantity,
+      lcd_quantity: lcd_quantity,
+      widescreen_quantity: widescreen_quantity,
+      blackpanel_quantity: blackpanel_quantity,
+      whiteboard_quantity: whiteboard_quantity,
+      sound_system_quantity: sound_system_quantity,
     };
   
     console.log(calendarInput);

@@ -20,7 +20,7 @@
           <div class="fields1">
             <div class="input-field">
               <label>Full Name</label>
-              <input type="text" id="full_name" value="<%= datainputted.full_name %>" disabled>
+              <input type="text" id="full_name" value="<%= datainputted.full_name %>" disabled maxlength="50">
             </div>
 
             <div class="input-field">
@@ -39,7 +39,7 @@
             </div>
 
             <% if (datainputted.requestor_information==="Student" ||
-              datainputted.requestor_information==="Student Leader" || datainputted.requestor_information==="Teacher" ) { %>
+              datainputted.requestor_information==="Student Leader" || datainputted.requestor_information==="Teacher") { %>
               <div class="input-field">
                 <label>Endorsed by</label>
                 <input type="text" id="endorsed" value="<%= datainputted.endorsed %>" disabled>
@@ -92,7 +92,7 @@
               <input type="time" id="start_time" value="<%= datainputted.start_time %>" disabled>
             </div>
 
-            <div class="input-field">
+            <div class="input-field"> 
               <label>End Time</label>
               <input type="time" id="end_time" value="<%= datainputted.end_time %>" disabled>
             </div>
@@ -347,8 +347,7 @@
         }
 
         else if(data.status === "duplicated") {
-          alert(data.error2);
-          
+          alert(data.error2); 
           return;
         }
 
@@ -439,7 +438,7 @@
       })
       .catch(error => {
         console.error("Error processing rasatesting2:", error);
-        alert("Error processing Rasa form. Please try again.");
+        alert("Overlapped Event. Please choose a different time.");
       });
   });
 </script>

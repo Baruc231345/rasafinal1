@@ -19,7 +19,7 @@ const { default: puppeteer } = require("puppeteer");
 let universalId = null;
 const storage = multer.memoryStorage();
 router.use(express.static(__dirname + "/public"));
-require('dotenv').config();
+require("dotenv").config();
 app.use(express.urlencoded({ extended: true }));
 const nodemailer = require("nodemailer");
 const { hash } = require("bcryptjs");
@@ -178,7 +178,6 @@ router.get("/ejsrasaVanilla/:id", (req, res) => {
   });
 });
 
-
 router.get("/ejsrasaCalendar/:id", (req, res) => {
   const rasaID = req.params.id;
   const universalId = req.session.universalId;
@@ -305,16 +304,53 @@ router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
   });
 });
 
-let maxChairs = 900; // max chairs for inventory
-let maxTable = 900; // max table for inventory
-let maxSoundSystem = 500;
-let maxMicrophone = 400;
-let maxLcd = 300;
-let maxWidescreen = 200;
-let maxBlackpanel = 100;
-let maxWhiteboard = 100;
+function fetchMaxValues(callback) {
+  const maxValuesQuery = `
+    SELECT * FROM inventory_max WHERE id = 1;`;
+
+  db1.query(maxValuesQuery, (error, results) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+
+    // Assuming there is only one row in the result set
+    const maxValues = results.length > 0 ? results[0] : null;
+
+    callback(null, maxValues);
+  });
+}
 
 function getEvents(event_day, start_time, end_time, callback) {
+  fetchMaxValues((error, maxValues) => {
+    if (error) {
+      callback(error, null);
+      return;
+    }
+
+        // Extract values from maxValues
+        const {
+          chairs_max,
+          table_max,
+          sound_system_max,
+          microphone_max,
+          lcd_max,
+          widescreen_max,
+          blackpanel_max,
+          whiteboard_max,
+        } = maxValues;
+    
+        // Set global variables with max values
+        maxChairs = chairs_max;
+        maxTable = table_max;
+        maxSoundSystem = sound_system_max;
+        maxMicrophone = microphone_max;
+        maxLcd = lcd_max;
+        maxWidescreen = widescreen_max;
+        maxBlackpanel = blackpanel_max;
+        maxWhiteboard = whiteboard_max;
+
+
   const query = `
     SELECT *, 
       SUM(table_quantity) as totalTables, 
@@ -352,24 +388,30 @@ function getEvents(event_day, start_time, end_time, callback) {
         return;
       }
 
-      // Extract the sum values from the first result (assuming only one row is returned)
-      const totalTables = results.length > 0 ? results[0].totalTables : maxTable;
-      const totalChairs = results.length > 0 ? results[0].totalChairs : maxChairs;
-      const totalSoundSystem = results.length > 0 ? results[0].totalSoundSystem : maxSoundSystem;
-      const totalMicrophone = results.length > 0 ? results[0].totalMicrophone : maxMicrophone;
+      const totalTables =
+        results.length > 0 ? results[0].totalTables : maxTable;
+      const totalChairs =
+        results.length > 0 ? results[0].totalChairs : maxChairs;
+      const totalSoundSystem =
+        results.length > 0 ? results[0].totalSoundSystem : maxSoundSystem;
+      const totalMicrophone =
+        results.length > 0 ? results[0].totalMicrophone : maxMicrophone;
       const totalLcd = results.length > 0 ? results[0].totalLcd : maxLcd;
-      const totalWidescreen = results.length > 0 ? results[0].totalWidescreen : maxWidescreen;
-      const totalBlackpanel = results.length > 0 ? results[0].totalBlackpanel : maxBlackpanel;
-      const totalWhiteboard = results.length > 0 ? results[0].totalWhiteboard : maxWhiteboard;
+      const totalWidescreen =
+        results.length > 0 ? results[0].totalWidescreen : maxWidescreen;
+      const totalBlackpanel =
+        results.length > 0 ? results[0].totalBlackpanel : maxBlackpanel;
+      const totalWhiteboard =
+        results.length > 0 ? results[0].totalWhiteboard : maxWhiteboard;
 
-      const availableTables = maxTable - totalTables // total of tables - 900 max table
-      const availableChairs = maxChairs - totalChairs // totalchairs - 900 max table
-      const availableSoundsystem = maxSoundSystem - totalSoundSystem
-      const availableMicrophone = maxMicrophone - totalMicrophone
-      const availableLcd = maxLcd - totalLcd
-      const availableWidescreen = maxWidescreen - totalWidescreen
-      const availableBlackpanel = maxBlackpanel - totalBlackpanel
-      const availableWhiteboard = maxWhiteboard - totalWhiteboard
+      const availableTables = maxTable - totalTables; // total of tables - 900 max table
+      const availableChairs = maxChairs - totalChairs; // totalchairs - 900 max table
+      const availableSoundsystem = maxSoundSystem - totalSoundSystem;
+      const availableMicrophone = maxMicrophone - totalMicrophone;
+      const availableLcd = maxLcd - totalLcd;
+      const availableWidescreen = maxWidescreen - totalWidescreen;
+      const availableBlackpanel = maxBlackpanel - totalBlackpanel;
+      const availableWhiteboard = maxWhiteboard - totalWhiteboard;
 
       callback(null, {
         results,
@@ -380,10 +422,11 @@ function getEvents(event_day, start_time, end_time, callback) {
         availableLcd,
         availableWidescreen,
         availableBlackpanel,
-        availableWhiteboard
+        availableWhiteboard,
       });
     }
   );
+});
 }
 
 router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
@@ -396,8 +439,10 @@ router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
   }
 
   const query1 = "SELECT * FROM temporary_inputted_table WHERE id = ?";
-  const query2 = "SELECT * FROM temporary_inventory_table WHERE rasa_inventory_id = ?";
-  const query3 = "SELECT event_day, start_time, end_time FROM temporary_inputted_table WHERE id = ?";
+  const query2 =
+    "SELECT * FROM temporary_inventory_table WHERE rasa_inventory_id = ?";
+  const query3 =
+    "SELECT event_day, start_time, end_time FROM temporary_inputted_table WHERE id = ?";
 
   db1.query(query1, [rasaID], (error, data1) => {
     if (error) {
@@ -424,21 +469,26 @@ router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
                     console.log("Start Time:", start_time);
                     console.log("End Time:", end_time);
 
-                    getEvents(event_day, start_time, end_time, (err, eventResults) => {
-                      if (err) {
-                        throw err;
-                      } else {
-                        console.log(eventResults);
+                    getEvents(
+                      event_day,
+                      start_time,
+                      end_time,
+                      (err, eventResults) => {
+                        if (err) {
+                          throw err;
+                        } else {
+                          console.log(eventResults);
+                        }
+                        res.locals.rasaID = rasaID;
+                        res.render("submitrasa", {
+                          rasaID,
+                          datainputted,
+                          datainventory,
+                          universalId,
+                          eventResults,
+                        });
                       }
-                      res.locals.rasaID = rasaID;
-                      res.render("submitrasa", {
-                        rasaID,
-                        datainputted,
-                        datainventory,
-                        universalId,
-                        eventResults,
-                      });
-                    });
+                    );
                   } else {
                     console.log("Event data not found");
                   }
@@ -462,6 +512,13 @@ router.get("/editUserView", adminMiddleware, (req, res) => {
 
 router.get("/rasa", loggedIn, (req, res) => {
   const universalId = req.session.universalId;
+
+  // Check if universalId is null
+  if (universalId === null || universalId === undefined) {
+    // Redirect to "/"
+    return res.redirect("/");
+  }
+
   res.render("rasa", { id: universalId });
 });
 
@@ -505,6 +562,26 @@ app.get("/fetch-data", (req, res) => {
     }
   });
 });
+
+app.get("/fetch-data2", (req, res) => {
+  const month = req.query.month;
+  const year = req.query.year;
+
+  const calendarQuery = `
+    SELECT *
+    FROM calendar_input
+    WHERE MONTH(event_day) = ? AND YEAR(event_day) = ?;`;
+
+  db1.query(calendarQuery, [month, year], (calendarError, calendarResults) => {
+    if (calendarError) {
+      console.error(calendarError);
+      res.status(500).json({ error: "An error occurred while fetching data" });
+    } else {
+      res.json(calendarResults);
+    }
+})
+})
+
 
 router.get("/inventory", (req, res) => {
   res.sendFile("inventory.html", { root: "./public/" });
@@ -681,7 +758,12 @@ router.get("/calendar12", loggedIn, dashboardAccessMiddleware, (req, res) => {
   res.render("calendar", { id: universalId });
 });
 
-router.get("/calendarAdmin",loggedIn,dashboardAccessMiddleware,adminMiddleware,(req, res) => {
+router.get(
+  "/calendarAdmin",
+  loggedIn,
+  dashboardAccessMiddleware,
+  adminMiddleware,
+  (req, res) => {
     res.sendFile("calendarAdmin.html", { root: "./public/" });
   }
 );
@@ -726,8 +808,8 @@ router.get("/editUserView/:id", (req, res) => {
 router.get("/pdf1/:id", async (req, res) => {
   const puppeteer = require("puppeteer");
   const rasaID = req.params.id;
-  //const url = `http://localhost:3005/ejsrasaVanilla/${rasaID}`;
-  const url = `http://154.41.254.18:3306/ejsrasaVanilla/${rasaID}`;
+  const url = `http://localhost:3005/ejsrasaVanilla/${rasaID}`;
+  //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${rasaID}`;
 
   try {
     const browser = await puppeteer.launch({
@@ -779,8 +861,8 @@ router.get("/pdf2/:encryptedId", async (req, res) => {
     return res.status(400).send("Invalid encrypted ID");
   }
 
-  //const url = `http://localhost:3005/ejsrasaVanilla/${decryptedId}`;
-  const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedId}`;
+  const url = `http://localhost:3005/ejsrasaVanilla/${decryptedId}`;
+  //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedId}`;
 
   try {
     const browser = await puppeteer.launch({
@@ -839,14 +921,16 @@ router.get("/delete/:id", async (req, res) => {
     const deleteSql = "DELETE FROM user WHERE id = ?";
     const [deleteResult] = await db1.query(deleteSql, [userID]);
 
-    res.status(200).send("Data successfully deleted from user and transferred to archived_users");
+    res
+      .status(200)
+      .send(
+        "Data successfully deleted from user and transferred to archived_users"
+      );
   } catch (error) {
     console.error(error);
     res.status(500).send("An error occurred while processing the request");
   }
 });
-
-
 
 router.get("/delete_rasa_request/:id", async (req, res) => {
   const rasaID = req.params.id;
@@ -925,15 +1009,15 @@ router.get("/approve/:id", (req, res) => {
           error: "Error approving user",
         });
       }
-      return res.redirect("/userview"); // Redirect to the '/userview' 
+      return res.redirect("/userview"); // Redirect to the '/userview'
     }
   );
 });
 
 async function generatePDF(id) {
   const puppeteer = require("puppeteer");
-  //const url = `http://localhost:3005/ejsrasaVanilla/${id}`;
-  const url = `http://154.41.254.18:3306/ejsrasaVanilla/${id}`;
+  const url = `http://localhost:3005/ejsrasaVanilla/${id}`;
+  //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${id}`;
 
   try {
     const browser = await puppeteer.launch({
@@ -941,7 +1025,7 @@ async function generatePDF(id) {
       args: ["--no-sandbox"],
     });
     const page = await browser.newPage();
-    await page.setViewport({ width: 941, height: 700 }); 
+    await page.setViewport({ width: 941, height: 700 });
     await page.goto(url, { waitUntil: "load" });
     await page.evaluate(() => {
       window.scrollTo(0, document.body.scrollHeight);
@@ -960,6 +1044,13 @@ router.get("/verification/:id", async (req, res) => {
   try {
     const id = req.params.id;
     const hashedId = encryptId(id);
+    const isOverlapped = await checkOverlapped(id);
+    if (isOverlapped) {
+      return res
+        .status(400)
+        .send("Overlap found. Cannot proceed with verification. Contact Building Admin");
+    }
+    console.log("No overlap found. Proceeding with verification.");
     const number = 1;
     const encryptedNumber = encryptId(number);
     let email;
@@ -969,9 +1060,30 @@ router.get("/verification/:id", async (req, res) => {
     console.log("hashedId : ", hashedId);
 
     const accounts = [
-      ["Information & Communications Technology: People 1","lopez.195633@globalcity.sti.edu.ph",],
-      ["Business & Management: People 1", "magistrado.222133@globalcity.sti.edu.ph"],
-      ["Hospitality Management: People 1", "rodillas.222275@globalcity.sti.edu.ph.com"],
+      [
+        "Information & Communications Technology: People 1",
+        "lopez.195633@globalcity.sti.edu.ph",
+      ],
+      [
+        "Business & Management: People 1",
+        "magistrado.222133@globalcity.sti.edu.ph",
+      ],
+      [
+        "Hospitality Management: People 1",
+        "rodillas.222275@globalcity.sti.edu.ph.com",
+      ],
+      [
+        "Mr. Joseph Transmontero",
+        "lopez.195633@globalcity.sti.edu.ph",
+      ],
+      [
+        "Mr. Mac Salonga",
+        "magistrado.222133@globalcity.sti.edu.ph",
+      ],
+      [
+        "Ms. Anne Bartolome",
+        "rodillas.222275@globalcity.sti.edu.ph.com",
+      ],
     ];
 
     const query = `SELECT endorsed FROM inputted_table WHERE id = ${id}`;
@@ -1001,13 +1113,13 @@ router.get("/verification/:id", async (req, res) => {
       if (!emailFound && (endorsedValue === "N/A" || endorsedValue === "")) {
         email = "rodillas.222275@globalcity.sti.edu.ph";
       }
-      console.log("email: ", email)
+      console.log("email: ", email);
       const pdfFileName = `rasa_${id}.pdf`;
       //const encryptedEmail = encryptId(email);
       const html = `
         <h1>Rasa for Approval Email</h1>
-        <a href="http://154.41.254.18:3306/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
-        <a href="http://154.41.254.18:3306/disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+        <a href="http://localhost:3005/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://localhost:3005/disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
       `;
 
       // Update rasa_status
@@ -1043,14 +1155,12 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
     const transporter = nodemailer.createTransport({
       service: "hotmail",
       auth: {
-
         user: ACCOUNT_USER,
         pass: ACCOUNT_PASSWORD,
- /*
+        /*
         user: "rodillas.222275@globalcity.sti.edu.ph",
         pass: "Idontknow16221",
         */
-        
       },
     });
 
@@ -1074,7 +1184,7 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
             .status(500)
             .send("An error occurred while sending the email");
         }
-        console.log("Message Sent: " + info.messageId+ email);
+        console.log("Message Sent: " + info.messageId + email);
         console.log("Preview URL: " + nodemailer.getTestMessageUrl(info));
         const alertScript = `
         <script>
@@ -1092,11 +1202,152 @@ async function sendEmail(id, email, hashedId, pdfFileName, html, res) {
   }
 }
 
+async function checkOverlapped(id, res) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // First query to get selectedArray
+      const selectedArray = await new Promise((resolve, reject) => {
+        db1.query(
+          `SELECT * FROM inventory_table where inventory_id = ${id}`,
+          (error, results) => {
+            if (error) {
+              reject(error);
+            } else {
+              const selectedColumns = [];
+              const columns = [
+                "auditorium",
+                "foodandbeverage",
+                "multihall",
+                "dancestudio",
+                "gym",
+                "classroom",
+                "kitchen",
+                "mainlobby",
+              ];
+              columns.forEach((column) => {
+                const hasValueOne = results.some((row) => row[column] === 1);
+                if (hasValueOne) {
+                  selectedColumns.push(column);
+                }
+              });
+              resolve(selectedColumns);
+            }
+          }
+        );
+      });
+
+      console.log(selectedArray + " === selected array ");
+
+      // Second query to get event_day, start_time, and end_time from inputted_table
+      const resultsFromSecondQuery = await new Promise((resolve, reject) => {
+        db1.query(
+          `SELECT event_day, start_time, end_time FROM inputted_table WHERE id = ${id}`,
+          (error, results) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(results);
+            }
+          }
+        );
+      });
+
+      if (resultsFromSecondQuery.length > 0) {
+        const { event_day, start_time, end_time } = resultsFromSecondQuery[0];
+        console.log("Event Day:", event_day);
+        console.log("Start Time:", start_time);
+        console.log("End Time:", end_time);
+
+        // Third query
+        const venueConditions = selectedArray
+          .map((venue) => `${venue} = 1`)
+          .join(" OR ");
+
+        db1.query(
+          `SELECT * FROM calendar_input WHERE event_day = ? AND 
+           ((CAST(? AS TIME) >= start_time AND CAST(? AS TIME) < end_time) OR 
+            (CAST(? AS TIME) > start_time AND CAST(? AS TIME) <= end_time) OR 
+            (CAST(? AS TIME) <= start_time AND CAST(? AS TIME) >= end_time)) AND 
+           (${venueConditions})`,
+          [
+            event_day,
+            start_time,
+            start_time,
+            end_time,
+            end_time,
+            start_time,
+            end_time,
+          ],
+          (error, overlappingResults) => {
+            if (error) {
+              console.error("Error executing the query:", error);
+              reject(error);
+            } else {
+              console.log(
+                "Overlapping events in calendar_input:",
+                overlappingResults
+              );
+
+              if (overlappingResults.length > 0) {
+                console.log("Overlapping events found. Aborting insertion.");
+                // Update the inputted_table fields
+                db1.query(
+                  "UPDATE inputted_table SET authenticated = ?, rasa_note_void = ?, rasa_status = ? WHERE id = ?",
+                  [300, "Contact Building Administrator","Overlapping Event Found. Contact Building Administrator", id],
+                  (updateError, updateResults) => {
+                    if (updateError) {
+                      console.error("Error updating inputted_table:", updateError);
+                      if (res && res.status) {
+                        res.status(500).json({
+                          status: "error",
+                          error: "Error updating data in inputted_table.",
+                        });
+                      }
+                    } else {
+                      console.log("Updated inputted_table with overlapping event information.");
+                      if (res && res.status) {
+                        res.status(400).json({
+                          //status: "aborted",
+                          error: "Overlapping event found in calendar_table. Please choose a different time.",
+                        });
+                      }
+                    }
+                  }
+                );
+              } else {
+                console.log(
+                  "No overlapping events found. Proceed with insertion."
+                );
+                resolve(false);
+              }
+            }
+          }
+        );
+      } else {
+        console.log("No records found in inputted_table for id:", id);
+        resolve(false); // Resolve with false when no records are found
+      }
+    } catch (error) {
+      console.error(error);
+      reject(error);
+    }
+  });
+}
+
+
 router.get("/verificationHRM/:id", async (req, res) => {
   try {
-    console.log(ACCOUNT_PASSWORD)
-    console.log(ACCOUNT_USER)
+    console.log(ACCOUNT_PASSWORD);
+    console.log(ACCOUNT_USER);
     const id = req.params.id;
+    const isOverlapped = await checkOverlapped(id);
+    if (isOverlapped) {
+      return res
+        .status(400)
+        .send("Overlap found. Cannot proceed with verification. Contact Building Admin");
+    }
+    console.log("No overlap found. Proceeding with verification.");
+    
     const hashedId = encryptId(id);
     const number = 21;
     const encryptedNumber = encryptId(number); // encrypt email
@@ -1110,8 +1361,8 @@ router.get("/verificationHRM/:id", async (req, res) => {
     const encryptedEmail = encryptId(email);
     const html = `
         <h1>Rasa for Approval Email</h1>
-        <a href="http://154.41.254.18:3306/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
-        <a href="http://154.41.254.18:3306/disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+        <a href="http://localhost:3005/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://localhost:3005/disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
       `;
 
     const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
@@ -1147,7 +1398,7 @@ async function sendEmail_Kitchen(id, email, hashedId, pdfFileName, html, res) {
         pass: "cwbomrdgiphyvvnz",
       },
       */
-     /*
+      /*
       auth: {
         user: "rodillas.222275@globalcity.sti.edu.ph",
         pass: "Idontknow16221",
@@ -1156,7 +1407,7 @@ async function sendEmail_Kitchen(id, email, hashedId, pdfFileName, html, res) {
       auth: {
         user: ACCOUNT_USER,
         pass: ACCOUNT_PASSWORD,
-      }
+      },
     });
 
     transporter.sendMail(
@@ -1202,29 +1453,38 @@ async function sendEmail_Kitchen(id, email, hashedId, pdfFileName, html, res) {
 // if 31 yung digit, deretso sa verification
 router.get("/verificationClassroom/:id/:digit", async (req, res) => {
   try {
-    console.log(ACCOUNT_PASSWORD)
-    console.log(ACCOUNT_USER)
+    console.log(ACCOUNT_PASSWORD);
+    console.log(ACCOUNT_USER);
     const id = req.params.id;
     const digit = req.params.digit;
     const hashedId = encryptId(id);
     const number = 20;
     const encryptedNumber = encryptId(number);
+    
 
     console.log("----------------------------------------");
     console.log("/verificationClassroom");
-    console.log("password:", ACCOUNT_PASSWORD)
-    console.log("user:" , ACCOUNT_USER)
-    console.log("digit", digit)
+    console.log("password:", ACCOUNT_PASSWORD);
+    console.log("user:", ACCOUNT_USER);
+    console.log("digit", digit);
     console.log("id : ", id);
     console.log("hashedId : ", hashedId);
     let email = "magistrado.222133@globalcity.sti.edu.ph";
+
+    const isOverlapped = await checkOverlapped(id);
+    if (isOverlapped) {
+      return res
+        .status(400)
+        .send("Overlap found. Cannot proceed with verification. Contact Building Admin");
+    }
+    console.log("No overlap found. Proceeding with verification.");
 
     const pdfFileName = `rasa_${id}.pdf`;
     const encryptedEmail = encryptId(email);
     const html = `
         <h1>Rasa for Classroom Facilitator Email</h1>
-        <a href="http://154.41.254.18:3306/approveRasa/${id}/${digit}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
-        <a href="http://154.41.254.18:3306/disregardRasa/${id}/${digit}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+        <a href="http://localhost:3005/approveRasa/${id}/${digit}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://localhost:3005/disregardRasa/${id}/${digit}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
       `;
 
     const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
@@ -1248,7 +1508,14 @@ router.get("/verificationClassroom/:id/:digit", async (req, res) => {
   }
 });
 
-async function sendEmail_Classroom(id, email, hashedId, pdfFileName, html, res) {
+async function sendEmail_Classroom(
+  id,
+  email,
+  hashedId,
+  pdfFileName,
+  html,
+  res
+) {
   try {
     const pdfBuffer = await generatePDF(id);
 
@@ -1261,7 +1528,6 @@ async function sendEmail_Classroom(id, email, hashedId, pdfFileName, html, res) 
       },
       */
       auth: {
-
         user: ACCOUNT_USER,
         pass: ACCOUNT_PASSWORD,
         /*
@@ -1269,8 +1535,6 @@ async function sendEmail_Classroom(id, email, hashedId, pdfFileName, html, res) 
         pass: "Idontknow16221",
         */
       },
-
-      
     });
 
     transporter.sendMail(
@@ -1360,52 +1624,49 @@ router.get(
   }
 );
 
-router.get(
-  "/disregardRasa/:hashedId/:encryptedNumber",
-  async (req, res) => {
-    const hashedId = req.params.hashedId; 
-    const encryptedNumber = req.params.encryptedNumber; 
-    const encryptedId = encryptId(hashedId);
+router.get("/disregardRasa/:hashedId/:encryptedNumber", async (req, res) => {
+  const hashedId = req.params.hashedId;
+  const encryptedNumber = req.params.encryptedNumber;
+  const encryptedId = encryptId(hashedId);
 
-    console.log("------------------------------");
-    console.log("----disregardRasa------");
-    console.log(hashedId);
-    console.log(encryptedNumber);
-    console.log(encryptedId);
+  console.log("------------------------------");
+  console.log("----disregardRasa------");
+  console.log(hashedId);
+  console.log(encryptedNumber);
+  console.log(encryptedId);
 
-    const query1 = "SELECT * FROM inputted_table WHERE id = ?";
-    const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
-    db1.query(query1, [hashedId], (error, data1) => {
-      if (error) {
-        throw error;
-      } else {
-        if (data1.length > 0) {
-          db1.query(query2, [hashedId], (error, data2) => {
-            if (error) {
-              console.error("Error fetching data from inventory_table:", error);
-              throw error;
+  const query1 = "SELECT * FROM inputted_table WHERE id = ?";
+  const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
+  db1.query(query1, [hashedId], (error, data1) => {
+    if (error) {
+      throw error;
+    } else {
+      if (data1.length > 0) {
+        db1.query(query2, [hashedId], (error, data2) => {
+          if (error) {
+            console.error("Error fetching data from inventory_table:", error);
+            throw error;
+          } else {
+            if (data2.length > 0) {
+              const datainputted = data1[0];
+              const datainventory = data2[0];
+              res.render("disregardRasa", {
+                datainputted,
+                datainventory,
+                encryptedNumber,
+                encryptedId,
+              });
             } else {
-              if (data2.length > 0) {
-                const datainputted = data1[0];
-                const datainventory = data2[0];
-                res.render("disregardRasa", {
-                  datainputted,
-                  datainventory,
-                  encryptedNumber,
-                  encryptedId,
-                });
-              } else {
-                res.status(404).send("Data from second table not found");
-              }
+              res.status(404).send("Data from second table not found");
             }
-          });
-        } else {
-          res.status(404).send("Data from first table not found");
-        }
+          }
+        });
+      } else {
+        res.status(404).send("Data from first table not found");
       }
-    });
-  }
-);
+    }
+  });
+});
 
 let isProcessing = false;
 router.get("/verification2/:hashedId", async (req, res) => {
@@ -1413,14 +1674,21 @@ router.get("/verification2/:hashedId", async (req, res) => {
   try {
     const hashedId = req.params.hashedId; // change from orginalId to hashedId para ma remove yung decrypt
     //const hashedId = decryptId(originalId);
-   // const encryptedId = encryptId(hashedId);
+    // const encryptedId = encryptId(hashedId);
+    const isOverlapped = await checkOverlapped(hashedId);
+    if (isOverlapped) {
+      return res
+        .status(400)
+        .send("Overlap found. Cannot proceed with verification. Contact Building Admin");
+    }
+    console.log("No overlap found. Proceeding with verification.");
     const number = 2;
     console.log("----------------------------------------");
     console.log("/verification2");
     //console.log("originalId : ", originalId);
     //console.log("hashedId : ", hashedId);
-   // console.log("encryptedId : ", encryptedId);
-    console.log("number", number)
+    // console.log("encryptedId : ", encryptedId);
+    console.log("number", number);
 
     const query1 = "SELECT * FROM inputted_table WHERE id = ?";
     const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
@@ -1444,8 +1712,8 @@ router.get("/verification2/:hashedId", async (req, res) => {
             const email = "baruc.231345@globalcity.sti.edu.ph";
             const html = `
               <h1>Rasa for Approval Email</h1>
-              <a href="http://154.41.254.18:3306/approveRasa/${hashedId}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
-              <a href="http://154.41.254.18:3306/disregardRasa/${hashedId}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+              <a href="http://localhost:3005/approveRasa/${hashedId}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+              <a href="http://localhost:3005/disregardRasa/${hashedId}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
             `;
 
             const updateSql =
@@ -1573,6 +1841,9 @@ router.get("/getSignature/:id", async (req, res) => {
       ["Information & Communications Technology: People 1", 10],
       ["Business & Management: People 1", 9],
       ["Hospitality Management: People 1", 11],
+      ["Mr. Joseph Transmontero", 20],
+      ["Mr. Mac Salonga",18],
+      ["Ms. Anne Bartolome", 19],
     ];
 
     try {
@@ -1631,8 +1902,8 @@ router.get("/getSignature/:id", async (req, res) => {
 
           console.log("form_sign updated successfully");
           const puppeteer = require("puppeteer");
-          //const url = `http://localhost:3005/ejsrasaVanilla/${hashedId}`;
-          const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
+          const url = `http://localhost:3005/ejsrasaVanilla/${hashedId}`;
+          //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
 
           try {
             const browser = await puppeteer.launch({
@@ -1741,7 +2012,6 @@ router.get("/getSignature/:id", async (req, res) => {
   }
 });
 
-
 router.get("/getSignature2/:hashedId", async (req, res) => {
   const crypto = require("crypto");
   const encryptionKey = crypto.randomBytes(32);
@@ -1794,8 +2064,8 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
 
       console.log("form_sign updated successfully");
       const puppeteer = require("puppeteer");
-      //const url = `http://localhost:3005/ejsrasaVanilla/${decryptedrasaID}`;
-      const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedrasaID}`;
+      const url = `http://localhost:3005/ejsrasaVanilla/${decryptedrasaID}`;
+      //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedrasaID}`;
 
       try {
         const browser = await puppeteer.launch({
@@ -1830,11 +2100,10 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
                 "rasa_status updated to Step 6: 2/2 Signature: sending email to @gmail.com"
               );
 
-            if (!redirectToVerification2) {
-              redirectToVerification2 = true;
-              res.redirect(`/verification2/${hashedId}`);
-            } //Root123!
-
+              if (!redirectToVerification2) {
+                redirectToVerification2 = true;
+                res.redirect(`/verification2/${hashedId}`);
+              } //Root123!
             }
 
             const selectInventoryQuery =
@@ -1892,7 +2161,6 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
     });
   });
 });
-
 
 /*
 // New getsignature2 route for demo

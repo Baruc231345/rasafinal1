@@ -12,31 +12,31 @@
 <body>
   <div class="container">
     <div class="note">
-      <% if (datainputted.rasa_note_void === "0" && datainputted.rasa_noteClassroom !== "0") { %>
+      <% if (datainputted.rasa_note_void==="0" && datainputted.rasa_noteClassroom !=="0" ) { %>
         NOTE Classroom: <%= datainputted.rasa_noteClassroom %> <br>
-      <% } %>
+          <% } %>
 
-      <% if (datainputted.rasa_note_void === "0" && datainputted.rasa_noteHRM !== "0") { %>
-        NOTE HRM: <%= datainputted.rasa_noteHRM %> <br>
-      <% } %>
+            <% if (datainputted.rasa_note_void==="0" && datainputted.rasa_noteHRM !=="0" ) { %>
+              NOTE HRM: <%= datainputted.rasa_noteHRM %> <br>
+                <% } %>
 
-      <% if (datainputted.rasa_note_void === "0" && datainputted.rasa_note !== "0") { %>
-        NOTE 1: <%= datainputted.rasa_note %> <br>
-      <% } %>
-    
-      <% if (datainputted.rasa_note_void === "0" && datainputted.rasa_note2 !== "0") { %>
-        NOTE 2: <%= datainputted.rasa_note2 %> <br>
-      <% } %>
-    
-      <% if (datainputted.rasa_note_void === "0" && datainputted.rasa_note3 !== "0") { %>
-        NOTE 3: <%= datainputted.rasa_note3 %> <br>
-      <% } %>
-    
-      <% if (datainputted.rasa_note_void !== "0") { %>
-        RASA VOID: <%= datainputted.rasa_note_void %> <br>
-      <% } %>
+                  <% if (datainputted.rasa_note_void==="0" && datainputted.rasa_note !=="0" ) { %>
+                    NOTE 1: <%= datainputted.rasa_note %> <br>
+                      <% } %>
+
+                        <% if (datainputted.rasa_note_void==="0" && datainputted.rasa_note2 !=="0" ) { %>
+                          NOTE 2: <%= datainputted.rasa_note2 %> <br>
+                            <% } %>
+
+                              <% if (datainputted.rasa_note_void==="0" && datainputted.rasa_note3 !=="0" ) { %>
+                                NOTE 3: <%= datainputted.rasa_note3 %> <br>
+                                  <% } %>
+
+                                    <% if (datainputted.rasa_note_void !=="0" ) { %>
+                                      RASA VOID: <%= datainputted.rasa_note_void %> <br>
+                                        <% } %>
     </div>
-    
+
     <header>Summary Rasa Form</header>
     <form name="myForm" onsubmit="return false;" id="form">
       <div class="form first">
@@ -71,8 +71,8 @@
               </div>
           </div>
           <% } %>
+        </div>
       </div>
-    </div>
       <div class="form second">
         <div class="details personal">
           <span class="title">Event Information</span>
@@ -163,123 +163,123 @@
             <span class="title">Equipment Needed</span>
             <p class="text">Here is the list of equipment you have selected:</p>
             <% if (datainventory.sound_system===1 || datainventory.microphone===1 || datainventory.lcd===1 ||
-            datainventory.widescreen===1) { %>
-            <!-- MIS/IT Section -->
-            <div class="test" style="display: flex; justify-content: space-between">
-              <div class="fields4" style="flex: 1;">
-                <h3 class="equipment-section">MIS/IT</h3>
-                <ul class="equipment-list">
-                  <% if (datainventory.sound_system===1) { %>
-                    <li><span class="check-symbol">✔</span> <span class="selected-equipment">Sound System</span> - <%=
-                        datainventory.sound_system_quantity %>
-                    </li>
-                    <% } %>
-                      <% if (datainventory.microphone===1) { %>
-                        <li><span class="check-symbol">✔</span> <span class="selected-equipment">Microphone</span> -
-                          <%= datainventory.microphone_quantity %>
-                        </li>
-                        <% } %>
-                          <% if (datainventory.lcd===1) { %>
-                            <li><span class="check-symbol">✔</span> <span class="selected-equipment">LCD
-                                Projector</span>
-                              - <%= datainventory.lcd_quantity %>
-                            </li>
-                            <% } %>
-                              <% if (datainventory.widescreen===1) { %>
-                                <li><span class="check-symbol">✔</span> <span
-                                    class="selected-equipment">Widescreen</span>
-                                  - <%= datainventory.widescreen_quantity %>
-                                </li>
-                                <% } %>
-                </ul>
-              </div>
+              datainventory.widescreen===1) { %>
+              <!-- MIS/IT Section -->
+              <div class="test" style="display: flex; justify-content: space-between">
+                <div class="fields4" style="flex: 1;">
+                  <h3 class="equipment-section">MIS/IT</h3>
+                  <ul class="equipment-list">
+                    <% if (datainventory.sound_system===1) { %>
+                      <li><span class="check-symbol">✔</span> <span class="selected-equipment">Sound System</span> - <%=
+                          datainventory.sound_system_quantity %>
+                      </li>
+                      <% } %>
+                        <% if (datainventory.microphone===1) { %>
+                          <li><span class="check-symbol">✔</span> <span class="selected-equipment">Microphone</span> -
+                            <%= datainventory.microphone_quantity %>
+                          </li>
+                          <% } %>
+                            <% if (datainventory.lcd===1) { %>
+                              <li><span class="check-symbol">✔</span> <span class="selected-equipment">LCD
+                                  Projector</span>
+                                - <%= datainventory.lcd_quantity %>
+                              </li>
+                              <% } %>
+                                <% if (datainventory.widescreen===1) { %>
+                                  <li><span class="check-symbol">✔</span> <span
+                                      class="selected-equipment">Widescreen</span>
+                                    - <%= datainventory.widescreen_quantity %>
+                                  </li>
+                                  <% } %>
+                  </ul>
+                </div>
 
-            
-            </div>
-            <% } %>
+
+              </div>
+              <% } %>
 
           </div>
         </div>
       </div>
+  </div>
+
+
+
+
+  <div class="signature-form">
+    <div class="signature-column">
+      <div class="signature-container">
+        <canvas id="form_sign0" width="200" height="150"></canvas>
+        <img id="form_sign_image"
+          src="<%= datainputted.form_signClassroom ? 'data:image/png;base64,' + datainputted.form_signClassroom.toString('base64') : '' %>"
+          alt="Classroom Facilitator">
+      </div>
+      <div class="form_sign">
+        <div id="form_sign_text">Classroom Facilitator</div>
+      </div>
+
+      <div class="signature-container">
+        <canvas id="form_sign" width="200" height="150"></canvas>
+        <img id="form_sign_image"
+          src="<%= datainputted.form_sign ? 'data:image/png;base64,' + datainputted.form_sign.toString('base64') : '' %>"
+          alt="Endorsed By">
+      </div>
+      <div class="form_sign">
+        <div id="form_sign_text">Endorsed By</div>
+      </div>
+
+      <div class="signature-container">
+        <canvas id="form_sign4" width="200" height="150"></canvas>
+      </div>
+      <div class="form_sign4">
+        <div id="form_sign4">OSA Approval</div>
+      </div>
+
+      <div class="signature-container">
+        <canvas id="form_sign3" width="200" height="150"></canvas>
+      </div>
+      <div class="form_sign3">
+        <div id="form_sign3">MIS/IT Approval</div>
+      </div>
     </div>
 
+    <div class="signature-column">
+      <div class="signature-container">
+        <canvas id="form_signHRM" width="200" height="150"></canvas>
+        <img id="form_sign_image"
+          src="<%= datainputted.form_signHRM ? 'data:image/png;base64,' + datainputted.form_signHRM.toString('base64') : '' %>"
+          alt="HRM Approval">
+      </div>
+      <div class="form_sign4">
+        <div id="form_sign4">HRM Custodian</div>
+      </div>
 
+      <div class="signature-container">
+        <canvas id="form_sign2" width="200" height="150"></canvas>
+        <img id="form_sign_image"
+          src="<%= datainputted.form_sign2 ? 'data:image/png;base64,' + datainputted.form_sign2.toString('base64') : '' %>"
+          alt="Venue Approval">
+      </div>
+      <div class="form_sign2">
+        <div id="form_sign2_text">Venue Approval</div>
+      </div>
 
+      <div class="signature-container">
+        <canvas id="form_sign5" width="200" height="150"></canvas>
+      </div>
+      <div class="form_sign5">
+        <div id="form_sign5">Academic Head Approval</div>
+      </div>
 
-        <div class="signature-form">
-          <div class="signature-column">
-            <div class="signature-container">
-              <canvas id="form_sign0" width="200" height="150"></canvas>
-              <img id="form_sign_image"
-                src="<%= datainputted.form_signClassroom ? 'data:image/png;base64,' + datainputted.form_signClassroom.toString('base64') : '' %>"
-                alt="Classroom Facilitator">
-            </div>
-            <div class="form_sign">
-              <div id="form_sign_text">Classroom Facilitator</div>
-            </div>
-
-            <div class="signature-container">
-              <canvas id="form_sign" width="200" height="150"></canvas>
-              <img id="form_sign_image"
-                src="<%= datainputted.form_sign ? 'data:image/png;base64,' + datainputted.form_sign.toString('base64') : '' %>"
-                alt="Endorsed By">
-            </div>
-            <div class="form_sign">
-              <div id="form_sign_text">Endorsed By</div>
-            </div>
-
-            <div class="signature-container">
-              <canvas id="form_sign4" width="200" height="150"></canvas>
-            </div>
-            <div class="form_sign4">
-              <div id="form_sign4">OSA Approval</div>
-            </div>
-
-            <div class="signature-container">
-              <canvas id="form_sign3" width="200" height="150"></canvas>
-            </div>
-            <div class="form_sign3">
-              <div id="form_sign3">MIS/IT Approval</div>
-            </div>
-          </div>
-
-          <div class="signature-column">
-            <div class="signature-container">
-              <canvas id="form_signHRM" width="200" height="150"></canvas>
-              <img id="form_sign_image"
-                src="<%= datainputted.form_signHRM ? 'data:image/png;base64,' + datainputted.form_signHRM.toString('base64') : '' %>"
-                alt="HRM Approval">
-            </div>
-            <div class="form_sign4">
-              <div id="form_sign4">HRM Custodian</div>
-            </div>
-
-            <div class="signature-container">
-              <canvas id="form_sign2" width="200" height="150"></canvas>
-              <img id="form_sign_image"
-                src="<%= datainputted.form_sign2 ? 'data:image/png;base64,' + datainputted.form_sign2.toString('base64') : '' %>"
-                alt="Venue Approval">
-            </div>
-            <div class="form_sign2">
-              <div id="form_sign2_text">Venue Approval</div>
-            </div>
-
-            <div class="signature-container">
-              <canvas id="form_sign5" width="200" height="150"></canvas>
-            </div>
-            <div class="form_sign5">
-              <div id="form_sign5">Academic Head Approval</div>
-            </div>
-
-            <div class="signature-container">
-              <canvas id="form_sign6" width="200" height="150"></canvas>
-            </div>
-            <div class="form_sign6">
-              <div id="form_sign6">School Administrator Approval</div>
-            </div>
-          </div>
-        </div>
-    </form>
+      <div class="signature-container">
+        <canvas id="form_sign6" width="200" height="150"></canvas>
+      </div>
+      <div class="form_sign6">
+        <div id="form_sign6">School Administrator Approval</div>
+      </div>
+    </div>
+  </div>
+  </form>
 </body>
 
 <script>
@@ -287,6 +287,8 @@
     var number = '<%= encryptedNumber %>';
     var email = '<%= encryptedEmail %>';
     var encryptedId = '<%= encryptedId %>';
+    var authenticated = '<%= datainputted.authenticated %>';
+    var rasaNoteVoid = '<%= datainputted.rasa_note_void %>';
     var rasa_note = '<%= datainputted.rasa_note %>';
     var rasa_note2 = '<%= datainputted.rasa_note2 %>';
     var rasa_note3 = '<%= datainputted.rasa_note3 %>';
@@ -298,64 +300,72 @@
     console.log("number1: ", number1)
     console.log("number: ", number)
     ///////////////
-    var verificationForm = [
-      [31, "verification"],
-      [30, "verificationHRM"],
-      [20, "verification"], // Classroom?
-      [21, "verification"], // Kitchen
-      [1, "verification2"],
-      [2, "ejsrasaVanilla"],
-    /*[3, "verification4"],
-      [4, "verification5"],
-      [5, "verification6"],
-      */ 
-      //for future verification
-    ];
-    const x = verificationForm.find(item => item[0] === number1);
-    let finalVerification;
-    if (x) {
-      console.log("Verification for Approval:", x[1]);
-      finalVerification = x[1];
-    } else {
-      console.log("Verification", finalVerification);
+    if (rasaNoteVoid > "0" && (authenticated === '3' || authenticated === '127')) {
+      alert('This is already voided.');
+      window.location.href = `/ejsrasaCalendar/${encryptedId}`;
     }
-    /////////////////
+    else{
 
-    var noteForm = [
-      [30,'<%= datainputted.rasa_noteClassroom%>'],
-      [31,'<%= datainputted.rasa_noteClassroom%>'],
-      [21,'<%= datainputted.rasa_noteHRM %>'],
-      [1, '<%= datainputted.rasa_note %>'],
-      [2, '<%= datainputted.rasa_note2 %>'],
-      /*
-      [3, '<%= datainputted.rasa_note3 %>'],
-      [4, '<%= datainputted.rasa_note4 %>'],
-      [5, '<%= datainputted.rasa_note5 %>'],
-      */
-    ];
+      var verificationForm = [
+        [31, "verification"],
+        [30, "verificationHRM"],
+        [20, "verification"], // Classroom?
+        [21, "verification"], // Kitchen
+        [1, "verification2"],
+        [2, "ejsrasaVanilla"],
+        /*[3, "verification4"],
+          [4, "verification5"],
+          [5, "verification6"],
+          */
+        //for future verification
+      ];
+      const x = verificationForm.find(item => item[0] === number1);
+      let finalVerification;
+      if (x) {
+        console.log("Verification for Approval:", x[1]);
+        finalVerification = x[1];
+      } else {
+        console.log("Verification", finalVerification);
+      }
+      /////////////////
 
-    let finalNote;
-    const y = noteForm.find(item => item[0] === number1);
+      var noteForm = [
+        [30, '<%= datainputted.rasa_noteClassroom%>'],
+        [31, '<%= datainputted.rasa_noteClassroom%>'],
+        [21, '<%= datainputted.rasa_noteHRM %>'],
+        [1, '<%= datainputted.rasa_note %>'],
+        [2, '<%= datainputted.rasa_note2 %>'],
+        /*
+        [3, '<%= datainputted.rasa_note3 %>'],
+        [4, '<%= datainputted.rasa_note4 %>'],
+        [5, '<%= datainputted.rasa_note5 %>'],
+        */
+      ];
 
-    if (y) {
-      console.log("Final Note for Approval:", y[1]);
-      finalNote = y[1];
-    } else {
-      console.log("Verification", finalVerification);
-    }
+      let finalNote;
+      const y = noteForm.find(item => item[0] === number1);
 
-    // Check if finalNote is already present or if the user cancels the prompt
-    if (finalNote !== "0") {
-      alert('Rasa already has a note: ' + finalNote);
-    } else {
-      do {
-        finalNote = prompt("Enter additional notes (or click cancel to skip):");
-      } while (finalNote === "");
-      console.log('User input:', finalNote);
+      if (y) {
+        console.log("Final Note for Approval:", y[1]);
+        finalNote = y[1];
+      } else {
+        console.log("Verification", finalVerification);
+      }
 
-      if (finalNote === null) {
-      finalNote = null;
-    }
+      // Check if finalNote is already present or if the user cancels the prompt
+      if (authenticated === "0" && finalNote !== "0" && finalNote !== null) {
+        alert('Rasa already has a note: ' + finalNote);
+      } else {
+        do {
+          finalNote = prompt("Enter additional notes (or click cancel to skip):");
+        } while (finalNote === "");
+
+        if (finalNote === null) {
+          finalNote = "no note";
+        }
+
+        console.log('User input:', finalNote);
+      }
 
       try {
         const response = await fetch("/api/rasa_note", {
@@ -385,11 +395,11 @@
                 "Content-type": "application/json"
               }
             });
-          } else{
+          } else {
             console.log('Rasa signature API processed successfully.');
             window.location.href = `/${finalVerification}/${encryptedId}`;
           }
-            if (authenticateResponse.ok){
+          if (authenticateResponse.ok) {
             console.log('Rasa signature API processed successfully.');
             window.location.href = `/${finalVerification}/${encryptedId}`;
           } else {
@@ -403,6 +413,7 @@
       }
     }
   }
+
 </script>
 </body>
 

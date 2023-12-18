@@ -1,26 +1,3 @@
-const events = [  
-  {   
-    date: new Date(2023, 4, 15), // May 15, 2023
-    title: "Meeting with John12",
-    description: "Discuss new project proposal"  
-  },
-  {   
-    date: new Date(2023, 4, 16), // May 16, 2023
-    title: "Working at Home",
-    description: "Testing"  
-  },
-  {   
-    date: new Date(2023, 4, 16), // May 16, 2023
-    title: "Should Fit",
-    description: "Further discussions on project proposal"  
-  },
-  {   
-    date: new Date(2023, 4, 16), // May 16, 2023
-    title: "asdada",
-    description: "adsada"  
-  },  
-];
-
 const navbarButton = document.getElementById('navbar-toggle-button');
 const calendarContainer = document.getElementById('calendar');
 

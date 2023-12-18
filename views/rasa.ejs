@@ -55,11 +55,12 @@
               <div class="fields1">
                 <div class="input-field">
                   <label>Full Name</label>
-                  <input type="text" id="full_name" placeholder="Enter your name" required maxlength="30" >
+                  <input type="text" id="full_name" placeholder="Enter your name" required maxlength="30">
                 </div>
                 <div class="input-field">
                   <label>Contact Number </label>
-                  <input type="text" id="contact_number" placeholder="Enter your mobile number" required pattern="\d{11}" maxlength="11">
+                  <input type="text" id="contact_number" placeholder="Enter your mobile number" required
+                    pattern="\d{11}" maxlength="11">
                 </div>
                 <div class="input-field">
                   <label for="requestor_information">Requestor Information</label>
@@ -81,26 +82,29 @@
                 <div class="input-field" id="endorsedLabel" style="display: none;">
                   <label for="endorsed">Endorsed by</label>
                   <div class="select-wrapper">
+                    <!-- Student and Student Leader -->
                     <select id="endorsed" style="display: none;">
-                      <option value="" disabled selected><strong>Information & Communications Technology</strong></option>
-                      <option value="Information & Communications Technology: People 1">Information & Communications Technology: People 1</option>
+                      <option value="" disabled selected><strong>Information & Communications Technology</strong>
+                      </option>
+                      <option value="Information & Communications Technology: People 1">Information & Communications
+                        Technology: People 1</option>
                       <option value="" disabled selected>Business & Management</option>
                       <option value="Business & Management: People 1">Business & Management: People 1</option>
                       <option value="" disabled selected>Hospitality Management</option>
                       <option value="Hospitality Management: People 1">Hospitality Management: People 1</option>
                     </select>
-                    <!-- New select element for teachers -->
+                    <!-- Teachers -->
                     <select id="endorsed2" style="display: none;">
                       <option value="" disabled selected><strong>IT Department</strong></option>
-                      <option value="Mr. Mac Salonga">Mr. Mac Salonga</option>
+                      <option value="Mr. Mac Salonga">Mr. Mac Salonga</option><!--magistrado.222133@globalcity.sti.edu.ph-->
                       <option value="" disabled selected>Business & Management Department</option>
-                      <option value="Ms. Anne Bartolome">Ms. Anne Bartolome</option>
+                      <option value="Ms. Anne Bartolome">Ms. Anne Bartolome</option> <!--rodillas.222275@globalcity.sti.edu.ph.com-->
                       <option value="" disabled selected>Hospitality Management</option>
-                      <option value="Mr. Joseph Transmontero">Mr. Joseph Transmontero</option>
+                      <option value="Mr. Joseph Transmontero">Mr. Joseph Transmontero</option> <!--lopez.195633@globalcity.sti.edu.ph-->
                     </select>
                   </div>
                 </div>
-                
+
               </div>
             </div>
           </div>
@@ -136,20 +140,24 @@
 
                 <div class="input-field" style="width: 300px;">
                   <label>Expected Participants</label>
-                  <input type="number" id="participants" placeholder="# of Participants" min="0" max="50" required style="width: 268px;">
+                  <input type="number" id="participants" placeholder="# of Participants" min="0" max="50" required
+                    style="width: 268px;">
                 </div>
 
                 <div class="input-field" style="width: 380px;">
                   <label>Required Days</label>
-                  <input type="number" id="required_day" placeholder="Specify the days" min="0" max="9"  required style="width: 268px;">
+                  <input type="number" id="required_day" placeholder="Specify the days" min="0" max="9" required
+                    style="width: 268px;">
                 </div>
                 <div class="input-field">
                   <label>Start Time</label>
-                  <input type="time" id="start_time" placeholder="include set-up time or ingress" required style="width: 268px;">
+                  <input type="time" id="start_time" placeholder="include set-up time or ingress" required
+                    style="width: 268px;">
                 </div>
                 <div class="input-field">
                   <label for="end_time">End Time</label>
-                  <input type="time" id="end_time" name="end_time" placeholder="Include break-down time or egress" required style="width: 268px;">
+                  <input type="time" id="end_time" name="end_time" placeholder="Include break-down time or egress"
+                    required style="width: 268px;">
                 </div>
               </div>
               <div class="mid">
@@ -208,7 +216,8 @@
                     </div>
                     <div class="row6">
                       <label for="myRadioId3" class="radio">
-                        <input type="checkbox" name="myRadioField" id="myRadioId3" class="radio_input" onchange="toggleClassroomNumber()">
+                        <input type="checkbox" name="myRadioField" id="myRadioId3" class="radio_input"
+                          onchange="toggleClassroomNumber()">
                         <div class="radio_radio"></div>
                         Classrooms
                       </label>
@@ -217,12 +226,12 @@
                         <input type="text" id="classroom_number" style="margin-left: 2px; height: 30.818182px;">
                       </div>
                     </div>
-                    
+
                     <script>
                       function toggleClassroomNumber() {
                         const checkbox = document.getElementById("myRadioId3");
                         const classroomNumberContainer = document.querySelector(".classroom_number");
-                    
+
                         classroomNumberContainer.style.display = checkbox.checked ? "flex" : "none";
                       }
                     </script>
@@ -238,7 +247,8 @@
                       <div class="radio_radio1"></div>
                       Sound System
                       <div class="input-wide">
-                        <input type="number" placeholder="Number of Sound System" id="sound-system_input" min="0" disabled>
+                        <input type="number" placeholder="Number of Sound System" id="sound-system_input" min="0"
+                          disabled>
                       </div>
                     </label>
                     <label for="myRadioId_2" class="radio2">
@@ -255,7 +265,8 @@
                       LCD Projector
                       <div class="input-wide" style="padding-left: 3px;width: 202px;">
 
-                        <input type="number" placeholder="Number of Lcd Projector" id="lcd-projector_input" min="0" disabled>
+                        <input type="number" placeholder="Number of Lcd Projector" id="lcd-projector_input" min="0"
+                          disabled>
                       </div>
                     </label>
                     <label for="myRadioId_4" class="radio2">
@@ -264,7 +275,8 @@
                       Widescreen
                       <div class="input-wide" style="padding-left: 18px;width: 202px;">
 
-                        <input type="number" placeholder="Number of Sound System" id="wide-screen_input" min="0" disabled>
+                        <input type="number" placeholder="Number of Sound System" id="wide-screen_input" min="0"
+                          disabled>
                       </div>
                     </label>
                   </div>
@@ -292,7 +304,8 @@
                         <div class="radio_radio2"></div>
                         Black Panel
                         <div class="input-wide" style="padding-left: 16px;width: 202px;">
-                          <input type="number" placeholder="Number of Black Panel" id="black-panel_input" min="0" disabled>
+                          <input type="number" placeholder="Number of Black Panel" id="black-panel_input" min="0"
+                            disabled>
                         </div>
                       </label>
                       <label for="myRadioId-4" class="radio3">
@@ -300,7 +313,8 @@
                         <div class="radio_radio2"></div>
                         Whiteboard
                         <div class="input-wide" style="padding-left: 19px;width: 202px;">
-                          <input type="number" placeholder="Number of Whiteboard" id="whiteboard_input" min="0" disabled>
+                          <input type="number" placeholder="Number of Whiteboard" id="whiteboard_input" min="0"
+                            disabled>
                         </div>
                       </label>
                     </div>
@@ -350,18 +364,18 @@
   };
   const universalId = '<%= id %>';
 
-function setupCheckboxBehavior(checkboxId, inputId) {
-  const checkbox = document.getElementById(checkboxId);
-  const input = document.getElementById(inputId);
+  function setupCheckboxBehavior(checkboxId, inputId) {
+    const checkbox = document.getElementById(checkboxId);
+    const input = document.getElementById(inputId);
 
-  checkbox.addEventListener('change', function () {
-    input.disabled = !this.checked;
-    input.required = this.checked; // Always set required based on the checkbox state
-    if (!this.checked) {
-      input.value = '';
-    }
-  });
-}
+    checkbox.addEventListener('change', function () {
+      input.disabled = !this.checked;
+      input.required = this.checked; // Always set required based on the checkbox state
+      if (!this.checked) {
+        input.value = '';
+      }
+    });
+  }
 
   // Set up behavior for each checkbox and input field combination
   setupCheckboxBehavior('myRadioId-6', 'start-time');
@@ -408,63 +422,102 @@ function setupCheckboxBehavior(checkboxId, inputId) {
     var agree = confirm(notice + "\n\nDo you agree to the notice?");
 
     const start_date1 = document.getElementById("start_date");
-      const end_date1 = document.getElementById("end_date");
-      const full_name1 = document.getElementById("full_name");
-      const event_name1 = document.getElementById("event_name");
-      const event_day1 = document.getElementById("event_day");
-      const start_time1 = document.getElementById("start_time");
-      const end_time1 = document.getElementById("end_time");
-      const event_description1 = document.getElementById("event_description");
-      const requestor_information = document.getElementById("requestor_information");
-      const requestor_type = document.getElementById("requestor_type");
-      const required_day = document.getElementById("required_day");
-      const contact_number = document.getElementById("contact_number");
-      const participants = document.getElementById("participants");
-      const endorsed = document.getElementById("endorsed");
-      const purpose_objectives = document.getElementById("purpose_objectives");
+    const end_date1 = document.getElementById("end_date");
+    const full_name1 = document.getElementById("full_name");
+    const event_name1 = document.getElementById("event_name");
+    const event_day1 = document.getElementById("event_day");
+    const start_time1 = document.getElementById("start_time");
+    const end_time1 = document.getElementById("end_time");
+    const event_description1 = document.getElementById("event_description");
+    const requestor_information = document.getElementById("requestor_information");
+    const requestor_type = document.getElementById("requestor_type");
+    const required_day = document.getElementById("required_day");
+    const contact_number = document.getElementById("contact_number");
+    const participants = document.getElementById("participants");
+    const endorsed = document.getElementById("endorsed");
+    const purpose_objectives = document.getElementById("purpose_objectives");
 
-            // Checkboxes
-            const soundSystemCheckbox = document.getElementById("myRadioId_1");
-      const microphoneCheckbox = document.getElementById("myRadioId_2");
-      const lcdCheckbox = document.getElementById("myRadioId_3");
-      const widescreenCheckbox = document.getElementById("myRadioId_4");
-      const chairCheckbox = document.getElementById("myRadioId-1");
-      const tableCheckbox = document.getElementById("myRadioId-2");
-      const otherCheckbox = document.getElementById("myRadioId-7");
-      const airconCheckbox = document.getElementById("myRadioId-6");
-      const blackpanelCheckbox = document.getElementById("myRadioId-3");
-      const whiteboardCheckbox = document.getElementById("myRadioId-4");
+    // Checkboxes
+    const soundSystemCheckbox = document.getElementById("myRadioId_1");
+    const microphoneCheckbox = document.getElementById("myRadioId_2");
+    const lcdCheckbox = document.getElementById("myRadioId_3");
+    const widescreenCheckbox = document.getElementById("myRadioId_4");
+    const chairCheckbox = document.getElementById("myRadioId-1");
+    const tableCheckbox = document.getElementById("myRadioId-2");
+    const otherCheckbox = document.getElementById("myRadioId-7");
+    const airconCheckbox = document.getElementById("myRadioId-6");
+    const blackpanelCheckbox = document.getElementById("myRadioId-3");
+    const whiteboardCheckbox = document.getElementById("myRadioId-4");
 
-      // Input fields
-      const soundSystemInput = document.getElementById("sound-system_input");
-      const microphoneInput = document.getElementById("microphone_input");
-      const lcdInput = document.getElementById("lcd-projector_input");
-      const widescreenInput = document.getElementById("widescreen_input");
-      const chairInput = document.getElementById("chair_input");
-      const tableInput = document.getElementById("table_input");
-      const otherInput = document.getElementById('otherInput');
-      const whiteboardInput = document.getElementById("whiteboard_input");
-      const blackpanel = document.getElementById("myRadioId-3");
-      const blackpanelInput = document.getElementById("black-panel_input");
-      const start_aircontime = document.getElementById("start-time");
-      const end_aircontime = document.getElementById("end-time")
+    // Input fields
+    const soundSystemInput = document.getElementById("sound-system_input");
+    const microphoneInput = document.getElementById("microphone_input");
+    const lcdInput = document.getElementById("lcd-projector_input");
+    const widescreenInput = document.getElementById("widescreen_input");
+    const chairInput = document.getElementById("chair_input");
+    const tableInput = document.getElementById("table_input");
+    const otherInput = document.getElementById('otherInput');
+    const whiteboardInput = document.getElementById("whiteboard_input");
+    const blackpanel = document.getElementById("myRadioId-3");
+    const blackpanelInput = document.getElementById("black-panel_input");
+    const start_aircontime = document.getElementById("start-time");
+    const end_aircontime = document.getElementById("end-time")
 
-      console.log(required_day.value)
-        console.log(start_time1.value)
-        console.log(end_time1.value)
+    /////// for aircon time and event time debug
 
+
+    console.log(required_day.value)
+    console.log(start_time1.value)
+    console.log(end_time1.value)
+    console.log(start_aircontime.value)
+    console.log(end_aircontime.value)
+
+    function compareTime(time1, time2) {
+      if (!time1 || !time2) {
+        return 0;
+      }
+
+      const date1 = new Date(`2000-01-01T${time1}`);
+      const date2 = new Date(`2000-01-01T${time2}`);
+
+      if (date1 < date2) {
+        return -1;
+      } else if (date1 > date2) {
+        return 1;
+      } else {
+        return 0; // Both times are equal
+      }
+    }
+
+    const startTime = new Date(start_time1.value);
+    const endTime = new Date(end_time1.value);
+    const startAirconTime = new Date(start_aircontime.value);
+    const endAirconTime = new Date(end_aircontime.value);
 
     if (agree) {
       alert("You agreed to the notice.");
-      if (parseInt(required_day.value) === 1 && start_time1.value >= end_time1.value) {
-        alert("Error: Start time must be less than end time.");
+      if (parseInt(required_day.value) === 1) {
+        // Convert start_time1.value and end_time1.value to Date objects
+        const startTime = new Date(start_time1.value);
+        const endTime = new Date(end_time1.value);
+
+        // Check if the start time is greater than or equal to the end time
+        if (startTime >= endTime) {
+          alert("Error: Start time must be less than end time.");
+          return;
+        }
+      }
+
+      // Convert start_aircontime.value and end_aircontime.value to Date objects
+      const startAirconTime = new Date(start_aircontime.value);
+      const endAirconTime = new Date(end_aircontime.value);
+
+      // Check if there is an error in the Aircon Time
+      if (compareTime(startAirconTime, startTime) < 0 || compareTime(endAirconTime, endTime) > 0) {
+        alert("Error: Aircon Time has an error.");
         return;
       }
 
-      if (start_aircontime1.value >= start_time1.value ||end_aircontime1.value <= end_time1.value) {
-  alert("Error: Aircon Time has an error.");
-  return;
-}
       const form = document.querySelector("form");
       const nextBtn = form.querySelector(".nextBtn");
       const nextBtn2 = form.querySelector(".nextBtn2");

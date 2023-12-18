@@ -47,11 +47,11 @@
           return response.json();
         })
         .then((data) => {
-          events.length = 0; 
+          events.length = 0;
           events.push(
             ...data.map((data) => ({
               id: data.id,
-              date: new Date(data.event_day), 
+              date: new Date(data.event_day),
               title: data.event_name,
               description: data.event_description,
               duration: data.required_day,
@@ -68,21 +68,58 @@
     const addEventBtn = document.getElementById('add-event-btn');
     addEventBtn.addEventListener('click', () => {
       const event_title = prompt('Enter event title:');
+
       const event_description = prompt('Enter event description:');
       const event_day = prompt('Enter event date (YYYY-MM-DD):');
       const required_day = prompt('Enter required date: ');
+      const start_time = prompt('Indicate start time of event (e.g., 08:30 AM):');
+      const parsedStartTime = parseTime(start_time);
+      const end_time = prompt('Indicate end time of event (e.g., 12:30 PM)');
       const [year, month, day] = event_day.split('-');
       const date = new Date(year, month - 1, day);
       const id = Math.max(...events.map(event => event.id || 0)) + 1;
-      if (event_title && event_description && date instanceof Date && !isNaN(date.getTime())) {
-        events.push({ id, date, event_title, event_description, required_day });
 
+      if (event_title === null || event_description === null || 
+      event_day === null || required_day === null || start_time === null || end_time === null) {
+        alert("Please Try Again")
+        return; 
+      }
+
+      function parseTime(inputTime) {
+        const parsedTime = new Date(`2000-01-01T${inputTime}`);
+        const options = { hour: 'numeric', minute: 'numeric', hour12: true };
+        return parsedTime.toLocaleTimeString([], options);
+      }
+
+      function isValidTime(timeString) {
+        const regex = /^(0?[1-9]|1[0-2]):[0-5][0-9] (AM|PM)$/i;
+        return regex.test(timeString);
+      }
+
+      if (!isValidTime(parsedStartTime)) {
+      alert('Error: Invalid start time format. Please use HH:mm AM/PM format.');
+      } else {
+      if (required_day === '1' && start_time >= end_time) {
+        alert('Error: Start time must be less than end time when required day is 1.');
+        return;
+      }
+
+      const today = new Date();
+      if (date < today) {
+        alert('Error: Event date must be equal to or after the current day.');
+        return;
+      }
+
+      if (event_title && event_description && date instanceof Date && !isNaN(date.getTime())) {
+        events.push({ id, date, event_title, event_description, required_day, start_time, end_time });
         const calendarInput = {
-          id,
+          id: 0,
           event_name: event_title,
           event_day,
           event_description,
           required_day,
+          start_time,
+          end_time    
         };
         console.log(calendarInput)
 
@@ -106,7 +143,9 @@
       } else {
         alert('Invalid event data. Please try again.');
       }
+    }
     });
+
     const today = new Date();
     let currentMonth = today.getMonth();
     let currentYear = today.getFullYear();
@@ -142,48 +181,48 @@
             cell.textContent = date;
             row.appendChild(cell);
 
-            const event = events.find(
+            // Find events for the current date
+            const currentDate = new Date(currentYear, currentMonth, date);
+            const cellEvents = events.filter(
               (event) =>
-                event.date.getFullYear() === currentYear &&
-                event.date.getMonth() === currentMonth &&
-                event.date.getDate() <= date &&
-                event.date.getDate() + (event.duration || 1) - 1 >= date
+                event.date.getFullYear() === currentDate.getFullYear() &&
+                event.date.getMonth() === currentDate.getMonth() &&
+                event.date.getDate() === currentDate.getDate()
             );
 
-            if (event) {
+            if (cellEvents.length > 0) {
               const cellEventsContainer = document.createElement("div");
               cellEventsContainer.classList.add("event-container");
               cell.appendChild(cellEventsContainer);
 
-              for (const event of events) {
-                if (
-                  event.date.getFullYear() === currentYear &&
-                  event.date.getMonth() === currentMonth &&
-                  event.date.getDate() <= date &&
-                  event.date.getDate() + (event.duration || 1) - 1 >= date
-                ) {
-                  const eventElement = document.createElement("div");
-                  eventElement.classList.add("event");
+              for (const event of cellEvents) {
+                const eventElement = document.createElement("div");
+                eventElement.classList.add("event");
 
-                  // Set the color based on the event duration
-                  if (event.duration === 1) {
-                    eventElement.classList.add("blue");
-                  } else if (event.duration === 2) {
-                    eventElement.classList.add("red");
-                  } else if (event.duration >= 3) {
-                    eventElement.classList.add("green");
-                  }
-
-                  eventElement.innerHTML = `<strong>${event.title}</strong><br>${event.description}`;
-                  cellEventsContainer.appendChild(eventElement);
-
-                  // Add click event listener to the event element
-                  eventElement.addEventListener("click", () => {
-                    window.location.href = `/ejsrasaCalendar/${event.id}`;
-                  });
+                // Set the color based on the event duration
+                if (event.duration === 1) {
+                  eventElement.classList.add("blue");
+                } else if (event.duration === 2) {
+                  eventElement.classList.add("red");
+                } else if (event.duration >= 3) {
+                  eventElement.classList.add("green");
                 }
+
+                eventElement.innerHTML = `<strong>${event.title}</strong><br>${event.description}`;
+                cellEventsContainer.appendChild(eventElement);
+
+                eventElement.addEventListener("click", () => {
+                if (event.id === 0) {
+                  const promptMessage = `Title: ${event.title}\nDescription: ${event.description}\nDate: ${event.date.toDateString()}\nEvent Duration: ${event.duration} Days\nStart Time: ${convertTo12HourFormat(event.start_time)}\nEnd Time: ${convertTo12HourFormat(event.end_time)}`;
+                  alert(promptMessage);
+                } else {
+                  // If event.id is not zero, redirect to the specified URL
+                  window.location.href = `/ejsrasaCalendar/${event.id}`;
+                }
+              });
               }
             }
+
             if (date === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
               cell.classList.add("current-day");
             }
@@ -229,6 +268,13 @@
         "December",
       ];
       return monthNames[monthIndex];
+    }
+
+    function convertTo12HourFormat(time24) {
+      const [hours, minutes] = time24.split(':');
+      const period = hours >= 12 ? 'PM' : 'AM';
+      const hours12 = (hours % 12) || 12;
+      return `${hours12}:${minutes} ${period}`;
     }
 
     showCalendar();

@@ -387,6 +387,7 @@
 <script>
   // form_sign1
   var canvas = document.getElementById('form_sign');
+  if(canvas){
   var context = canvas.getContext('2d');
   var image1 = new Image();
   image1.src = '<%= datainputted.form_sign ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
@@ -400,6 +401,7 @@
 
     context.drawImage(image1, x, y, newWidth, newHeight);
   };
+}
 
   // form_sign2
   var canvas2 = document.getElementById('form_sign2');
@@ -417,24 +419,27 @@
   };
 
   var canvasClassroom = document.getElementById('form_signClassroom');
-  var context = canvas.getContext('2d');
+  if(canvasClassroom){
+  var contextClassroom = canvasClassroom.getContext('2d');
   var imageClassroom = new Image();
-  imageClassroom.src = '<%= datainputted.form_signClasroom ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
+  imageClassroom.src = '<%= datainputted.form_signClasroom ? "data:image/png;base64," + datainputted.form_signClasroom.toString("base64") : "" %>';
   imageClassroom.onload = function () {
     // Scale the image to fit the canvas while maintaining aspect ratio
-    var scaleFactor = Math.min(canvas.width / imageClassroom.width, imageClassroom.height / imageClassroom.height);
+    var scaleFactor = Math.min(canvasClassroom.width / imageClassroom.width, imageClassroom.height / imageClassroom.height);
     var newWidth = imageClassroom.width * scaleFactor;
     var newHeight = imageClassroom.height * scaleFactor;
     var x = (canvasClassroom.width - newWidth) / 2;
     var y = (canvasClassroom.height - newHeight) / 2;
 
-    context.drawImage(imageClassroom, x, y, newWidth, newHeight);
+    contextClassroom.drawImage(imageClassroom, x, y, newWidth, newHeight);
   };
+}
 
   var canvasHRM = document.getElementById('form_signHRM');
-  var context = canvas.getContext('2d');
+  if(canvasHRM){
+  var contextHRM = canvasHRM.getContext('2d');
   var imageHRM = new Image();
-  imageHRM.src = '<%= datainputted.form_signHRM ? "data:image/png;base64," + datainputted.form_sign.toString("base64") : "" %>';
+  imageHRM.src = '<%= datainputted.form_signHRM ? "data:image/png;base64," + datainputted.form_signHRM.toString("base64") : "" %>';
   imageHRM.onload = function () {
     // Scale the image to fit the canvas while maintaining aspect ratio
     var scaleFactor = Math.min(canvasHRM.width / imageHRM.width, imageHRM.height / imageHRM.height);
@@ -443,8 +448,9 @@
     var x = (canvasHRM.width - newWidth) / 2;
     var y = (canvasHRM.height - newHeight) / 2;
 
-    context.drawImage(imageHRM, x, y, newWidth, newHeight);
+    contextHRM.drawImage(imageHRM, x, y, newWidth, newHeight);
   };
+}
 </script>
 </body>
 

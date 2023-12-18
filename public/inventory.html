@@ -95,6 +95,11 @@
       <option value="2031">2031</option>
       <!-- Add more years -->
     </select>
+    <label for="start_time">Start Time:</label>
+    <input type="time" id="start_time" required>
+
+    <label for="end_time">End Time:</label>
+    <input type="time" id="end_time" required>
     <button onclick="fetchData()">Fetch Data</button>
   </div>
   <div id="noDataMessage" style="display: none; color: red;">No data found.</div>
@@ -108,7 +113,11 @@
       console.log("Testing");
       const month = document.getElementById("month").value;
       const year = document.getElementById("year").value;
-      const url = `http://154.41.254.18:3006/fetch-data?month=${month}&year=${year}`;
+      const start_time = document.getElementById("start_time").value;
+      const end_time = document.getElementById("end_time").value;
+
+      //const url = `http://localhost:3006/fetch-data?month=${month}&year=${year}&start_time=${start_time}&end_time=${end_time}`;
+      const url = `http://localhost:3006/fetch-data2?month=${month}&year=${year}`;
       fetch(url)
         .then(function (response) {
           return response.json();
@@ -165,7 +174,7 @@
               eventDayCell.textContent = formatDate(row.event_day);
 
               const eventIdCell = newRow.insertCell();
-              eventIdCell.textContent = row.inventory_id;
+              eventIdCell.textContent = row.id;
 
               const event_name = newRow.insertCell();
               const eventNameDiv = document.createElement("div");
