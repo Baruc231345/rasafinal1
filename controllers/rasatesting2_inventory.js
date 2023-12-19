@@ -33,11 +33,15 @@ const rasatesting2_inventory = async (req, res) => {
     aircon,
     start_aircon,
     end_aircon,
-    full_name,
-    event_name,
-    event_description,
-    event_day,
-    start_time,
+    sound_system_max,
+    table_max,
+    chairs_max,
+    lcd_max,
+    microphone_max,
+    widescreen_max,
+    blackpanel_max,
+    whiteboard_max,
+    date_changes,
   } = req.body;
 
   console.log("rasatesting2_inventory.js received data");
@@ -87,6 +91,15 @@ const rasatesting2_inventory = async (req, res) => {
           aircon: aircon,
           start_aircon: start_aircon,
           end_aircon: end_aircon,
+          sound_system_max: sound_system_max,
+          table_max: table_max,
+          chairs_max: chairs_max,
+          lcd_max: lcd_max,
+          microphone_max: microphone_max,
+          widescreen_max: widescreen_max,
+          blackpanel_max: blackpanel_max,
+          whiteboard_max: whiteboard_max,
+          date_changes: date_changes
         },
         (error, results) => {
           if (error) {

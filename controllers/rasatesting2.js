@@ -60,6 +60,7 @@ const rasatesting2 = async (req, res) => {
             reject(error);
             console.error("Error on selecting:", error);
           } else {
+            console.log("63" , full_name, event_name, event_description)
             resolve(results);
           }
         }

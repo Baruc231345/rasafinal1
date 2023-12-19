@@ -388,9 +388,25 @@
           end_aircon: end_aircon,
           other: other_quantity > 0 ? 1 : 0,
           other_quantity: other_quantity,
+
+          // Max Chairs
+          sound_system_max: <%= eventResults.availableSoundsystem %>,
+          table_max: <%= eventResults.availableTables %>,
+          chairs_max: <%= eventResults.availableChairs %>,
+          lcd_max: <%= eventResults.availableLcd %>,
+          microphone_max: <%= eventResults.availableMicrophone %>,
+          widescreen_max: <%= eventResults.availableWidescreen %>,
+          blackpanel_max: <%= eventResults.availableBlackpanel %>,
+          whiteboard_max: <%= eventResults.availableWhiteboard %>,
+          <%
+          const dateChanges = eventResults.date_changes instanceof Date ? eventResults.date_changes : new Date();
+          const formattedDate = `${dateChanges.getMonth() + 1}/${dateChanges.getDate()}/${dateChanges.getFullYear()}`;
+          %>
+          date_changes: '<%= formattedDate %>',
+
         };
+
         console.log("Inventory:", inventory);
-        console.log("sound_system after conditional check:", inventory.sound_system);
         console.log("Inventory Object:", inventory);
 
         const rasatesting2_inventory = {

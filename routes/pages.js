@@ -305,18 +305,16 @@ router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
 });
 
 function fetchMaxValues(callback) {
-  const maxValuesQuery = `
-    SELECT * FROM inventory_max WHERE id = 1;`;
+  const maxValues = `
+    SELECT * FROM inventory_max ORDER BY id DESC LIMIT 1;`;
 
-  db1.query(maxValuesQuery, (error, results) => {
+  db1.query(maxValues, (error, results) => {
     if (error) {
       callback(error, null);
       return;
     }
-
     // Assuming there is only one row in the result set
     const maxValues = results.length > 0 ? results[0] : null;
-
     callback(null, maxValues);
   });
 }
@@ -327,8 +325,6 @@ function getEvents(event_day, start_time, end_time, callback) {
       callback(error, null);
       return;
     }
-
-        // Extract values from maxValues
         const {
           chairs_max,
           table_max,
@@ -338,6 +334,7 @@ function getEvents(event_day, start_time, end_time, callback) {
           widescreen_max,
           blackpanel_max,
           whiteboard_max,
+          date_changes
         } = maxValues;
     
         // Set global variables with max values
@@ -349,6 +346,7 @@ function getEvents(event_day, start_time, end_time, callback) {
         maxWidescreen = widescreen_max;
         maxBlackpanel = blackpanel_max;
         maxWhiteboard = whiteboard_max;
+        //date_changes = date_changes;
 
 
   const query = `
@@ -423,6 +421,7 @@ function getEvents(event_day, start_time, end_time, callback) {
         availableWidescreen,
         availableBlackpanel,
         availableWhiteboard,
+        date_changes,
       });
     }
   );
@@ -432,13 +431,14 @@ function getEvents(event_day, start_time, end_time, callback) {
 router.get("/ejsrasa_copy/:id/:id2", (req, res) => {
   const rasaID = req.params.id;
   const universalId = req.session.universalId;
-
+ 
   if (universalId == null || universalId === "") {
     // logout
     return res.redirect("/logout");
   }
 
-  const query1 = "SELECT * FROM temporary_inputted_table WHERE id = ?";
+  const query1 = 
+    "SELECT * FROM temporary_inputted_table WHERE id = ?";
   const query2 =
     "SELECT * FROM temporary_inventory_table WHERE rasa_inventory_id = ?";
   const query3 =
@@ -1237,7 +1237,6 @@ async function checkOverlapped(id, res) {
       });
 
       console.log(selectedArray + " === selected array ");
-
       // Second query to get event_day, start_time, and end_time from inputted_table
       const resultsFromSecondQuery = await new Promise((resolve, reject) => {
         db1.query(
@@ -1334,6 +1333,11 @@ async function checkOverlapped(id, res) {
   });
 }
 
+async function checkSufficient(id){
+  return new Promise(async (resolve, reject) => {
+    
+  })
+}
 
 router.get("/verificationHRM/:id", async (req, res) => {
   try {
