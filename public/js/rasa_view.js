@@ -69,9 +69,34 @@ fetch("/api/rasa_view")
   });
 
   function confirmAction(id, event_name, event_day, event_description, required_day, start_time,
-    end_time, chair_quantity, table_quantity, lcd_quantity, widescreen_quantity, blackpanel_quantity,
+    end_time, auditorium, foodandbeverage, multihall, dancestudio, gym, classroom, classroom_number, kitchen, mainlobby,
+    chair_quantity, table_quantity, microphone_quantity, lcd_quantity, widescreen_quantity, blackpanel_quantity,
     whiteboard_quantity, sound_system_quantity) {
-    console.log("test");
+    console.log("confirmAction clicked!");
+    console.log("id:", id);
+    console.log("event_name:", event_name);
+    console.log("event_day:", event_day);
+    console.log("event_description:", event_description);
+    console.log("required_day:", required_day);
+    console.log("start_time:", start_time);
+    console.log("end_time:", end_time);
+    console.log("chair_quantity:", chair_quantity);
+    console.log("table_quantity:", table_quantity);
+    console.log("microphone_quantity:", microphone_quantity);
+    console.log("lcd_quantity:", lcd_quantity);
+    console.log("widescreen_quantity:", widescreen_quantity);
+    console.log("blackpanel_quantity:", blackpanel_quantity);
+    console.log("whiteboard_quantity:", whiteboard_quantity);
+    console.log("sound_system_quantity:", sound_system_quantity);
+    console.log("gym:", gym);
+    console.log("classroom:", classroom);
+    console.log("classroom_number:", classroom_number);
+    console.log("kitchen:", kitchen);
+    console.log("mainlobby:", mainlobby);
+    console.log("dancestudio:", dancestudio);
+    console.log("multihall:", multihall);
+    console.log("foodandbeverage:", foodandbeverage);
+    console.log("auditorium:", auditorium);
     const fetchDate = new Date(event_day);
   
     // Extract year, month, and day
@@ -96,6 +121,15 @@ fetch("/api/rasa_view")
       blackpanel_quantity: blackpanel_quantity,
       whiteboard_quantity: whiteboard_quantity,
       sound_system_quantity: sound_system_quantity,
+      gym: gym, 
+      classroom: classroom, 
+      classroom_number: classroom_number, 
+      kitchen: kitchen, 
+      mainlobby: mainlobby, 
+      dancestudio: dancestudio, 
+      multihall: multihall, 
+      foodandbeverage: foodandbeverage, 
+      auditorium: auditorium,
     };
   
     console.log(calendarInput);

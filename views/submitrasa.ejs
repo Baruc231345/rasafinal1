@@ -151,28 +151,28 @@
                 <% if (datainventory.sound_system === 1 && datainventory.sound_system_quantity > 0) { %>
                   <li id="sound_system" class="<%= (datainventory.sound_system_quantity > eventResults.availableSoundsystem) ? 'highlight-red' : '' %>">
                     <span class="check-symbol <%= (datainventory.sound_system_quantity > eventResults.availableSoundsystem) ? 'warning-symbol' : '' %>">✔</span>
-                    <span class="selected-equipment">Sound System</span> - <%= datainventory.sound_system_quantity %> Sound System / <%= eventResults.availableSoundsystem %> Available Sound System
+                    <span class="selected-equipment">Sound System</span> - <%= datainventory.sound_system_quantity %> / <%= eventResults.availableSoundsystem %> Available Sound System
                   </li>
                 <% } %>
                 
                 <% if (datainventory.microphone === 1 && datainventory.microphone_quantity > 0) { %>
                   <li class="<%= (datainventory.microphone_quantity > eventResults.availableMicrophone) ? 'highlight-red' : '' %>">
                     <span class="check-symbol <%= (datainventory.microphone_quantity > eventResults.availableMicrophone) ? 'warning-symbol' : '' %>">✔</span>
-                    <span class="selected-equipment">Microphone</span> - <%= datainventory.microphone_quantity %> Microphone / <%= eventResults.availableMicrophone %> Available Microphone
+                    <span class="selected-equipment">Microphone</span> - <%= datainventory.microphone_quantity %> / <%= eventResults.availableMicrophone %> Available Microphone
                   </li>
                 <% } %>
 
                         <% if (datainventory.lcd===1 && datainventory.lcd_quantity> 0) { %>
                           <li class="<%= (datainventory.lcd_quantity > eventResults.availableLcd) ? 'highlight-red' : '' %>">
                             <span class="check-symbol <%= (datainventory.lcd_quantity > eventResults.availableLcd) ? 'warning-symbol' : '' %>">✔</span>
-                            <span class="selected-equipment"> LCD's </span> - <%= datainventory.lcd_quantity %> LCD's / <%= eventResults.availableLcd   %> Available LCD's
+                            <span class="selected-equipment"> LCD's </span> - <%= datainventory.lcd_quantity %> / <%= eventResults.availableLcd   %> Available LCD's
                           </li>
                           <% } %>
 
                             <% if (datainventory.widescreen===1 && datainventory.widescreen_quantity> 0) { %>
                               <li class="<%= (datainventory.widescreen_quantity > eventResults.availableWidescreen) ? 'highlight-red' : '' %>">
                                 <span class="check-symbol <%= (datainventory.widescreen_quantity > eventResults.availableWidescreen) ? 'warning-symbol' : '' %>">✔</span>
-                                <span class="selected-equipment"> Widescreens </span> - <%= datainventory.widescreen_quantity %> Widescreens / <%= eventResults.availableWidescreen   %> Available Widescreens
+                                <span class="selected-equipment"> Widescreens </span> - <%= datainventory.widescreen_quantity %> / <%= eventResults.availableWidescreen   %> Available Widescreens
                               </li>
                               <% } %>
               </ul>
@@ -185,25 +185,25 @@
                       <% if (datainventory.chair===1) { %>
                         <li class="<%= (datainventory.chair_quantity > eventResults.availableChairs) ? 'highlight-red' : '' %>">
                           <span class="check-symbol <%= (datainventory.chair_quantity > eventResults.availableChairs) ? 'warning-symbol' : '' %>">✔</span>
-                          <span class="selected-equipment"> Chairs </span> - <%= datainventory.chair_quantity %> Chairs / <%= eventResults.availableChairs %> Available Chairs
+                          <span class="selected-equipment"> Chairs </span> - <%= datainventory.chair_quantity %> / <%= eventResults.availableChairs %> Available Chairs
                         </li>
                         <% } %>
                           <% if (datainventory.table_input===1) { %>
                             <li class="<%= (datainventory.table_quantity > eventResults.availableTables) ? 'highlight-red' : '' %>">
                               <span class="check-symbol <%= (datainventory.table_quantity > eventResults.availableTables) ? 'warning-symbol' : '' %>">✔</span>
-                              <span class="selected-equipment">Tables</span> - <%= datainventory.table_quantity %> Tables / <%= eventResults.availableTables %> Available Tables
+                              <span class="selected-equipment">Tables</span> - <%= datainventory.table_quantity %>  / <%= eventResults.availableTables %> Available Tables
                             </li>
                             <% } %>
                               <% if (datainventory.blackpanel===1) { %>
                                 <li class="<%= (datainventory.blackpanel_quantity > eventResults.availableBlackpanel) ? 'highlight-red' : '' %>">
-                                  <span class="check-symbol <%= (datainventory.blackpanel_quantity > eventResults.availableBlackpanel) ? 'warning-symbol' : '' %>"></span>
-                                  <span class="selected-equipment">Black Panel</span> - <%= datainventory.blackpanel_quantity %> Blackpanel / <%= eventResults.availableBlackpanel %> Available Blackpanel
+                                  <span class="check-symbol <%= (datainventory.blackpanel_quantity > eventResults.availableBlackpanel) ? 'warning-symbol' : '' %>">✔</span>
+                                  <span class="selected-equipment">Black Panel</span> - <%= datainventory.blackpanel_quantity %> / <%= eventResults.availableBlackpanel %> Available Blackpanel
                                 </li>
                                 <% } %>
                                   <% if (datainventory.whiteboard===1) { %>
                                     <li class="<%= (datainventory.whiteboard_quantity > eventResults.availableWhiteboard) ? 'highlight-red' : '' %>">
-                                      <span class="check-symbol <%= (datainventory.whiteboard_quantity > eventResults.availableWhiteboard) ? 'warning-symbol' : '' %>"></span>
-                                      <span class="selected-equipment">Whiteboard</span> - <%= datainventory.whiteboard_quantity %> Whiteboard / <%= eventResults.availableWhiteboard %> Available Whiteboard
+                                      <span class="check-symbol <%= (datainventory.whiteboard_quantity > eventResults.availableWhiteboard) ? 'warning-symbol' : '' %>">✔</span>
+                                      <span class="selected-equipment">Whiteboard</span> - <%= datainventory.whiteboard_quantity %>  / <%= eventResults.availableWhiteboard %> Available Whiteboard
                                     </li>
                                     <% } %>
                                       <% if (datainventory.aircon===1) { %>

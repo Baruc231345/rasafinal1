@@ -580,3 +580,25 @@ canvas {
     padding: 10px;
     color: #f00404;
   }
+
+  .highlight-red {
+    color: red; /
+  }
+  
+  .warning-symbol::before {
+    content: "⚠"; /
+    margin-right: 5px; 
+    color: red;
+  }
+
+  .facility-list {
+    list-style: none; /* Remove default list-style (bullet) */
+  }
+  
+  .facility-list li {
+    margin-bottom: 10px; /* Add some margin between list items */
+  }
+  
+  .check-symbol {
+    margin-right: 5px; /* Add some space between the check symbol and the facility text */
+  }

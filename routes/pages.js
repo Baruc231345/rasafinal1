@@ -140,80 +140,214 @@ router.get("/ejsrasa/:id", (req, res) => {
   });
 });
 
-// xxx
-router.get("/ejsrasaVanilla/:id", (req, res) => {
-  const rasaID = req.params.id;
-  const universalId = req.session.universalId;
+function checkInventory(id, callback) {
   const query1 = "SELECT * FROM inputted_table WHERE id = ?";
   const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
-  db1.query(query1, [rasaID], (error, data1) => {
+  const query3 = `SELECT * FROM calendar_input WHERE event_day = ? AND 
+    ((CAST(? AS TIME) >= start_time AND CAST(? AS TIME) < end_time) OR 
+    (CAST(? AS TIME) > start_time AND CAST(? AS TIME) <= end_time) OR 
+    (CAST(? AS TIME) <= start_time AND CAST(? AS TIME) >= end_time))
+  `;
+
+  db1.query(query1, [id], (error, data1) => {
     if (error) {
-      throw error;
+      return callback(error, null);
     } else {
       if (data1.length > 0) {
-        db1.query(query2, [rasaID], (error, data2) => {
-          if (error) {
-            console.error("Error fetching data from inventory_table:", error); // Log the error
-            throw error;
-          } else {
-            if (data2.length > 0) {
-              const datainputted = data1[0];
-              const datainventory = data2[0];
-              res.locals.rasaID = rasaID;
-              res.render("submitrasaCopy", {
-                rasaID,
-                datainputted,
-                datainventory,
-                universalId,
-              });
-            } else {
-              res.status(404).send("Data from second table not found");
+        const { event_day, start_time, end_time } = data1[0];
+        db1.query(
+          query3,
+          [
+            event_day,
+            start_time,
+            start_time,
+            end_time,
+            end_time,
+            start_time,
+            end_time,
+          ],
+          (error, overlappingEvents) => {
+            if (error) {
+              return callback(error, null);
             }
+
+            const totalChairQuantity = overlappingEvents.reduce(
+              (total, event) => total + event.chair_quantity,
+              0
+            );
+
+            const totalSoundSystemQuantity = overlappingEvents.reduce(
+              (total, event) => total + event.sound_system_quantity,
+              0
+            );
+
+            const totalMicrophoneQuantity = overlappingEvents.reduce(
+              (total, event) => total + event.microphone_quantity,
+              0
+            );
+
+            const totalLcdQuantity = overlappingEvents.reduce(
+              (total, event) => total + event.lcd_quantity,
+              0
+            );
+
+            const totalWidescreenQuantity = overlappingEvents.reduce(
+              (total, event) => total + event.widescreen_quantity,
+              0
+            );
+
+            const totalTableQuantity = overlappingEvents.reduce(
+              (total, event) => total + event.table_quantity,
+              0
+            );
+
+            const totalBlackpanelQuantity = overlappingEvents.reduce(
+              (total, event) => total + event.blackpanel_quantity,
+              0
+            );
+
+            const totalWhiteboardQuantity = overlappingEvents.reduce(
+              (total, event) => total + event.whiteboard_quantity,
+              0
+            );
+
+            db1.query(query2, [id], (error, data2) => {
+              if (error) {
+                return callback(error, null);
+              }
+
+              if (data2.length > 0) {
+                const totalAvailable_Chair =
+                  data2[0].chairs_max - totalChairQuantity;
+                const totalAvailable_Table =
+                  data2[0].table_max - totalTableQuantity;
+                const totalAvailable_Lcd = data2[0].lcd_max - totalLcdQuantity;
+                const totalAvailable_Widescreen =
+                  data2[0].widescreen_max - totalWidescreenQuantity;
+                const totalAvailable_SoundSystem =
+                  data2[0].sound_system_max - totalSoundSystemQuantity;
+                const totalAvailable_Blackpanel =
+                  data2[0].blackpanel_max - totalBlackpanelQuantity;
+                const totalAvailable_Whiteboard =
+                  data2[0].whiteboard_max - totalWhiteboardQuantity;
+                const totalAvailable_Microphone =
+                  data2[0].microphone_max - totalMicrophoneQuantity;
+
+                // Data retrieval successful, create result object
+                const result = {
+                  data1: data1[0],
+                  data2: data2[0],
+                  totalAvailable_Chair,
+                  totalAvailable_Table,
+                  totalAvailable_Lcd,
+                  totalAvailable_Widescreen,
+                  totalAvailable_SoundSystem,
+                  totalAvailable_Blackpanel,
+                  totalAvailable_Whiteboard,
+                  totalAvailable_Microphone,
+                  // Add other properties as needed...
+                };
+
+                callback(null, result);
+              } else {
+                callback("Data from second table not found", null);
+              }
+            });
           }
-        });
+        );
       } else {
-        res.status(404).send("Data from first table not found");
+        callback("Data from first table not found", null);
       }
+    }
+  });
+}
+
+// ejsrasavanilla1
+router.get("/ejsrasaVanilla/:id", (req, res) => {
+  const id = req.params.id;
+  const universalId = req.session.universalId;
+
+  checkInventory(id, (error, result) => {
+    if (error) {
+      console.error("Error retrieving inventory data:", error);
+      res.status(500).send("Internal Server Error");
+    } else {
+      const {
+        data1,
+        data2,
+        totalAvailable_Chair,
+        totalAvailable_Table,
+        totalAvailable_Lcd,
+        totalAvailable_Widescreen,
+        totalAvailable_SoundSystem,
+        totalAvailable_Blackpanel,
+        totalAvailable_Whiteboard,
+        totalAvailable_Microphone,
+      } = result;
+
+      res.locals.id = id;
+      res.render("submitrasaCopy", {
+        id,
+        datainputted: data1,
+        datainventory: data2,
+        universalId,
+        totalAvailable_Chair,
+        totalAvailable_Chair,
+        totalAvailable_Table,
+        totalAvailable_Lcd,
+        totalAvailable_Widescreen,
+        totalAvailable_SoundSystem,
+        totalAvailable_Blackpanel,
+        totalAvailable_Whiteboard,
+        totalAvailable_Microphone,
+      });
     }
   });
 });
 
 router.get("/ejsrasaCalendar/:id", (req, res) => {
-  const rasaID = req.params.id;
+  const id = req.params.id;
   const universalId = req.session.universalId;
-  const query1 = "SELECT * FROM inputted_table WHERE id = ?";
-  const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
-  db1.query(query1, [rasaID], (error, data1) => {
+
+  checkInventory(id, (error, result) => {
     if (error) {
-      throw error;
+      console.error("Error retrieving inventory data:", error);
+      res.status(500).send("Internal Server Error");
     } else {
-      if (data1.length > 0) {
-        db1.query(query2, [rasaID], (error, data2) => {
-          if (error) {
-            console.error("Error fetching data from inventory_table:", error); // Log the error
-            throw error;
-          } else {
-            if (data2.length > 0) {
-              const datainputted = data1[0];
-              const datainventory = data2[0];
-              res.locals.rasaID = rasaID;
-              res.render("submitrasaCalendar", {
-                rasaID,
-                datainputted,
-                datainventory,
-                universalId,
-              });
-            } else {
-              res.status(404).send("Data from second table not found");
-            }
-          }
-        });
-      } else {
-        res.status(404).send("Data from first table not found");
-      }
+      // Destructure the result object to get individual properties
+      const {
+        data1,
+        data2,
+        totalAvailable_Chair,
+        totalAvailable_Table,
+        totalAvailable_Lcd,
+        totalAvailable_Widescreen,
+        totalAvailable_SoundSystem,
+        totalAvailable_Blackpanel,
+        totalAvailable_Whiteboard,
+        totalAvailable_Microphone,
+      } = result;
+
+      res.locals.id = id;
+      res.render("submitrasaCalendar", {
+        id,
+        datainputted: data1,
+        datainventory: data2,
+        universalId,
+        totalAvailable_Chair,
+        totalAvailable_Chair,
+        totalAvailable_Table,
+        totalAvailable_Lcd,
+        totalAvailable_Widescreen,
+        totalAvailable_SoundSystem,
+        totalAvailable_Blackpanel,
+        totalAvailable_Whiteboard,
+        totalAvailable_Microphone,
+      });
     }
   });
 });
+
 /*
 router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
   const rasaID = req.params.encryptedId;
@@ -262,47 +396,127 @@ router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
 */
 
 router.get("/ejsrasaVanilla2/:encryptedId", (req, res) => {
-  const encryptedId = req.params.encryptedId;
-  const universalId = req.session.universalId;
-  const decryptedId = decryptId(encryptedId);
-
-  console.log("A");
-  console.log("encryptedId =" + encryptedId);
-  console.log("decryptedId =" + decryptedId);
-
-  const query1 = "SELECT * FROM inputted_table WHERE id = ?";
-  const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
-
-  db1.query(query1, [decryptedId], (error, data1) => {
-    if (error) {
-      throw error;
-    } else {
-      if (data1.length > 0) {
-        db1.query(query2, [decryptedId], (error, data2) => {
-          if (error) {
-            console.error("Error fetching data from inventory_table:", error); // Log the error
-            throw error;
-          } else {
-            if (data2.length > 0) {
-              const datainputted = data1[0];
-              const datainventory = data2[0];
-              res.render("submitrasaCopy", {
-                decryptedId,
-                datainputted,
-                datainventory,
-                universalId,
-              });
-            } else {
-              res.status(404).send("Data from second table not found");
-            }
-          }
-        });
+    const encryptedId = req.params.encryptedId;
+    const id = decryptId(encryptedId)
+    const universalId = req.session.universalId;
+    const query1 = "SELECT * FROM inputted_table WHERE id = ?";
+    const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
+    const query3 = `SELECT * FROM calendar_input WHERE event_day = ? AND 
+      ((CAST(? AS TIME) >= start_time AND CAST(? AS TIME) < end_time) OR 
+      (CAST(? AS TIME) > start_time AND CAST(? AS TIME) <= end_time) OR 
+      (CAST(? AS TIME) <= start_time AND CAST(? AS TIME) >= end_time))
+    `;
+  
+    db1.query(query1, [id], (error, data1) => {
+      if (error) {
+        throw error;
       } else {
-        res.status(404).send("Data from the first table not found");
+        if (data1.length > 0) {
+          const { event_day, start_time, end_time } = data1[0];
+          db1.query(
+            query3,
+            [
+              event_day,
+              start_time,
+              start_time,
+              end_time,
+              end_time,
+              start_time,
+              end_time,
+            ],
+            (error, overlappingEvents) => {
+              if (error) {
+                console.error(
+                  "Error fetching data from calendar_input:",
+                  error
+                );
+                throw error;
+              }
+              
+              const totalChairQuantity = overlappingEvents.reduce(
+                (total, event) => total + event.chair_quantity,0
+              );
+  
+              const totalSoundSystemQuantity = overlappingEvents.reduce(
+                (total, event) => total + event.sound_system_quantity,0
+              );
+  
+              const totalMicrophoneQuantity = overlappingEvents.reduce(
+                (total, event) => total + event.microphone_quantity,0
+              );
+  
+              const totalLcdQuantity = overlappingEvents.reduce(
+                (total, event) => total + event.lcd_quantity,0
+              );
+  
+              const totalWidescreenQuantity = overlappingEvents.reduce(
+                (total, event) => total + event.widescreen_quantity,0
+              );
+  
+              const totalTableQuantity = overlappingEvents.reduce(
+                (total, event) => total + event.table_quantity,0
+              );
+  
+              const totalBlackpanelQuantity = overlappingEvents.reduce(
+                (total, event) => total + event.blackpanel_quantity,0
+              );
+  
+              const totalWhiteboardQuantity = overlappingEvents.reduce(
+                (total, event) => total + event.whiteboard_quantity,0
+              );
+  
+                db1.query(query2, [id], (error, data2) => {
+                  if (error) {
+                    console.error(
+                      "Error fetching data from inventory_table:",
+                      error
+                    );
+                    throw error;
+                  }
+  
+                  if (data2.length > 0) {
+                    const totalAvailable_Chair = data2[0].chairs_max - totalChairQuantity ;
+                    console.log(totalChairQuantity, "totalChairQuantity")
+                    console.log(data2[0].chairs_max , "data2[0].chairs_max") 
+                    console.log(totalAvailable_Chair , "total Available Chair")
+                    const totalAvailable_Table = data2[0].table_max - totalTableQuantity;
+                    const totalAvailable_Lcd = data2[0].lcd_max - totalLcdQuantity;
+                    const totalAvailable_Widescreen = data2[0].widescreen_max - totalWidescreenQuantity;
+                    const totalAvailable_SoundSystem = data2[0].sound_system_max - totalSoundSystemQuantity;
+                    const totalAvailable_Blackpanel = data2[0].blackpanel_max - totalBlackpanelQuantity;
+                    const totalAvailable_Whiteboard = data2[0].whiteboard_max - totalWhiteboardQuantity;
+                    const totalAvailable_Microphone = data2[0].microphone_max - totalMicrophoneQuantity;
+  
+                    // Data retrieval successful, render the template
+                    const datainputted = data1[0];
+                    const datainventory = data2[0];
+                    res.locals.id = id;
+                    res.render("submitrasaCopy", {
+                      id,
+                      datainputted,
+                      datainventory,
+                      universalId,
+                      totalAvailable_Chair,
+                      totalAvailable_Table,
+                      totalAvailable_Lcd,
+                      totalAvailable_Widescreen,
+                      totalAvailable_SoundSystem,
+                      totalAvailable_Blackpanel,
+                      totalAvailable_Whiteboard,
+                      totalAvailable_Microphone,
+                    });
+                } else {
+                  res.status(404).send("Data from second table not found");
+                }
+              });
+            }
+          );
+        } else {
+          res.status(404).send("Data from first table not found");
+        }
       }
-    }
+    });
   });
-});
 
 function fetchMaxValues(callback) {
   const maxValues = `
@@ -519,7 +733,28 @@ router.get("/rasa", loggedIn, (req, res) => {
     return res.redirect("/");
   }
 
-  res.render("rasa", { id: universalId });
+  // Assuming db1 is your database connection
+  db1.query('SELECT user_id FROM user WHERE id = ?', [universalId], (error, results) => {
+    if (error) {
+      // Handle the error
+      console.error(error);
+      return res.status(500).send('Internal Server Error');
+    }
+
+    // Check if any results are returned
+    if (results.length === 0) {
+      // Redirect to "/" if no user is found
+      return res.redirect("/");
+    }
+
+    // Extract user_id from the results
+    const userId = results[0].user_id;
+    console.log(universalId)
+    console.log(userId)
+
+    // Render the "rasa" view with the user_id
+    res.render("rasa", { id: universalId, user_id: userId });
+  });
 });
 
 app.get("/fetch-data", (req, res) => {
@@ -563,7 +798,7 @@ app.get("/fetch-data", (req, res) => {
   });
 });
 
-app.get("/fetch-data2", (req, res) => {
+app.get("/fetch-calendar", (req, res) => {
   const month = req.query.month;
   const year = req.query.year;
 
@@ -581,6 +816,23 @@ app.get("/fetch-data2", (req, res) => {
     }
 })
 })
+
+app.get("/fetch-inventory-max", (req, res) => {
+  const inventoryMaxQuery = `
+    SELECT *
+    FROM inventory_max
+    ORDER BY id DESC
+    LIMIT 1;`;
+
+  db1.query(inventoryMaxQuery, (inventoryMaxError, inventoryMaxResults) => {
+    if (inventoryMaxError) {
+      console.error(inventoryMaxError);
+      res.status(500).json({ error: "An error occurred while fetching inventory_max data" });
+    } else {
+      res.json(inventoryMaxResults[0]); // Assuming you want to send a single row
+    }
+  });
+});
 
 
 router.get("/inventory", (req, res) => {
@@ -1051,6 +1303,18 @@ router.get("/verification/:id", async (req, res) => {
         .send("Overlap found. Cannot proceed with verification. Contact Building Admin");
     }
     console.log("No overlap found. Proceeding with verification.");
+
+    try {
+      const isSufficient = await checkSufficient(id);
+      if (isSufficient && isSufficient.status === 400) {
+        return res.status(400).send(isSufficient.message);
+      }
+      console.log("Sufficient Inventory. Proceeding with verification.");
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send("An error occurred while checking sufficiency");
+    }
+
     const number = 1;
     const encryptedNumber = encryptId(number);
     let email;
@@ -1333,11 +1597,185 @@ async function checkOverlapped(id, res) {
   });
 }
 
-async function checkSufficient(id){
-  return new Promise(async (resolve, reject) => {
-    
-  })
-}
+async function checkSufficient(id) {
+  return new Promise((resolve, reject) => {
+    db1.query(
+      "SELECT event_day, start_time, end_time FROM inputted_table WHERE id = ?",
+      [id],
+      (error, result) => {
+        if (error) {
+          console.error("Error executing the query:", error);
+          reject(error);
+          return;
+        }
+
+        const [row] = result;
+        if (!row) {
+          const noDataRowError = new Error("No data found for the specified ID.");
+          console.error(noDataRowError.message);
+          reject(noDataRowError);
+          return;
+        }
+
+        const { event_day, start_time, end_time } = row;
+
+        db1.query(
+          "SELECT * FROM inventory_table WHERE inventory_id = ?",
+          [id],
+          (error, inventoryData) => {
+            if (error) {
+              console.error("Error executing the query:", error);
+              reject(error);
+              return;
+            }
+
+            db1.query(
+              `SELECT * FROM calendar_input WHERE event_day = ? AND 
+              ((CAST(? AS TIME) >= start_time AND CAST(? AS TIME) < end_time) OR 
+               (CAST(? AS TIME) > start_time AND CAST(? AS TIME) <= end_time) OR 
+               (CAST(? AS TIME) <= start_time AND CAST(? AS TIME) >= end_time))`,
+              [
+                event_day,
+                start_time,
+                start_time,
+                end_time,
+                end_time,
+                start_time,
+                end_time,
+              ],
+              (error, overlappingEvents) => {
+                if (error) {
+                  console.error("Error executing the query:", error);
+                  reject(error);
+                  return;
+                }
+                console.log(
+                  "Overlapping events in calendar_input:",overlappingEvents
+                );
+                console.log("Inventory data from user's inventory_table:", inventoryData[0].inventory_id, "Inventory ID \n",
+                inventoryData[0].chair_quantity, "Chair Quantity / ", inventoryData[0].chairs_max , " Chair Max \n",
+                inventoryData[0].table_quantity, "Table Quantity / ", inventoryData[0].table_max ,  " Table Max \n",
+                inventoryData[0].sound_system_quantity, "Sound System Quantity / ", inventoryData[0].sound_system_max,  " Sound Sytem Max \n",
+                inventoryData[0].microphone_quantity, "Microphone Quantity / ", inventoryData[0].microphone_max ,  " Microphone Max \n",
+                inventoryData[0].lcd_quantity, "LCD Quantity / ", inventoryData[0].lcd_max ,  " LCD Max \n",
+                inventoryData[0].widescreen_quantity, "Widescreen Quantity / ", inventoryData[0].widescreen_max ,  " Widescreen Max \n",
+                inventoryData[0].blackpanel_quantity, "Blackpanel Quantity / ", inventoryData[0].blackpanel_max ,  " Blackpanel Max \n",
+                inventoryData[0].whiteboard_quantity, "Whiteboard Quantity / ", inventoryData[0].whiteboard_max ,  " Whiteboard Max \n",
+                );
+
+                // Calculate the sum of chair_quantity from overlapping events
+                const totalChairQuantity = overlappingEvents.reduce(
+                  (total, event) => total + event.chair_quantity,0
+                );
+
+                const totalSoundSystemQuantity = overlappingEvents.reduce(
+                  (total, event) => total + event.sound_system_quantity,0
+                );
+
+                const totalMicrophoneQuantity = overlappingEvents.reduce(
+                  (total, event) => total + event.microphone_quantity,0
+                );
+
+                const totalLcdQuantity = overlappingEvents.reduce(
+                  (total, event) => total + event.lcd_quantity,0
+                );
+
+                const totalWidescreenQuantity = overlappingEvents.reduce(
+                  (total, event) => total + event.widescreen_quantity,0
+                );
+
+                const totalTableQuantity = overlappingEvents.reduce(
+                  (total, event) => total + event.table_quantity,0
+                );
+
+                const totalBlackpanelQuantity = overlappingEvents.reduce(
+                  (total, event) => total + event.blackpanel_quantity,0
+                );
+
+                const totalWhiteboardQuantity = overlappingEvents.reduce(
+                  (total, event) => total + event.whiteboard_quantity,0
+                );
+
+                console.log("Total Accumulated Chair from Overlapped Event", totalChairQuantity);
+                console.log("Total Accumulated Table from Overlapped Event", totalTableQuantity);
+                console.log("Total Accumulated LCD from Overlapped Event", totalLcdQuantity);
+                console.log("Total Accumulated Widescreen from Overlapped Event", totalWidescreenQuantity);
+                console.log("Total Accumulated Sound System from Overlapped Event", totalSoundSystemQuantity);
+                console.log("Total Accumulated Black Panel from Overlapped Event", totalBlackpanelQuantity);
+                console.log("Total Accumulated Whiteboard from Overlapped Event", totalWhiteboardQuantity);
+
+                // Calculate total available chairs
+                const totalAvailable_Chair = inventoryData[0].chairs_max - totalChairQuantity ; //  1000 max chairs - 900 Accumulated Chairs
+                const totalAvailable_Table = inventoryData[0].table_max - totalTableQuantity;
+                const totalAvailable_Lcd = inventoryData[0].lcd_max - totalLcdQuantity;
+                const totalAvailable_Widescreen = inventoryData[0].widescreen_max - totalWidescreenQuantity;
+                const totalAvailable_SoundSystem = inventoryData[0].sound_system_max - totalSoundSystemQuantity;
+                const totalAvailable_Blackpanel = inventoryData[0].blackpanel_max - totalBlackpanelQuantity;
+                const totalAvailable_Whiteboard = inventoryData[0].whiteboard_max - totalWhiteboardQuantity;
+                const totalAvailable_Microphone = inventoryData[0].microphone_max - totalMicrophoneQuantity;
+                
+                if (
+                  totalAvailable_Chair <= inventoryData[0].chair_quantity ||
+                  totalAvailable_Table <= inventoryData[0].table_quantity ||
+                  totalAvailable_Lcd <= inventoryData[0].lcd_quantity ||
+                  totalAvailable_Widescreen <= inventoryData[0].widescreen_quantity ||
+                  totalAvailable_SoundSystem <= inventoryData[0].sound_system_quantity ||
+                  totalAvailable_Blackpanel <=  inventoryData[0].blackpanel_quantity ||
+                  totalAvailable_Whiteboard <=  inventoryData[0].whiteboard_quantity ||
+                  totalAvailable_Microphone <=  inventoryData[0].microphone_quantity) 
+                  {
+                    db1.query(
+                      "UPDATE inputted_table SET authenticated = 200, rasa_note_void = 'sufficient equipment, rasa_status = 'Insufficient Equipment. Contact Building Administrator'. Contact Building Admin' WHERE id = ?",
+                      [id],
+                      (updateError, updateResult) => {
+                        if (updateError) {
+                          console.error("Error updating inputted_table:", updateError);
+                          reject(updateError);
+                          return;
+                        }
+  
+                        console.log("Inputted_table updated successfully.");
+                        resolve({
+                          status: 400,
+                          message: "Sufficient Equipment",
+                        });
+                      }
+                    );
+                  } else {
+                    resolve({
+                      inputData: {
+                        eventDay: event_day,
+                        startTime: start_time,
+                        endTime: end_time,
+                      },
+                      overlappingEvents: overlappingEvents,
+                      inventoryData: inventoryData,
+                      totalChairQuantity: totalChairQuantity,
+                      totalAvailable_Chair: totalAvailable_Chair,
+                      totalSoundSystemQuantity: totalSoundSystemQuantity,
+                      totalAvailable_SoundSystem: totalAvailable_SoundSystem,
+                      totalMicrophoneQuantity: totalMicrophoneQuantity,
+                      totalAvailable_Microphone: totalMicrophoneQuantity,
+                      totalLcdQuantity: totalLcdQuantity,
+                      totalAvailable_Lcd: totalAvailable_Lcd,
+                      totalWidescreenQuantity: totalWidescreenQuantity,
+                      totalAvailable_Widescreen: totalAvailable_Widescreen,
+                      totalTableQuantity: totalTableQuantity,
+                      totalAvailable_Table: totalAvailable_Table,
+                      totalBlackpanelQuantity: totalBlackpanelQuantity,
+                      totalAvailable_Blackpanel: totalAvailable_Blackpanel,
+                      totalWhiteboardQuantity: totalWhiteboardQuantity,
+                      totalAvailable_Whiteboard: totalAvailable_Whiteboard,
+                    });
+                  }
+                }
+              );
+            }
+          );
+        }
+      );
+    });
+  }
 
 router.get("/verificationHRM/:id", async (req, res) => {
   try {
@@ -1351,6 +1789,17 @@ router.get("/verificationHRM/:id", async (req, res) => {
         .send("Overlap found. Cannot proceed with verification. Contact Building Admin");
     }
     console.log("No overlap found. Proceeding with verification.");
+
+    try {
+      const isSufficient = await checkSufficient(id);
+      if (isSufficient && isSufficient.status === 400) {
+        return res.status(400).send(isSufficient.message);
+      }
+      console.log("Sufficient Inventory. Proceeding with verification.");
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send("An error occurred while checking sufficiency");
+    }
     
     const hashedId = encryptId(id);
     const number = 21;
@@ -1365,8 +1814,8 @@ router.get("/verificationHRM/:id", async (req, res) => {
     const encryptedEmail = encryptId(email);
     const html = `
         <h1>Rasa for Approval Email</h1>
-        <a href="http://localhost:3005/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
-        <a href="http://localhost:3005/disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+        <a href="http://154.41.254.18:3306//approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://154.41.254.18:3306//disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
       `;
 
     const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
@@ -1464,7 +1913,6 @@ router.get("/verificationClassroom/:id/:digit", async (req, res) => {
     const hashedId = encryptId(id);
     const number = 20;
     const encryptedNumber = encryptId(number);
-    
 
     console.log("----------------------------------------");
     console.log("/verificationClassroom");
@@ -1483,12 +1931,23 @@ router.get("/verificationClassroom/:id/:digit", async (req, res) => {
     }
     console.log("No overlap found. Proceeding with verification.");
 
+    try {
+      const isSufficient = await checkSufficient(id);
+      if (isSufficient && isSufficient.status === 400) {
+        return res.status(400).send(isSufficient.message);
+      }
+      console.log("Sufficient Inventory. Proceeding with verification.");
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send("An error occurred while checking sufficiency");
+    }
+
     const pdfFileName = `rasa_${id}.pdf`;
     const encryptedEmail = encryptId(email);
     const html = `
         <h1>Rasa for Classroom Facilitator Email</h1>
-        <a href="http://localhost:3005/approveRasa/${id}/${digit}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
-        <a href="http://localhost:3005/disregardRasa/${id}/${digit}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+        <a href="http://154.41.254.18:3306//approveRasa/${id}/${digit}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://154.41.254.18:3306//disregardRasa/${id}/${digit}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
       `;
 
     const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
@@ -1511,7 +1970,6 @@ router.get("/verificationClassroom/:id/:digit", async (req, res) => {
     res.status(500).send("An error occurred while processing the request");
   }
 });
-
 async function sendEmail_Classroom(
   id,
   email,
@@ -1579,19 +2037,11 @@ async function sendEmail_Classroom(
   }
 }
 
-router.get(
-  "/approveRasa/:hashedId/:encryptedNumber/:encryptedEmail",
+router.get("/approveRasa/:hashedId/:encryptedNumber/:encryptedEmail",
   async (req, res) => {
     const encryptedId = req.params.hashedId; // 1221
     const encryptedNumber = req.params.encryptedNumber; // dsasdase21231
     const encryptedEmail = req.params.encryptedEmail; // 128368712637813
-    //const encryptedId = encryptId(hashedId);
-
-    console.log("------------------------------");
-    console.log("----approveRasa------");
-    console.log(encryptedId);
-    console.log(encryptedNumber);
-    //console.log(hashedId);
 
     const query1 = "SELECT * FROM inputted_table WHERE id = ?";
     const query2 = "SELECT * FROM inventory_table WHERE inventory_id = ?";
@@ -1627,6 +2077,7 @@ router.get(
     });
   }
 );
+
 
 router.get("/disregardRasa/:hashedId/:encryptedNumber", async (req, res) => {
   const hashedId = req.params.hashedId;
@@ -1686,6 +2137,20 @@ router.get("/verification2/:hashedId", async (req, res) => {
         .send("Overlap found. Cannot proceed with verification. Contact Building Admin");
     }
     console.log("No overlap found. Proceeding with verification.");
+
+    try {
+      const isSufficient = await checkSufficient(hashedId);
+      if (isSufficient && isSufficient.status === 400) {
+        return res.status(400).send(isSufficient.message);
+      }
+      console.log("Sufficient Inventory. Proceeding with verification.");
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send("An error occurred while checking sufficiency");
+    }
+
+    console.log("Sufficient Inventory. Proceeding with verification.");
+    console.log("Sufficient Inventory. Proceeding with verification."); 
     const number = 2;
     console.log("----------------------------------------");
     console.log("/verification2");
@@ -1716,8 +2181,8 @@ router.get("/verification2/:hashedId", async (req, res) => {
             const email = "baruc.231345@globalcity.sti.edu.ph";
             const html = `
               <h1>Rasa for Approval Email</h1>
-              <a href="http://localhost:3005/approveRasa/${hashedId}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
-              <a href="http://localhost:3005/disregardRasa/${hashedId}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+              <a href="http://154.41.254.18:3306//approveRasa/${hashedId}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+              <a href="http://154.41.254.18:3306//disregardRasa/${hashedId}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
             `;
 
             const updateSql =
@@ -1906,8 +2371,8 @@ router.get("/getSignature/:id", async (req, res) => {
 
           console.log("form_sign updated successfully");
           const puppeteer = require("puppeteer");
-          const url = `http://localhost:3005/ejsrasaVanilla/${hashedId}`;
-          //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
+          //const url = `http://localhost:3005/ejsrasaVanilla/${hashedId}`;
+          const url = `http://154.41.254.18:3306/ejsrasaVanilla/${hashedId}`;
 
           try {
             const browser = await puppeteer.launch({
@@ -2068,8 +2533,8 @@ router.get("/getSignature2/:hashedId", async (req, res) => {
 
       console.log("form_sign updated successfully");
       const puppeteer = require("puppeteer");
-      const url = `http://localhost:3005/ejsrasaVanilla/${decryptedrasaID}`;
-      //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedrasaID}`;
+     // const url = `http://localhost:3005/ejsrasaVanilla/${decryptedrasaID}`;
+      const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedrasaID}`;
 
       try {
         const browser = await puppeteer.launch({

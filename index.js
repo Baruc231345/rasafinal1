@@ -16,6 +16,11 @@ app.use(session({
 
 app.use(bodyParser.urlencoded({extended:true}))
 
+app.get("/rasa/css/signatures_folders/:imageName", (req, res) => {
+  const imageName = req.params.imageName;
+  res.sendFile(__dirname + `/public/css/signatures_folders/${imageName}`);
+});
+
 app.get("/dashboardRegular/css/dashboard1.css", (req, res) => {
   res.sendFile(__dirname + "/public/css/dashboard1.css");
 });

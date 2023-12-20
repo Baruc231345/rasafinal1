@@ -15,6 +15,7 @@ const rasatesting = async (req, res) => {
     participants,
     purpose_objectives,
     endorsed,
+    user_id,
   } = req.body;
 
   // Calculate end_date based on event_day and required_day
@@ -44,6 +45,7 @@ const rasatesting = async (req, res) => {
     'INSERT INTO temporary_inputted_table SET ?',
     {
       full_name: full_name,
+      user_id: user_id,
       event_name: event_name,
       event_description: event_description,
       event_day: event_day,

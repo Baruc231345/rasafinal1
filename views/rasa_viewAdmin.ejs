@@ -33,7 +33,7 @@
               </li>
 
               <li>
-                <a href="/inventory12"><span class="material-symbols-outlined">list_alt</span>
+                <a href="/inventory"><span class="material-symbols-outlined">list_alt</span>
                   <h4>Inventory</h4>
                 </a>
               </li>
@@ -106,8 +106,9 @@
                     <td>
                       <% var authenticated = parseInt(data.authenticated, 10); %>
                         <% if (data.authenticated === 2) { %>
-                        <button class="btn btn-sm btn-primary confirm-button" onclick="confirmAction('<%=data.inputted_id %>','<%= data.event_name %>', '<%= data.event_day %>', '<%= data.event_description %>', '<%= data.required_day %>', '<%= data.start_time %>', 
-                        '<%= data.end_time %>','<%= data.chair_quantity %>','<%= data.table_quantity %>','<%= data.microphone_quantity %>','microphone_quantity',
+                        <button class="btn btn-sm btn-primary confirm-button" onclick="confirmAction('<%=data.inputted_id %>','<%= data.event_name %>', '<%= data.event_day %>', '<%= data.event_description %>', '<%= data.required_day %>', '<%= data.start_time %>', '<%= data.end_time %>', 
+                        '<%= data.auditorium %>', '<%= data.foodandbeverage %>', '<%= data.multihall %>', '<%= data.dancestudio %>', '<%= data.gym %>', '<%= data.classroom %>', '<%= data.classroom_number %>', '<%= data.kitchen %>', '<%= data.mainlobby %>',
+                        '<%= data.chair_quantity %>','<%= data.table_quantity %>','<%= data.microphone_quantity %>',
                         '<%= data.lcd_quantity %>','<%= data.widescreen_quantity %>','<%= data.blackpanel_quantity %>','<%= data.whiteboard_quantity%>','<%= data.sound_system_quantity %>')">Confirm</button>
                         <% } else if (data.rasa_status !== 'Pending' && data.rasa_status !== null && data.rasa_status !== '' && data.authenticated === 0) { %>
                         <button class="btn btn-sm btn-primary disabled-button" disabled>Approved</button>

@@ -159,44 +159,103 @@
             </ul>
           </div>
 
-          <div class="details personal" style="display: block;">
+          <div class="details personal" style="display: block; width: 400px;">
             <span class="title">Equipment Needed</span>
             <p class="text">Here is the list of equipment you have selected:</p>
-            <% if (datainventory.sound_system===1 || datainventory.microphone===1 || datainventory.lcd===1 ||
-            datainventory.widescreen===1) { %>
-            <!-- MIS/IT Section -->
-            <div class="test" style="display: flex; justify-content: space-between">
-              <div class="fields4" style="flex: 1;">
-                <h3 class="equipment-section">MIS/IT</h3>
-                <ul class="equipment-list">
-                  <% if (datainventory.sound_system===1) { %>
-                    <li><span class="check-symbol">✔</span> <span class="selected-equipment">Sound System</span> - <%=
-                        datainventory.sound_system_quantity %>
-                    </li>
-                    <% } %>
-                      <% if (datainventory.microphone===1) { %>
-                        <li><span class="check-symbol">✔</span> <span class="selected-equipment">Microphone</span> -
-                          <%= datainventory.microphone_quantity %>
-                        </li>
+            <% if (datainventory.chair === 1 || datainventory.sound_system===1 || datainventory.microphone===1 || datainventory.lcd===1 ||
+              datainventory.widescreen===1) { %>
+              <!-- MIS/IT Section -->
+              <div class="test" style="display: flex; justify-content: space-between">
+                <div class="fields4" style="flex: 1;">
+                  <h3 class="equipment-section">MIS/IT</h3>
+                  <ul class="equipment-list">
+                    <% if (datainventory.chair === 1) { %>
+                      <li class="<%= (datainventory.chair_quantity > totalAvailable_Chair) ? 'highlight-red' : '' %>">
+                        <% if (datainventory.chair_quantity > totalAvailable_Chair) { %>
+                          <span class="warning-symbol"></span>
+                          <span class="selected-equipment highlight-red"> Chair's </span> - <%= datainventory.chair_quantity %> / <%= totalAvailable_Chair %> Available Chair
+                        <% } else { %>
+                          <span class="check-symbol">✔</span>
+                          <span class="selected-equipment"> Chair's </span> - <%= datainventory.chair_quantity %> / <%= totalAvailable_Chair %> Available Chair
                         <% } %>
-                          <% if (datainventory.lcd===1) { %>
-                            <li><span class="check-symbol">✔</span> <span class="selected-equipment">LCD
-                                Projector</span>
-                              - <%= datainventory.lcd_quantity %>
-                            </li>
-                            <% } %>
-                              <% if (datainventory.widescreen===1) { %>
-                                <li><span class="check-symbol">✔</span> <span
-                                    class="selected-equipment">Widescreen</span>
-                                  - <%= datainventory.widescreen_quantity %>
-                                </li>
-                                <% } %>
-                </ul>
+                      </li>
+                    <% } %>
+                    
+                    <% if (datainventory.sound_system === 1) { %>
+                      <li class="<%= (datainventory.sound_system_quantity > totalAvailable_SoundSystem) ? 'highlight-red' : '' %>">
+                        <% if (datainventory.sound_system_quantity > totalAvailable_SoundSystem) { %>
+                          <span class="warning-symbol"></span>
+                          <span class="selected-equipment highlight-red"> Sound System </span> - <%= datainventory.sound_system_quantity %> / <%= totalAvailable_SoundSystem %> Available Sound System
+                        <% } else { %>
+                          <span class="check-symbol">✔</span>
+                          <span class="selected-equipment"> Sound System </span> - <%= datainventory.sound_system_quantity %> / <%= totalAvailable_SoundSystem %> Available Sound System
+                          <% } %>
+                        </li>
+                    <% } %>
+                    
+                    <% if (datainventory.microphone === 1) { %>
+                      <li class="<%= (datainventory.microphone_quantity > totalAvailable_Microphone) ? 'highlight-red' : '' %>">
+                        <% if (datainventory.microphone_quantity > totalAvailable_Microphone) { %>
+                          <span class="warning-symbol"></span>
+                          <span class="selected-equipment highlight-red"> Microphone </span> - <%= datainventory.microphone_quantity %> / <%= totalAvailable_Microphone %> Available Microphone
+                        <% } else { %>
+                          <span class="check-symbol">✔</span>
+                          <span class="selected-equipment"> Microphone </span> - <%= datainventory.microphone_quantity %> / <%= totalAvailable_Microphone %> Available Microphone
+                        <% } %>
+                      </li>
+                    <% } %>
+                    
+                    <% if (datainventory.lcd === 1) { %>
+                      <li class="<%= (datainventory.lcd_quantity > totalAvailable_Lcd) ? 'highlight-red' : '' %>">
+                        <% if (datainventory.lcd_quantity > totalAvailable_Lcd) { %>
+                          <span class="warning-symbol"></span>
+                          <span class="selected-equipment highlight-red"> LCD </span> - <%= datainventory.lcd_quantity%> / <%= totalAvailable_Lcd %> Available LCD
+                        <% } else { %>
+                          <span class="check-symbol">✔</span>
+                          <span class="selected-equipment"> LCD </span> - <%= datainventory.lcd_quantity %> / <%= totalAvailable_Lcd %> Available LCD
+                        <% } %>
+                      </li>
+                    <% } %>
+                    
+                    <% if (datainventory.widescreen === 1) { %>
+                      <li class="<%= (datainventory.widescreen_quantity > totalAvailable_Widescreen) ? 'highlight-red' : '' %>">
+                        <% if (datainventory.widescreen_quantity > totalAvailable_Widescreen) { %>
+                          <span class="warning-symbol"></span>
+                          <span class="selected-equipment highlight-red"> Widescreen </span> - <%= datainventory.widescreen_quantity %> / <%= totalAvailable_Widescreen %> Available Widescreen
+                        <% } else { %>
+                          <span class="check-symbol">✔</span>
+                          <span class="selected-equipment"> Widescreen </span> - <%= datainventory.widescreen_quantity %> / <%= totalAvailable_Widescreen %> Available Widescreen
+                        <% } %>
+                      </li>
+                    <% } %>
+                    
+                    <% if (datainventory.blackpanel_quantity === 1) { %>
+                      <li class="<%= (datainventory.blackpanel_quantity > totalAvailable_Blackpanel) ? 'highlight-red' : '' %>">
+                        <% if (datainventory.blackpanel_quantity > totalAvailable_Blackpanel) { %>
+                          <span class="warning-symbol"></span>
+                          <span class="selected-equipment highlight-red"> Blackpanel </span> - <%= datainventory.blackpanel_quantity %> / <%= totalAvailable_Blackpanel %> Available Blackpanel
+                        <% } else { %>
+                          <span class="check-symbol">✔</span>
+                          <span class="selected-equipment"> Blackpanel </span> - <%= datainventory.blackpanel_quantity %> / <%= totalAvailable_Blackpanel %> Available Blackpanel
+                        <% } %>
+                      </li>
+                    <% } %>
+                    
+                    <% if (datainventory.whiteboard_quantity === 1) { %>
+                      <li class="<%= (datainventory.whiteboard_quantity > totalAvailable_Whiteboard) ? 'highlight-red' : '' %>">
+                        <% if (datainventory.whiteboard_quantity > totalAvailable_Whiteboard) { %>
+                          <span class="warning-symbol"></span>
+                          <span class="selected-equipment highlight-red"> Whiteboard </span> - <%= datainventory.whiteboard_quantity %> / <%= totalAvailable_Whiteboard %> Available Whiteboard
+                        <% } else { %>
+                          <span class="check-symbol">✔</span>
+                          <span class="selected-equipment"> Whiteboard </span> - <%= datainventory.whiteboard_quantity %> / <%= totalAvailable_Whiteboard %> Available Whiteboard
+                        <% } %>
+                      </li>
+                    <% } %>
+                    </ul>
+                    </div>
               </div>
-
-            
-            </div>
-            <% } %>
+              <% } %>
 
           </div>
         </div>

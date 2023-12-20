@@ -3,6 +3,7 @@ const db1 = require("../routes/rasa-db");
 const rasatesting2 = async (req, res) => {
   const {
     full_name,
+    people_id,
     event_name,
     event_description,
     event_day,
@@ -104,6 +105,7 @@ const rasatesting2 = async (req, res) => {
               "INSERT INTO inputted_table SET ?",
               {
                 full_name,
+                people_id,
                 user_id,
                 event_name,
                 event_description,
