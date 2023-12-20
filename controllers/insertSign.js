@@ -1,4 +1,4 @@
-
+/*
 const express = require('express');
 const multer = require('multer');
 const db1 = require("../routes/rasa-db");
@@ -41,3 +41,4 @@ router.post('/insertSign', upload, (req, res) => {
 });
 
 module.exports = router;
+*/
