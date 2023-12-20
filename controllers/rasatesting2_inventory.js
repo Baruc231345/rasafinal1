@@ -53,6 +53,7 @@ const rasatesting2_inventory = async (req, res) => {
   console.log(gym);
   console.log(kitchen);
   console.log(classroom);
+  const formattedDate = new Date(date_changes).toISOString().split('T')[0];
 
   try {
 
@@ -99,7 +100,7 @@ const rasatesting2_inventory = async (req, res) => {
           widescreen_max: widescreen_max,
           blackpanel_max: blackpanel_max,
           whiteboard_max: whiteboard_max,
-          date_changes: date_changes
+          date_changes: formattedDate
         },
         (error, results) => {
           if (error) {
