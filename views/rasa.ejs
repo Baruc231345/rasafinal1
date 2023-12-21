@@ -427,9 +427,9 @@
     if(agree){
 
       const requiredDay = document.getElementById("required_day").value;
-        const startTime12 = new Date(document.getElementById("start_time").value);
-        const endTime12 = new Date(document.getElementById("end_time").value);
-
+      const currentDateTime = new Date();
+      const startTime12 = new Date(currentDateTime.toDateString() + " " + document.getElementById("start_time").value);
+      const endTime12 = new Date(currentDateTime.toDateString() + " " + document.getElementById("end_time").value);
         console.log(requiredDay)
         console.log(startTime12)
         console.log(endTime12)
