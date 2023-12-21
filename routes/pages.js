@@ -1814,8 +1814,8 @@ router.get("/verificationHRM/:id", async (req, res) => {
     const encryptedEmail = encryptId(email);
     const html = `
         <h1>Rasa for Approval Email</h1>
-        <a href="http://154.41.254.18:3306//approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
-        <a href="http://154.41.254.18:3306//disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+        <a href="http://154.41.254.18:3306/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://154.41.254.18:3306/disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
       `;
 
     const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
@@ -1946,8 +1946,8 @@ router.get("/verificationClassroom/:id/:digit", async (req, res) => {
     const encryptedEmail = encryptId(email);
     const html = `
         <h1>Rasa for Classroom Facilitator Email</h1>
-        <a href="http://154.41.254.18:3306//approveRasa/${id}/${digit}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
-        <a href="http://154.41.254.18:3306//disregardRasa/${id}/${digit}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+        <a href="http://154.41.254.18:3306/approveRasa/${id}/${digit}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://154.41.254.18:3306/disregardRasa/${id}/${digit}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
       `;
 
     const updateSql = "UPDATE inputted_table SET rasa_status = ? WHERE id = ?";
@@ -2181,8 +2181,8 @@ router.get("/verification2/:hashedId", async (req, res) => {
             const email = "baruc.231345@globalcity.sti.edu.ph";
             const html = `
               <h1>Rasa for Approval Email</h1>
-              <a href="http://154.41.254.18:3306//approveRasa/${hashedId}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
-              <a href="http://154.41.254.18:3306//disregardRasa/${hashedId}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+              <a href="http://154.41.254.18:3306/approveRasa/${hashedId}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+              <a href="http://154.41.254.18:3306/disregardRasa/${hashedId}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
             `;
 
             const updateSql =
