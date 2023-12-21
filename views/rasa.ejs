@@ -426,6 +426,15 @@
     var agree = confirm(notice + "\n\nDo you agree to the notice?");
     if(agree){
 
+      const requiredDayInput = document.getElementById("required_day");
+      const requiredDayValue = requiredDayInput.value;
+
+      // Check if requiredDayValue is a number
+      if (isNaN(requiredDayValue)) {
+        alert("Error: Required Day must be a number.");
+        return;
+      }
+
       const requiredDay = parseInt(document.getElementById("required_day").value, 10);
       const startTimeValue = document.getElementById("start_time").value;
       const endTimeValue = document.getElementById("end_time").value;
