@@ -634,10 +634,12 @@
         console.log(endAirconTime)
         console.log(end_time1)
 
-        if(startAirconTime < start_time1 || endAirconTime > end_time1){
+        if(required_day.value = 1 && start_time1 < end_time1){
           alert("Aircon Time has error")
           return
         }
+
+        else{
         const rasatesting = {
           full_name: full_name1.value,
           event_name: event_name1.value,
@@ -689,10 +691,12 @@
                 console.error(error);
               });
           });
+        }
       });
     } else {
       alert("You disagreed to the notice.");
     }
+    
   }
 
   function updateContactLabel() {
