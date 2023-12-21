@@ -427,14 +427,14 @@
     if(agree){
 
       const requiredDay = parseInt(document.getElementById("required_day").value, 10);
-      const currentDateTime = new Date();
-      const startTime12 = new Date(currentDateTime.toDateString() + " " + document.getElementById("start_time").value);
-      const endTime12 = new Date(currentDateTime.toDateString() + " " + document.getElementById("end_time").value);
-        console.log(requiredDay)
-        console.log(startTime12)
-        console.log(endTime12)
+      const startTimeValue = document.getElementById("start_time").value;
+      const endTimeValue = document.getElementById("end_time").value;
 
-        if (requiredDay === 1 && startTime12 <= endTime12) {
+      console.log(requiredDay);
+      console.log(startTimeValue);
+      console.log(endTimeValue);
+
+      if (requiredDay === 1 && startTimeValue >= endTimeValue) {
         alert("Error: Required Day is 1 and Start Time must be less than End Time.");
         return;
       }
