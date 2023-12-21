@@ -435,6 +435,7 @@
         return;
       }
 
+
       const requiredDay = parseInt(document.getElementById("required_day").value, 10);
       const startTimeValue = document.getElementById("start_time").value;
       const endTimeValue = document.getElementById("end_time").value;
@@ -446,6 +447,19 @@
       if (requiredDay === 1 && startTimeValue >= endTimeValue) {
         alert("Error: Required Day is 1 and Start Time must be less than End Time.");
         return;
+      }
+
+      const startAirconTime12 = document.getElementById("start-time").value;
+      const endAirconTime12 = document.getElementById("end-time").value
+
+      if(startAirconTime12 <= startTimeValue || endAirconTime12 >= endTimeValue){
+        alert("Aircon Time should align on Event Time")
+        return;
+      }
+
+      if(startAirconTime12 >= endAirconTime12){
+        alert("Start Aircon Time should not be Less Than End Aircon Time")
+        return; 
       }
 
     const start_date1 = document.getElementById("start_date");
