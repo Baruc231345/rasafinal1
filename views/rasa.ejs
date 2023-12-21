@@ -424,6 +424,7 @@
       "- All production materials used for the activity shall be removed and disposed properly.\n\n" +
       "- Once approved, the requestor must submit (------) of Request Form to the following offices: OSA, Building Admin, MIS & IT, and Security Officer (Lobby or Basement).";
     var agree = confirm(notice + "\n\nDo you agree to the notice?");
+    if(agree){
 
     const start_date1 = document.getElementById("start_date");
     const end_date1 = document.getElementById("end_date");
@@ -470,59 +471,10 @@
     /////// for aircon time and event time debug
 
 
-    console.log(required_day.value);
-console.log(start_time1.value);
-console.log(end_time1.value);
-console.log(start_aircontime.value);
-console.log(end_aircontime.value);
-
-function compareTime(time1, time2) {
-  if (!time1 || !time2) {
-    return 0;
-  }
-
-  const date1 = new Date(`2000-01-01T${time1}`);
-  const date2 = new Date(`2000-01-01T${time2}`);
-
-  if (date1 < date2) {
-    return -1;
-  } else if (date1 > date2) {
-    return 1;
-  } else {
-    return 0; // Both times are equal
-  }
-}
-
-// Example of calling compareTime with specific values
-const result = compareTime(start_time1.value, end_time1.value);
-console.log(result);
-
     const startTime = new Date(start_time1.value);
     const endTime = new Date(end_time1.value);
     const startAirconTime = new Date(start_aircontime.value);
     const endAirconTime = new Date(end_aircontime.value);
-
-    if (agree) {
-  alert("You agreed to the notice.");
-  if (parseInt(required_day.value) === 1) {
-    // Check if start_time1.value is less than end_time1.value
-    const comparisonResult = compareTime(start_time1.value, end_time1.value);
-
-    if (comparisonResult === -1) {
-      alert("Error: Start time must be less than end time.");
-      return;
-    }
-}
-
-      // Convert start_aircontime.value and end_aircontime.value to Date objects
-      const startAirconTime = new Date(start_aircontime.value);
-      const endAirconTime = new Date(end_aircontime.value);
-
-      // Check if there is an error in the Aircon Time
-      if (compareTime(startAirconTime, startTime) < 0 || compareTime(endAirconTime, endTime) > 0) {
-        alert("Error: Aircon Time has an error.");
-        return;
-      }
 
       const form = document.querySelector("form");
       const nextBtn = form.querySelector(".nextBtn");
@@ -629,18 +581,6 @@ console.log(result);
       });
 
       form.addEventListener("submit", () => {
-
-        console.log("Aircon")
-        console.log(startAirconTime)
-        console.log(start_time1)
-        console.log(endAirconTime)
-        console.log(end_time1)
-
-        if(required_day.value === 1 && start_time1 < end_time1){
-          alert("Aircon Time has error")
-          return
-        }
-        
         const rasatesting = {
           full_name: full_name1.value,
           event_name: event_name1.value,
@@ -697,6 +637,7 @@ console.log(result);
       alert("You disagreed to the notice.");
     }
   }
+  
 
   function updateContactLabel() {
     const requestorInformation = document.getElementById("requestor_information");
