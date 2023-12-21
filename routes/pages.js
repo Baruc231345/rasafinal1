@@ -1113,8 +1113,8 @@ router.get("/pdf2/:encryptedId", async (req, res) => {
     return res.status(400).send("Invalid encrypted ID");
   }
 
-  const url = `http://localhost:3005/ejsrasaVanilla/${decryptedId}`;
-  //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedId}`;
+  //const url = `http://localhost:3005/ejsrasaVanilla/${decryptedId}`;
+  const url = `http://154.41.254.18:3306/ejsrasaVanilla/${decryptedId}`;
 
   try {
     const browser = await puppeteer.launch({
