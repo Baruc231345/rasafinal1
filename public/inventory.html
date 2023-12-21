@@ -117,7 +117,7 @@
       const end_time = document.getElementById("end_time").value;
 
       // Fetch data from calendar_input
-      const calendarUrl = `http://154.41.254.18:3006//fetch-calendar?month=${month}&year=${year}`;
+      const calendarUrl = `http://154.41.254.18:3006//fetch-data?month=${month}&year=${year}`;
       const calendarResponse = await fetch(calendarUrl);
       const calendarData = await calendarResponse.json();
     
