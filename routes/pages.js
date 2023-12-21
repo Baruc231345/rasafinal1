@@ -1268,8 +1268,8 @@ router.get("/approve/:id", (req, res) => {
 
 async function generatePDF(id) {
   const puppeteer = require("puppeteer");
-  const url = `http://localhost:3005/ejsrasaVanilla/${id}`;
-  //const url = `http://154.41.254.18:3306/ejsrasaVanilla/${id}`;
+  //const url = `http://localhost:3005/ejsrasaVanilla/${id}`;
+  const url = `http://154.41.254.18:3306/ejsrasaVanilla/${id}`;
 
   try {
     const browser = await puppeteer.launch({
@@ -1382,8 +1382,8 @@ router.get("/verification/:id", async (req, res) => {
       //const encryptedEmail = encryptId(email);
       const html = `
         <h1>Rasa for Approval Email</h1>
-        <a href="http://localhost:3005/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
-        <a href="http://localhost:3005/disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
+        <a href="http://154.41.254.18:3306/approveRasa/${id}/${number}/${email}" style="background-color: green; color: white; padding: 10px; text-decoration: none;">Approve Rasa</a>
+        <a href="http://154.41.254.18:3306/disregardRasa/${id}/${number}" style="background-color: red; color: white; padding: 10px; text-decoration: none;">Disregard Rasa</a>
       `;
 
       // Update rasa_status
