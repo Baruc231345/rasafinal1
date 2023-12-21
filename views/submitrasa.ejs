@@ -254,6 +254,9 @@
 
   document.getElementById('btnSubmit').addEventListener('click', function () {
     console.log("Button clicked!");
+    console.log(required_day.value )
+    console.log(end_time.value)
+    console.log(start_time.value)
 
     if ( required_day.value === 1 && new Date("1970-01-01 " + end_time.value) > new Date("1970-01-01 " + start_time.value)) {
     alert("End time cannot be greater than start time when pending is 1.");
