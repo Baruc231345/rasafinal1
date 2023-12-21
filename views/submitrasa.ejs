@@ -254,6 +254,10 @@
 
   document.getElementById('btnSubmit').addEventListener('click', function () {
     console.log("Button clicked!");
+
+    if ( required_day.value === 1 && new Date("1970-01-01 " + end_time.value) > new Date("1970-01-01 " + start_time.value)) {
+    alert("End time cannot be greater than start time when pending is 1.");
+  }
     if (<%= datainventory.chair %> === 1 && <%=  datainventory.chair_quantity %> > <%= eventResults.availableChairs %>) {
       alert('Error: Selected chair quantity is greater than available chairs.');
       return;
