@@ -634,12 +634,11 @@
         console.log(endAirconTime)
         console.log(end_time1)
 
-        if (required_day.value === 1 && start_time1 < end_time1) {
-  alert("Aircon Time has error");
-  return;
-}
-
-        else{
+        if(required_day.value === 1 && start_time1 < end_time1){
+          alert("Aircon Time has error")
+          return
+        }
+        
         const rasatesting = {
           full_name: full_name1.value,
           event_name: event_name1.value,
@@ -691,12 +690,10 @@
                 console.error(error);
               });
           });
-        }
       });
     } else {
       alert("You disagreed to the notice.");
     }
-    
   }
 
   function updateContactLabel() {
