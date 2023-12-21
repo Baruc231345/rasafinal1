@@ -628,6 +628,12 @@
 
       form.addEventListener("submit", () => {
 
+        console.log("Aircon")
+        console.log(startAirconTime)
+        console.log(start_time1)
+        console.log(endAirconTime)
+        console.log(end_time1)
+
         if(startAirconTime < start_time1 || endAirconTime > end_time1){
           alert("Aircon Time has error")
           return
