@@ -495,23 +495,23 @@
 
     const startTime = new Date(start_time1.value);
     const endTime = new Date(end_time1.value);
-    const startAirconTime = new Date(start_aircontime.value);
-    const endAirconTime = new Date(end_aircontime.value);
-
+    
     if (agree) {
-      alert("You agreed to the notice.");
-      if (parseInt(required_day.value) === 1) {
-        // Convert start_time1.value and end_time1.value to Date objects
-        const startTime = new Date(start_time1.value);
-        const endTime = new Date(end_time1.value);
+  alert("You agreed to the notice.");
 
-        // Check if the start time is greater than or equal to the end time
-        if (startTime >= endTime) {
-          alert("Error: Start time must be less than end time.");
-          return;
-        }
-      }
+  // Get the current date
+  const currentDate = new Date().toISOString().split('T')[0];
 
+  // Convert start_time1.value and end_time1.value to Date objects using the current date
+  const startTime = new Date(currentDate + "T" + start_time1.value);
+  const endTime = new Date(currentDate + "T" + end_time1.value);
+
+  // Check if the start time is greater than or equal to the end time
+  if (startTime >= endTime) {
+    alert("Error: Start time must be less than end time.");
+    return;
+  }
+}
       // Convert start_aircontime.value and end_aircontime.value to Date objects
       const startAirconTime = new Date(start_aircontime.value);
       const endAirconTime = new Date(end_aircontime.value);
