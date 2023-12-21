@@ -59,7 +59,7 @@
                 </div>
                 <div class="input-field">
                   <label>Student Employee</label>
-                  <input type="text" id="user_id" value="<%= user_id %>" disabled>
+                  <input type="text" id="user_id" value= "<%= user_id %>" disabled>
                 </div>
                 <div class="input-field">
                   <label>Contact Number </label>
@@ -100,14 +100,11 @@
                     <!-- Teachers -->
                     <select id="endorsed2" style="display: none;">
                       <option value="" disabled selected><strong>IT Department</strong></option>
-                      <option value="Mr. Mac Salonga">Mr. Mac Salonga</option>
-                      <!--magistrado.222133@globalcity.sti.edu.ph-->
+                      <option value="Mr. Mac Salonga">Mr. Mac Salonga</option><!--magistrado.222133@globalcity.sti.edu.ph-->
                       <option value="" disabled selected>Business & Management Department</option>
-                      <option value="Ms. Anne Bartolome">Ms. Anne Bartolome</option>
-                      <!--rodillas.222275@globalcity.sti.edu.ph.com-->
+                      <option value="Ms. Anne Bartolome">Ms. Anne Bartolome</option> <!--rodillas.222275@globalcity.sti.edu.ph.com-->
                       <option value="" disabled selected>Hospitality Management</option>
-                      <option value="Mr. Joseph Transmontero">Mr. Joseph Transmontero</option>
-                      <!--lopez.195633@globalcity.sti.edu.ph-->
+                      <option value="Mr. Joseph Transmontero">Mr. Joseph Transmontero</option> <!--lopez.195633@globalcity.sti.edu.ph-->
                     </select>
                   </div>
                 </div>
@@ -631,25 +628,15 @@
 
       form.addEventListener("submit", () => {
 
-        console.log("Aircon");
-        console.log(startAirconTime);
-        console.log(start_time1);
-        console.log(endAirconTime);
-        console.log(end_time1);
+        console.log("Aircon")
+        console.log(startAirconTime)
+        console.log(start_time1)
+        console.log(endAirconTime)
+        console.log(end_time1)
 
-        const parseTime = (time) => {
-          const [hours, minutes] = time.split(":");
-          return new Date(0, 0, 0, hours, minutes);
-        };
-
-        const startAircon = parseTime(startAirconTime);
-        const startForm = parseTime(start_time1);
-        const endAircon = parseTime(endAirconTime);
-        const endForm = parseTime(end_time1);
-
-        if (startAircon < startForm || endAircon > endForm) {
-          alert("Aircon Time has error");
-          return;
+        if(startAirconTime < start_time1 || endAirconTime > end_time1){
+          alert("Aircon Time has error")
+          return
         }
         const rasatesting = {
           full_name: full_name1.value,
