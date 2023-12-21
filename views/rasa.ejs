@@ -627,6 +627,11 @@
       });
 
       form.addEventListener("submit", () => {
+
+        if(startAirconTime < start_time1 || endAirconTime > end_time1){
+          alert("Aircon Time has error")
+          return
+        }
         const rasatesting = {
           full_name: full_name1.value,
           event_name: event_name1.value,
