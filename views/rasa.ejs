@@ -63,21 +63,13 @@
                 </div>
                 <div class="input-field">
                   <label>Contact Number </label>
-                  <input type="text" id="contact_number" placeholder="Enter your mobile number" required
-                    pattern="\d{11}" maxlength="11">
+                  <input type="text" id="contact_number" value = "<%= contact_number %>">
                 </div>
                 <div class="input-field">
                   <label for="requestor_information">Requestor Information</label>
-                  <div class="select-wrapper">
-                    <select id="requestor_information" onchange="updateContactLabel()" required>
-                      <option value="" disabled selected>Select Description</option>
-                      <option value="Student Leader">Student Leader</option>
-                      <option value="Student">Student</option>
-                      <option value="Teacher">Teacher</option>
-                      <option value="Staff">Staff</option>
-                    </select>
-                  </div>
+                  <input type="text" id="requestor_information" value="<%= requestor_information %>" disabled>
                 </div>
+                
                 <div class="input-field" style="width: 380px;">
                   <label id="requestor">Requestor Type </label>
                   <input type="text" id="requestor_type" placeholder="">
@@ -355,7 +347,6 @@
               </div>
             </div>
           </div>
-        </form>
       </div>
     </div>
 
@@ -364,6 +355,7 @@
 
 <script>
   window.onload = function () {
+    updateContactLabel();
     formatDate();
   };
   const universalId = '<%= id %>';

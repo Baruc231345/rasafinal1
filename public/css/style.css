@@ -1,7 +1,7 @@
 /*----------------------- Login Form -----------------------------------*/
 #globalcontainer{
     position: absolute;
-    top: 50%;
+    top: 70%;
     left:60%;
     transform:translate(-50%,-85%)
   }
@@ -24,7 +24,7 @@
   }
   
   .second-block-color{
-    width: 600px;
+    width: 500px;
     height: 450px;
     background-color: #6e6e6e;
     box-shadow: 0px 0px 10px #67717d;

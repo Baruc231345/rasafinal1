@@ -734,26 +734,23 @@ router.get("/rasa", loggedIn, (req, res) => {
   }
 
   // Assuming db1 is your database connection
-  db1.query('SELECT user_id FROM user WHERE id = ?', [universalId], (error, results) => {
+  db1.query('SELECT * FROM user WHERE id = ?', [universalId], (error, results) => {
     if (error) {
       // Handle the error
       console.error(error);
       return res.status(500).send('Internal Server Error');
     }
-
-    // Check if any results are returned
     if (results.length === 0) {
-      // Redirect to "/" if no user is found
       return res.redirect("/");
     }
 
-    // Extract user_id from the results
     const userId = results[0].user_id;
+    const requestor_information = results[0].requestor_information;
+    const contact_number = results[0].contact_number;
     console.log(universalId)
     console.log(userId)
 
-    // Render the "rasa" view with the user_id
-    res.render("rasa", { id: universalId, user_id: userId });
+    res.render("rasa", { id: universalId, user_id: userId, requestor_information, contact_number });
   });
 });
 

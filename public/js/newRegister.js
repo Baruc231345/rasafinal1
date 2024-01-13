@@ -15,6 +15,8 @@ form.addEventListener("submit", () => {
   const reg_name = document.getElementById("reg_name");
   const reg_pass = document.getElementById("reg_pass");
   const reg_user = document.getElementById("reg_user");
+  const reg_contactnumber = document.getElementById("reg_contactnumber");
+  const reg_requestor = document.getElementById("reg_requestor")
   const domain = "@globalcity.sti.edu.ph"
   const reg_name2 = reg_name.value + domain
   const confirm_pass = document.getElementById("confirm_pass");
@@ -22,6 +24,8 @@ form.addEventListener("submit", () => {
   console.log(reg_name.value)
   console.log(reg_pass.value)
   console.log(confirm_pass.value)
+  console.log(reg_contactnumber.value)
+  console.log(reg_requestor.value)
 
   if (reg_pass.value !== confirm_pass.value) {
     alert("Password is not the same");
@@ -31,6 +35,8 @@ form.addEventListener("submit", () => {
       email: reg_name2,
       password: reg_pass.value,
       user_id: reg_user.value,
+      contact_number: reg_contactnumber.value,
+      requestor: reg_requestor.value,
     };
     fetch("/api/register", {
       method: "POST",
