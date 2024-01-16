@@ -747,10 +747,12 @@ router.get("/rasa", loggedIn, (req, res) => {
     const userId = results[0].user_id;
     const requestor_information = results[0].requestor_information;
     const contact_number = results[0].contact_number;
+    const course = results[0].course;
+    const full_name = results[0].full_name;
     console.log(universalId)
     console.log(userId)
 
-    res.render("rasa", { id: universalId, user_id: userId, requestor_information, contact_number });
+    res.render("rasa", { id: universalId, user_id: userId, requestor_information, contact_number, course, full_name });
   });
 });
 

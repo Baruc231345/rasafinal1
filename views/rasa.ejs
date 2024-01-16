@@ -55,7 +55,7 @@
               <div class="fields1">
                 <div class="input-field">
                   <label>Full Name</label>
-                  <input type="text" id="full_name" placeholder="Enter your name" required maxlength="30">
+                  <input type="text" id="full_name" value = "<%= full_name %>" disabled>
                 </div>
                 <div class="input-field">
                   <label>Student Employee</label>
@@ -63,7 +63,7 @@
                 </div>
                 <div class="input-field">
                   <label>Contact Number </label>
-                  <input type="text" id="contact_number" value = "<%= contact_number %>">
+                  <input type="text" id="contact_number" value = "<%= contact_number %>" disabled>
                 </div>
                 <div class="input-field">
                   <label for="requestor_information">Requestor Information</label>
@@ -72,10 +72,10 @@
                 
                 <div class="input-field" style="width: 380px;">
                   <label id="requestor">Requestor Type </label>
-                  <input type="text" id="requestor_type" placeholder="">
+                  <input type="text" id="requestor_type" value = "<%= course %>" disabled>
                 </div>
 
-                <div class="input-field" id="endorsedLabel" style="display: none;">
+                <div class="input-field" id="endorsedLabel">
                   <label for="endorsed">Endorsed by</label>
                   <div class="select-wrapper">
                     <!-- Student and Student Leader -->
@@ -314,20 +314,7 @@
                         </div>
                       </label>
                     </div>
-                    <div class="aircon" style="height: 25px;width: 342.703;">
-                      <label for="myRadioId-6" class="radio3">
-                        <input type="checkbox" name="myRadioField" id="myRadioId-6" class="radio_input2">
-                        <div class="radio_radio2"></div>
-                        Aircon Time
-                      </label>
-                      <div class="input-aircon" style="padding-left: 5px;">
-                        <input type="time" placeholder="Start of Aircon Time" id="start-time" disabled>
-                      </div>
-                      <p class="text1">to</p>
-                      <div class="input-aircon">
-                        <input type="time" placeholder="End of Aircon Time" id="end-time" disabled>
-                      </div>
-                    </div>
+
                     <div class="input-other" style="
                         width: 342.703px;
                         height: 25px;
@@ -355,7 +342,6 @@
 
 <script>
   window.onload = function () {
-    updateContactLabel();
     formatDate();
   };
   const universalId = '<%= id %>';
@@ -374,8 +360,7 @@
   }
 
   // Set up behavior for each checkbox and input field combination
-  setupCheckboxBehavior('myRadioId-6', 'start-time');
-  setupCheckboxBehavior('myRadioId-6', 'end-time');
+
   setupCheckboxBehavior('myRadioId-7', 'otherInput');
   setupCheckboxBehavior('myRadioId-4', 'whiteboard_input');
   setupCheckboxBehavior('myRadioId-3', 'black-panel_input');
@@ -573,8 +558,7 @@
       otherInput.disabled = true;
       blackpanelInput.disabled = true;
       whiteboardInput.disabled = true;
-      start_aircontime.disabled = true;
-      end_aircontime.disabled = true;
+
 
       soundSystemCheckbox.addEventListener("change", () => {
         soundSystemInput.disabled = !soundSystemCheckbox.checked;
@@ -603,10 +587,7 @@
       whiteboardCheckbox.addEventListener("change", () => {
         whiteboardInput.disabled = !whiteboardCheckbox.checked;
       });
-      airconCheckbox.addEventListener("change", () => {
-        start_aircontime.disabled = !airconCheckbox.checked;
-        end_aircontime.disabled = !airconCheckbox.checked;
-      });
+
 
       form.addEventListener("submit", () => {
         const rasatesting = {
@@ -667,7 +648,7 @@
   }
   
 
-
+/*
   function updateContactLabel() {
     const requestorInformation = document.getElementById("requestor_information");
     const requestorTypeLabel = document.getElementById("requestor");
@@ -721,6 +702,7 @@
       endorsedSelect2.removeAttribute('required');
     }
   }
+  */
 
   function formatDate() {
     const eventDayInput = document.getElementById("event_day");
@@ -737,5 +719,54 @@
     eventDayInput.setAttribute("min", formattedToday);
   }
 </script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    function changeRequestorLabel() {
+      var requestorInformation = document.getElementById("requestor_information").value;
+      var requestorLabel = document.getElementById("requestor");
+
+      if (requestorInformation === "Student" || requestorInformation === "Student Leader") {
+        requestorLabel.innerHTML = "Course and Section:";
+      } else if(requestorInformation === "Teacher"){
+        requestorLabel.innerHTML = "Department:";
+      } 
+    }
+
+    // Call the function initially to set the initial state
+    changeRequestorLabel();
+  });
+
+  
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    function showHideEndorsedDropdown() {
+      var requestorInformation = document.getElementById("requestor_information").value;
+      var courseValue = document.getElementById("requestor_type").value;
+      var endorsedDropdown = document.getElementById("endorsed");
+      var endorsedDropdown2 = document.getElementById("endorsed2");
+
+      if (requestorInformation === "Student" || requestorInformation === "Student Leader") {
+        endorsedDropdown.style.display = "block"; // Show the endorsed dropdown
+        endorsedDropdown2.style.display = "none"; // Hide the endorsed2 dropdown
+      } else if (requestorInformation === "Teacher"){
+        endorsedDropdown.style.display = "none"; // Show the endorsed dropdown
+        endorsedDropdown2.style.display = "block"; // Hide the endorsed2 dropdown
+      } else {
+        endorsedDropdown.style.display = "none"; // Hide the endorsed dropdown
+        endorsedDropdown2.style.display = "none"; // Hide the endorsed2 dropdown
+      }
+    }
+
+    // Call the function initially to set the initial state
+    showHideEndorsedDropdown();
+
+    // Attach the function to the change event of the requestor_type input
+    document.getElementById("requestor_type").addEventListener("change", showHideEndorsedDropdown);
+  });
+</script>
+
 
 </html>

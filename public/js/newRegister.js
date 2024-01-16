@@ -13,10 +13,13 @@ regBtn_register.addEventListener("click", function (event) {
 
 form.addEventListener("submit", () => {
   const reg_name = document.getElementById("reg_name");
+  const reg_fullname = document.getElementById("reg_fullname");
   const reg_pass = document.getElementById("reg_pass");
   const reg_user = document.getElementById("reg_user");
+  const reg_course = document.getElementById("reg_course");
   const reg_contactnumber = document.getElementById("reg_contactnumber");
   const reg_requestor = document.getElementById("reg_requestor")
+
   const domain = "@globalcity.sti.edu.ph"
   const reg_name2 = reg_name.value + domain
   const confirm_pass = document.getElementById("confirm_pass");
@@ -37,6 +40,8 @@ form.addEventListener("submit", () => {
       user_id: reg_user.value,
       contact_number: reg_contactnumber.value,
       requestor: reg_requestor.value,
+      course: reg_course.value,
+      full_name: reg_fullname.value,
     };
     fetch("/api/register", {
       method: "POST",
@@ -69,19 +74,25 @@ function togglePassword(inputId) {
 }
 
 function updateUsername(inputField) {
-    // Check if inputField is an input element
     if (inputField instanceof HTMLInputElement) {
-      // Get the input value
       const inputValue = inputField.value.trim();
-  
-      // Check if the input is not empty
       if (inputValue !== "") {
-        // Append the desired domain to the input value
         const domain = "@globalcity.sti.edu.ph";
         const updatedValue = inputValue + domain;
-  
-        // Set the updated value back to the input field
         inputField.value = updatedValue;
       }
     }
   }
+
+
+    function changeLabel() {
+      var requestorDropdown = document.getElementById("reg_requestor");
+      var courseLabel = document.getElementById("reg_courseLabel");
+      var courseDropdown = document.getElementById("reg_course");
+
+      if (requestorDropdown.value === "teacher") {
+        courseLabel.innerHTML = "Department:";
+      } else {
+        courseLabel.innerHTML = "Course:";
+      }
+    }
