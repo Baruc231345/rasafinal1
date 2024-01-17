@@ -1,4 +1,3 @@
-// 200 number for rasa_note_void
 const db1 = require("../routes/rasa-db");
 const rasa_note = async (req, res) => {
   const { note, number, id } = req.body;

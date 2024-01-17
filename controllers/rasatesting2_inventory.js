@@ -43,64 +43,25 @@ const rasatesting2_inventory = async (req, res) => {
     whiteboard_max,
     date_changes,
   } = req.body;
-
-  console.log("rasatesting2_inventory.js received data");
-  console.log("auditorium: ", auditorium);
-  console.log(foodandbeverage);
-  console.log(mainlobby);
-  console.log(dancestudio);
-  console.log(multihall);
-  console.log(gym);
-  console.log(kitchen);
-  console.log(classroom);
   const formattedDate = new Date(date_changes).toISOString().split('T')[0];
-
   try {
-
     const results = await new Promise((resolve, reject) => {
       db1.query(
         'INSERT INTO inventory_table SET ?',
         {
-          inventory_id: inventory_id,
-          auditorium: auditorium,
-          foodandbeverage: foodandbeverage,
-          multihall: multihall,
-          dancestudio: dancestudio,
-          gym: gym,
-          classroom: classroom,
-          classroom_number: classroom_number,
-          kitchen: kitchen,
-          mainlobby: mainlobby,
-          sound_system: sound_system,
-          sound_system_quantity: sound_system_quantity,
+          inventory_id: inventory_id,auditorium: auditorium,foodandbeverage: foodandbeverage,
+          multihall: multihall,dancestudio: dancestudio,gym: gym,
+          classroom: classroom,classroom_number: classroom_number,
+          kitchen: kitchen, mainlobby: mainlobby,
+          sound_system: sound_system,sound_system_quantity: sound_system_quantity,
           microphone: microphone,
-          microphone_quantity: microphone_quantity,
-          lcd: lcd,
-          lcd_quantity: lcd_quantity,
-          widescreen: widescreen,
+          microphone_quantity: microphone_quantity, lcd: lcd,lcd_quantity: lcd_quantity,widescreen: widescreen,
           widescreen_quantity: widescreen_quantity, 
-          chair: chair, 
-          chair_quantity: chair_quantity,
-          table_input: table_input,
-          table_quantity: table_quantity,
-          other: other,
-          other_quantity: other_quantity,
-          blackpanel: blackpanel,
-          blackpanel_quantity: blackpanel_quantity,
-          whiteboard: whiteboard,
-          whiteboard_quantity: whiteboard_quantity,
-          aircon: aircon,
-          start_aircon: start_aircon,
-          end_aircon: end_aircon,
-          sound_system_max: sound_system_max,
-          table_max: table_max,
-          chairs_max: chairs_max,
-          lcd_max: lcd_max,
-          microphone_max: microphone_max,
-          widescreen_max: widescreen_max,
-          blackpanel_max: blackpanel_max,
-          whiteboard_max: whiteboard_max,
-          date_changes: formattedDate
+          chair: chair, chair_quantity: chair_quantity,
+          table_input: table_input,table_quantity: table_quantity,other: other,
+          other_quantity: other_quantity,blackpanel: blackpanel,
+          blackpanel_quantity: blackpanel_quantity,whiteboard: whiteboard,whiteboard_quantity: whiteboard_quantity,
+          aircon: aircon,start_aircon: start_aircon,end_aircon: end_aircon,sound_system_max: sound_system_max,table_max: table_max,chairs_max: chairs_max,lcd_max: lcd_max,microphone_max: microphone_max,widescreen_max: widescreen_max,blackpanel_max: blackpanel_max,whiteboard_max: whiteboard_max,date_changes: formattedDate
         },
         (error, results) => {
           if (error) {
@@ -111,10 +72,7 @@ const rasatesting2_inventory = async (req, res) => {
         }
       );
     });
-
-    console.log(results + "OFFICIAL INVENTORY TABLE.js");
     const insertedId = results.insertId;
-    console.log(insertedId + "wtf is this?");
     return res.json({
       status: "success",
       inventory_Id: insertedId,
@@ -125,5 +83,4 @@ const rasatesting2_inventory = async (req, res) => {
     throw error;
   }
 };
-
 module.exports = rasatesting2_inventory;

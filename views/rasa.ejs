@@ -345,22 +345,17 @@
     formatDate();
   };
   const universalId = '<%= id %>';
-
   function setupCheckboxBehavior(checkboxId, inputId) {
     const checkbox = document.getElementById(checkboxId);
     const input = document.getElementById(inputId);
-
     checkbox.addEventListener('change', function () {
       input.disabled = !this.checked;
-      input.required = this.checked; // Always set required based on the checkbox state
+      input.required = this.checked;
       if (!this.checked) {
         input.value = '';
       }
     });
   }
-
-  // Set up behavior for each checkbox and input field combination
-
   setupCheckboxBehavior('myRadioId-7', 'otherInput');
   setupCheckboxBehavior('myRadioId-4', 'whiteboard_input');
   setupCheckboxBehavior('myRadioId-3', 'black-panel_input');
@@ -402,21 +397,15 @@
       "- Once approved, the requestor must submit (------) of Request Form to the following offices: OSA, Building Admin, MIS & IT, and Security Officer (Lobby or Basement).";
     var agree = confirm(notice + "\n\nDo you agree to the notice?");
     if(agree){
-
       const requiredDayInput = document.getElementById("required_day");
       const requiredDayValue = requiredDayInput.value;
-
-      // Check if requiredDayValue is a number
       if (isNaN(requiredDayValue)) {
         alert("Error: Required Day must be a number.");
         return;
       }
-
-
       const requiredDay = parseInt(document.getElementById("required_day").value, 10);
       const startTimeValue = document.getElementById("start_time").value;
       const endTimeValue = document.getElementById("end_time").value;
-
       console.log(requiredDay);
       console.log(startTimeValue);
       console.log(endTimeValue);
@@ -424,19 +413,6 @@
       if (requiredDay === 1 && startTimeValue >= endTimeValue) {
         alert("Error: Required Day is 1 and Start Time must be less than End Time.");
         return;
-      }
-
-      const startAirconTime12 = document.getElementById("start-time").value;
-      const endAirconTime12 = document.getElementById("end-time").value
-
-      if(startAirconTime12 <= startTimeValue || endAirconTime12 >= endTimeValue){
-        alert("Aircon Time should align on Event Time")
-        return;
-      }
-
-      if(startAirconTime12 >= endAirconTime12){
-        alert("Start Aircon Time should not be Less Than End Aircon Time")
-        return; 
       }
 
     const start_date1 = document.getElementById("start_date");
@@ -454,7 +430,6 @@
     const participants = document.getElementById("participants");
     const endorsed = document.getElementById("endorsed");
     const purpose_objectives = document.getElementById("purpose_objectives");
-
     // Checkboxes
     const soundSystemCheckbox = document.getElementById("myRadioId_1");
     const microphoneCheckbox = document.getElementById("myRadioId_2");
@@ -463,10 +438,8 @@
     const chairCheckbox = document.getElementById("myRadioId-1");
     const tableCheckbox = document.getElementById("myRadioId-2");
     const otherCheckbox = document.getElementById("myRadioId-7");
-    const airconCheckbox = document.getElementById("myRadioId-6");
     const blackpanelCheckbox = document.getElementById("myRadioId-3");
     const whiteboardCheckbox = document.getElementById("myRadioId-4");
-
     // Input fields
     const soundSystemInput = document.getElementById("sound-system_input");
     const microphoneInput = document.getElementById("microphone_input");
@@ -478,16 +451,8 @@
     const whiteboardInput = document.getElementById("whiteboard_input");
     const blackpanel = document.getElementById("myRadioId-3");
     const blackpanelInput = document.getElementById("black-panel_input");
-    const start_aircontime = document.getElementById("start-time");
-    const end_aircontime = document.getElementById("end-time")
-
-    /////// for aircon time and event time debug
-
-
     const startTime = new Date(start_time1.value);
     const endTime = new Date(end_time1.value);
-    const startAirconTime = new Date(start_aircontime.value);
-    const endAirconTime = new Date(end_aircontime.value);
 
       const form = document.querySelector("form");
       const nextBtn = form.querySelector(".nextBtn");
@@ -539,9 +504,9 @@
         blackpanel_quantity: document.getElementById("black-panel_input").value,
         whiteboard: document.getElementById("myRadioId-4").checked ? 1 : 0,
         whiteboard_quantity: document.getElementById("whiteboard_input").value,
-        aircon: document.getElementById("myRadioId-6").checked ? 1 : 0,
-        start_aircon: document.getElementById("start-time").value,
-        end_aircon: document.getElementById("end-time").value,
+        aircon: 1,
+        start_aircon: document.getElementById("start_time").value,
+        end_aircon: document.getElementById("end_time").value,
         other: document.getElementById("myRadioId-7").checked ? 1 : 0,
         other_quantity: document.getElementById("otherInput").value,
       }
@@ -725,15 +690,12 @@
     function changeRequestorLabel() {
       var requestorInformation = document.getElementById("requestor_information").value;
       var requestorLabel = document.getElementById("requestor");
-
       if (requestorInformation === "Student" || requestorInformation === "Student Leader") {
         requestorLabel.innerHTML = "Course and Section:";
       } else if(requestorInformation === "Teacher"){
         requestorLabel.innerHTML = "Department:";
       } 
     }
-
-    // Call the function initially to set the initial state
     changeRequestorLabel();
   });
 
@@ -749,21 +711,18 @@
       var endorsedDropdown2 = document.getElementById("endorsed2");
 
       if (requestorInformation === "Student" || requestorInformation === "Student Leader") {
-        endorsedDropdown.style.display = "block"; // Show the endorsed dropdown
-        endorsedDropdown2.style.display = "none"; // Hide the endorsed2 dropdown
+        endorsedDropdown.style.display = "block";
+        endorsedDropdown2.style.display = "none"; 
       } else if (requestorInformation === "Teacher"){
-        endorsedDropdown.style.display = "none"; // Show the endorsed dropdown
-        endorsedDropdown2.style.display = "block"; // Hide the endorsed2 dropdown
+        endorsedDropdown.style.display = "none"; 
+        endorsedDropdown2.style.display = "block"; 
       } else {
-        endorsedDropdown.style.display = "none"; // Hide the endorsed dropdown
-        endorsedDropdown2.style.display = "none"; // Hide the endorsed2 dropdown
+        endorsedDropdown.style.display = "none"; 
+        endorsedDropdown2.style.display = "none"; 
       }
     }
 
-    // Call the function initially to set the initial state
     showHideEndorsedDropdown();
-
-    // Attach the function to the change event of the requestor_type input
     document.getElementById("requestor_type").addEventListener("change", showHideEndorsedDropdown);
   });
 </script>

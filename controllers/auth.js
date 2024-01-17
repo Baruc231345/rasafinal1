@@ -1,4 +1,3 @@
-
 const express = require("express");
 const register = require("./register");
 const login = require("./login");
@@ -28,5 +27,4 @@ router.post("/rasatesting2", rasatesting2)
 router.post("/rasatesting2_inventory", rasatesting2_inventory)
 router.post("/rasatesting_inventory", rasatesting_inventory)
 router.post("/insertSign", insertSign)
-
 module.exports = router; 
