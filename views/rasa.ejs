@@ -414,7 +414,8 @@
         alert("Error: Required Day is 1 and Start Time must be less than End Time.");
         return;
       }
-
+    const endorsedSelect = document.getElementById("endorsed");
+    const endorsedSelect2 = document.getElementById("endorsed2");
     const start_date1 = document.getElementById("start_date");
     const end_date1 = document.getElementById("end_date");
     const full_name1 = document.getElementById("full_name");
@@ -565,10 +566,11 @@
           requestor_information: requestor_information.value,
           requestor_type: requestor_type.value,
           required_day: required_day.value,
-          endorsed: (requestor_information.value === "Teacher") ? decodeURIComponent(endorsed2.value.trim()) || "N/A" : decodeURIComponent(endorsed.value.trim()) || "N/A",
+          endorsed: endorsedSelect.value || endorsedSelect2.value,
           contact_number: contact_number.value,
           participants: participants.value,
           purpose_objectives: purpose_objectives.value,
+          course: course
         };
 
         fetch("/api/rasatesting", {
@@ -662,7 +664,7 @@
     } else {
       endorsedLabel.style.display = 'none';
       endorsedSelect.style.display = 'none';
-      endorsedSelect2.style.display = 'none';
+      endorsedSelect2.style.display = 'none'; 
       endorsedSelect.removeAttribute('required');
       endorsedSelect2.removeAttribute('required');
     }
@@ -701,30 +703,40 @@
 
   
 </script>
-
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    function showHideEndorsedDropdown() {
-      var requestorInformation = document.getElementById("requestor_information").value;
-      var courseValue = document.getElementById("requestor_type").value;
-      var endorsedDropdown = document.getElementById("endorsed");
-      var endorsedDropdown2 = document.getElementById("endorsed2");
+document.addEventListener("DOMContentLoaded", function () {
+  function showHideEndorsedDropdown() {
+    var requestorInformation = document.getElementById("requestor_information").value;
+    var courseValue = document.getElementById("requestor_type").value;
+    var endorsedDropdown = document.getElementById("endorsed");
+    var endorsedDropdown2 = document.getElementById("endorsed2");
 
-      if (requestorInformation === "Student" || requestorInformation === "Student Leader") {
-        endorsedDropdown.style.display = "block";
-        endorsedDropdown2.style.display = "none"; 
-      } else if (requestorInformation === "Teacher"){
-        endorsedDropdown.style.display = "none"; 
-        endorsedDropdown2.style.display = "block"; 
+    if (requestorInformation === "Student" || requestorInformation === "Student Leader") {
+      endorsedDropdown.style.display = "block";
+      endorsedDropdown2.style.display = "none";
+    } else if (requestorInformation === "Teacher") {
+      endorsedDropdown.style.display = "none";
+      endorsedDropdown2.style.display = "block";
+
+      if (courseValue === "BSBA") {
+        endorsedDropdown2.selectedIndex = 3; // index of "Ms. Anne Bartolome"
+        endorsedDropdown2.disabled = true;
+      } else if (courseValue === "BSIT") {
+        endorsedDropdown2.selectedIndex = 1; // index of "Mr. Mac Salonga"
+        endorsedDropdown2.disabled = true;
       } else {
-        endorsedDropdown.style.display = "none"; 
-        endorsedDropdown2.style.display = "none"; 
+        endorsedDropdown2.selectedIndex = 0; // set default selected index
+        endorsedDropdown2.disabled = false;
       }
+    } else {
+      endorsedDropdown.style.display = "none";
+      endorsedDropdown2.style.display = "none";
     }
+  }
 
-    showHideEndorsedDropdown();
-    document.getElementById("requestor_type").addEventListener("change", showHideEndorsedDropdown);
-  });
+  showHideEndorsedDropdown();
+  document.getElementById("requestor_type").addEventListener("change", showHideEndorsedDropdown);
+});
 </script>
 
 

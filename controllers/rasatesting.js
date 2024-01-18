@@ -16,6 +16,7 @@ const rasatesting = async (req, res) => {
     purpose_objectives,
     endorsed,
     user_id,
+    course,
   } = req.body;
 
   const eventDate = new Date(event_day);
@@ -27,7 +28,7 @@ const rasatesting = async (req, res) => {
     {full_name: full_name,user_id: user_id,event_name: event_name,
       event_description: event_description,
       event_day: event_day,start_time: start_time,end_time: 
-      end_time,end_date: end_date, requestor_information: requestor_information,requestor_type: 
+      end_time,course: course, end_date: end_date, requestor_information: requestor_information,requestor_type: 
       requestor_type,endorsed: endorsed,required_day: required_day,contact_number: contact_number,
       purpose_objectives: purpose_objectives,participants: participants,rasa_status: "Pending",
     },
